@@ -1,0 +1,61 @@
+
+remote HELP
+____________________________________________________________________________________________________________________
+Commands:
+	help					Print help.
+	____________________________________________________________________________________________________________
+	pull					Pull newer files from remote. This command will not pull files which
+						are older than your local copies of the same.
+	____________________________________________________________________________________________________________
+	get					Pulls only files that don't exist on local repository.
+	____________________________________________________________________________________________________________
+	rebase					Restore your local repository from remote repository.
+						____________________________________________________________________
+	   -!REMOTE				Restore remote repository from your local reposiory.
+						____________________________________________________________________
+	   -f [file path]			Restore local file from remote repository.
+						____________________________________________________________________
+	   -!REMOTE -f [file path]		Restore remote file from local repository.
+						____________________________________________________________________
+	   -d [directory path]			Restore local directory from remote repository.
+						____________________________________________________________________
+	   -!REMOTE -d [directory path]		Restore remote directory from local repository.
+	____________________________________________________________________________________________________________
+	push					Push newer files on remote. This command will not push files which
+						are older than remote copies of your local files.
+						____________________________________________________________________
+	   -f [file path]			Push single file.
+						____________________________________________________________________
+	   -d [directory path]			Push single directory.
+	____________________________________________________________________________________________________________
+	put					Pushes only files that don't exist on remote.
+	____________________________________________________________________________________________________________
+	find [file name]			Prints all paths to all files matching the name and extension. 
+						If extension is not supplied it will print paths to files matching
+						name only.
+						____________________________________________________________________
+	   --ignore-case			Preforms non case sensitive search.
+	____________________________________________________________________________________________________________
+	status					Check for differences between remote and local.
+	____________________________________________________________________________________________________________
+	path					Find local sync folder.
+	____________________________________________________________________________________________________________
+	-rc					Directly access rclone commands.
+	____________________________________________________________________________________________________________
+	list					List remote directory in a tree fashion excluding .meta files.
+						____________________________________________________________________
+		-im				List remote directory including .meta files.
+	____________________________________________________________________________________________________________
+	quota					Lists remote storage quota.
+____________________________________________________________________________________________________________________
+Flags:
+	-h, --help				Print help.
+	____________________________________________________________________________________________________________
+	-P, --progress				Show progress of commands.
+	____________________________________________________________________________________________________________
+	-q, --quiet 				Print as little stuff as possible.
+	____________________________________________________________________________________________________________
+	-n, --dry-run				Do a trial run with no permanent changes
+	____________________________________________________________________________________________________________
+	All rclone flags are supported. Go to https://rclone.org/flags/ for more info.
+____________________________________________________________________________________________________________________

@@ -1,0 +1,56 @@
+using System.Collections.Generic;
+using Actors.Grid.SymmetryFunctions.Base;
+using Actors.Players;
+using Base.MonoBehaviours;
+using Common;
+using Managers.ApiManagers;
+using UnityEngine;
+
+namespace Actors.Grid.Generator {
+    public class GridGenerator : BaseController<GridGeneratorState> {
+        protected override bool Expose => true;
+
+        private GridGeneratorData data;
+        private SymmetryFunction symmetryFunction;
+
+        private readonly PlayerInteractor playerInteractor = ApiManager.ProvideInteractor<PlayerInteractor>();
+
+        private readonly List<GridCoords> preInstantiatedFields = new List<GridCoords>();
+
+        public void Init(GridGeneratorData data) {
+            this.data = data;
+            symmetryFunction = data.SymmetryFunction;
+            symmetryFunction.SupplyGeneratorFunction(data.GeneratorFunction);
+        }
+
+        public void GenerateGrid() {
+            CreatePlayerBases();
+            SetState(new GridWorldSize(data.XOffset,
+                data.YOffset,
+                data.MapWidth * data.XOffset,
+                data.MapHeight * data.YOffset));
+            for (var i = 0; i <= data.MapWidth; i++) {
+                for (var j = i % 2; j <= data.MapHeight; j += 2) {
+                    if (preInstantiatedFields.Contains((i, j))) continue;
+                    var prefab = symmetryFunction.ProvideTile(new GridCoords(i, j),
+                        new GridCoords(data.MapWidth, data.MapHeight));
+                    SetState(new FieldGenerated(prefab, new Vector3(i * data.XOffset, 0, j * data.YOffset), (i, j)));
+                }
+            }
+        }
+
+        private void CreatePlayerBases() {
+            playerInteractor
+                .GetPlayerBases()
+                .ForEach(baseDetails => {
+                    var x = baseDetails.coords.x;
+                    var y = baseDetails.coords.y;
+                    if (x > data.MapWidth - 1) x = data.MapWidth;
+                    if (y > data.MapHeight - 1) y = data.MapHeight;
+                    preInstantiatedFields.Add((x, y));
+                    var offset = new Vector3(x * data.XOffset, 0, y * data.YOffset);
+                    SetState(new BaseGenerated(offset, (x, y), baseDetails.owner));
+                });
+        }
+    }
+}
