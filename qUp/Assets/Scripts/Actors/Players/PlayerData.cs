@@ -1,5 +1,6 @@
 using System;
-using Base;
+using System.Collections.Generic;
+using Actors.Units;
 using Base.Common;
 using Common;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace Actors.Players {
     public class PlayerData : BaseData {
         [SerializeField]
         private string playerName;
-        
+
         [SerializeField]
         private Color playerColor;
 
@@ -23,6 +24,10 @@ namespace Actors.Players {
         [SerializeField]
         private PlayerBaseInfo baseInfo;
 
+        [SerializeField]
+        private List<UnitData> unitDatas;
+
+
         public GridCoords BaseCoordinates => new GridCoords(baseInfo.x, baseInfo.y);
 
         public Color PlayerColor => playerColor;
@@ -30,5 +35,7 @@ namespace Actors.Players {
         public GameObject BasePrefab => baseInfo.prefab;
 
         public string PlayerName => playerName;
+
+        public List<UnitData> UnitDatas => unitDatas;
     }
 }

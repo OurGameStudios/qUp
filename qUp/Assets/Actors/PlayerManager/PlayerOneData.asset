@@ -19,3 +19,7 @@ MonoBehaviour:
       type: 3}
     x: 0
     y: 0
+  unitDatas:
+  - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}
+  - {fileID: 11400000, guid: 2349728b978dc7f48803b83fec3ae69f, type: 2}
+  - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}

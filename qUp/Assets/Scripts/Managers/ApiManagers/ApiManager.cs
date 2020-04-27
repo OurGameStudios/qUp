@@ -5,6 +5,8 @@ using Actors.Grid.Generator;
 using Actors.Players;
 using Actors.Tiles;
 using Base.Interfaces;
+using UI.HqUis;
+using UI.InfoUis.SpawnUis;
 
 namespace Managers.ApiManagers {
     public class ApiManager {
@@ -18,6 +20,8 @@ namespace Managers.ApiManagers {
                                                   {typeof(Player), new PlayerInteractor()},
                                                   {typeof(GridGenerator), new GridInteractor()},
                                                   {typeof(Tile), new FieldInteractor()},
+                                                  {typeof(HqUi), new HqUiInteractor()}, 
+                                                  {typeof(SpawnUi), new SpawnUiInteractor()}
                                               };
 
         public static void Expose<TExposed>(TExposed exposed) {
