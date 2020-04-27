@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
+using Actors.Units;
 using Base;
 using Base.Interfaces;
 using Common;
+using UnityEngine;
 
 namespace Actors.Players {
     public class PlayerInteractor : IBaseInteractor {
@@ -12,5 +15,7 @@ namespace Actors.Players {
         }
 
         public List<(GridCoords coords, Player owner)> GetPlayerBases() => players.ConvertAll(it => it.GetBaseInfo());
+
+        public List<UnitData> GetPlayerUnits() => players.First().UnitDatas;
     }
 }

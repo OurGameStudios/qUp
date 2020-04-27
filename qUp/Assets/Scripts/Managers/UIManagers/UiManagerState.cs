@@ -1,3 +1,4 @@
+using Actors.Units;
 using Base.Interfaces;
 
 namespace Managers.UIManagers {
@@ -8,6 +9,14 @@ namespace Managers.UIManagers {
 
         public BaseSelected(string name) {
             Name = name;
+        }
+        
+        public class UnitToSpawnSelected : UiManagerState {
+            public UnitData UnitData;
+
+            public UnitToSpawnSelected(UnitData unitData) {
+                UnitData = unitData;
+            }
         }
     }
 }

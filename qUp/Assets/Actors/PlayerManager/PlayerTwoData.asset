@@ -19,3 +19,7 @@ MonoBehaviour:
       type: 3}
     x: 9999
     y: 9999
+  unitDatas:
+  - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}
+  - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}
+  - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}

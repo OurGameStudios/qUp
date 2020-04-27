@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64adfa1ec453491a94335ae17aa01cd9, type: 3}
   m_Name: StandardUnit
   m_EditorClassIdentifier: 
+  prefab: {fileID: 6847302850095094860, guid: a4cedcd78364d6b439329d44945640ad, type: 3}
+  unitUiImage: {fileID: 21300000, guid: 1966f676694f2814c918c1088fe058e9, type: 3}
+  name: Soldier
+  cost: 200
   hp: 10
   attack: 5
   tickPoints: 3

@@ -7,6 +7,12 @@ namespace Actors.Units {
         public UnitData data;
         public UnitShader unitShader;
 
+        public static Unit Instantiate(UnitData data, Vector3 position) {
+            return Instantiate(data.prefab, position, Quaternion.identity)
+                                .GetComponent<UnitBehaviour>()
+                                .Controller;
+        }
+
         protected override void OnAwake() {
             Controller.Init(data);
             unitShader = new UnitShader(transform.GetComponent<MeshRenderer>().material);

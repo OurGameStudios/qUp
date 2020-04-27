@@ -1,11 +1,11 @@
-using Base;
+using System.Collections.Generic;
+using Actors.Units;
 using Base.MonoBehaviours;
 using Common;
 using UnityEngine;
 
 namespace Actors.Players {
     public class Player : BaseController<PlayerState> {
-
         protected override bool Expose => true;
 
         private PlayerData data;
@@ -15,7 +15,7 @@ namespace Actors.Players {
         }
 
         public (GridCoords coords, Player owner) GetBaseInfo() => (data.BaseCoordinates, this);
-        
+
         public GridCoords GetBaseCoordinates() => data.BaseCoordinates;
 
         public Color PlayerColor => data.PlayerColor;
@@ -23,5 +23,7 @@ namespace Actors.Players {
         public GameObject BasePrefab => data.BasePrefab;
 
         public string PlayerName => data.PlayerName;
+
+        public List<UnitData> UnitDatas => data.UnitDatas;
     }
 }
