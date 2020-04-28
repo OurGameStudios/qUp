@@ -10,6 +10,8 @@ namespace Wrappers.Shaders.Base {
         }
 
         protected void SetColor(int properyId, Color inColor) => material.SetColor(properyId, inColor);
+
+        protected Color GetColor(int propertyId) => material.GetColor(propertyId);
         
         protected void SetInt(int propertyId, int inInt) => material.SetInt(propertyId, inInt);
 

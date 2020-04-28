@@ -36,9 +36,9 @@ namespace Managers.GridManager {
             hqCoords = currentPlayer.GetBaseCoordinates();
             
             isHqSelected = true;
-            
+
             grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
-                .ForEach(it => it.Tile.SetMarkings(Color.white));
+                .ForEach(it => it.Tile.ApplyMarkings(Color.green));
         }
 
         public bool SpawningCanceled(GridCoords coords) {
@@ -48,7 +48,7 @@ namespace Managers.GridManager {
                 }
                 
                 grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
-                    .ForEach(it => it.Tile.DeactivateHighlight());
+                    .ForEach(it => it.Tile.ResetMarkings());
                 
                 isHqSelected = false;
             }

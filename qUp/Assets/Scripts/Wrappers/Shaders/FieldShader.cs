@@ -6,12 +6,14 @@ namespace Wrappers.Shaders {
     public class FieldShader : BaseShader {
         public FieldShader([NotNull] Material material) : base(material) {}
         
-        private static readonly int HighlightColor = Shader.PropertyToID("HighlightColor");
+        private static readonly int MarkingsColor = Shader.PropertyToID("MarkingsColor");
         private static readonly int HighlightOn = Shader.PropertyToID("HighlightOn");
         private static readonly int HighlightOnColor = Shader.PropertyToID("HighlightOnColor");
         private static readonly int HighlightStartTime = Shader.PropertyToID("HighlightStartTime");
         
-        public void SetHighlightColor(Color color) => SetColor(HighlightColor, color);
+        public void SetMarkingsColor(Color color) => SetColor(MarkingsColor, color);
+
+        public Color GetMarkingsColor() => GetColor(MarkingsColor);
 
         public void SetHighlightOn(bool isOn) => SetBool(HighlightOn, isOn);
 
