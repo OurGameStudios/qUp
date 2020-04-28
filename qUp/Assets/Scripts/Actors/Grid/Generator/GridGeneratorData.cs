@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Actors.Grid.GeneratorFunctions.Base;
 using Actors.Grid.SymmetryFunctions.Base;
-using Base;
 using Base.Common;
 using Common;
 using Extensions;
@@ -14,7 +13,7 @@ namespace Actors.Grid.Generator {
         [Serializable]
         public class PrediterminedFieldData {
             public string name;
-            public List<GameObject> Prefabs;
+            public List<GameObject> prefabs;
             public GridCoords coords;
         }
 

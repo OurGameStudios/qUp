@@ -17,10 +17,10 @@ namespace Actors.Grid.Generator {
 
         private readonly List<GridCoords> preInstantiatedFields = new List<GridCoords>();
 
-        public void Init(GridGeneratorData data) {
-            this.data = data;
-            symmetryFunction = data.SymmetryFunction;
-            symmetryFunction.SupplyGeneratorFunction(data.GeneratorFunction);
+        public void Init(GridGeneratorData inData) {
+            this.data = inData;
+            symmetryFunction = inData.SymmetryFunction;
+            symmetryFunction.SupplyGeneratorFunction(inData.GeneratorFunction);
         }
 
         public void GenerateGrid() {

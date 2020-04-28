@@ -10,9 +10,11 @@ namespace Actors.Tiles {
     public class Tile : BaseController<TileState>, IClickable {
         public GridCoords Coords { get; private set; }
         private Color markingsColor;
+        private Vector3 tilePosition;
 
-        public void Init(GridCoords coords) {
+        public void Init(GridCoords coords, Vector3 position) {
             Coords = coords;
+            tilePosition = position;
             GlobalManager.GetManager<GridManager>().RegisterTile(this);
         }
 
@@ -43,6 +45,10 @@ namespace Actors.Tiles {
 
         public void DeactivateHighlight() {
             SetState(new Idle());
+        }
+
+        public Vector3 ProvideTilePosition() {
+            return tilePosition;
         }
     }
 }

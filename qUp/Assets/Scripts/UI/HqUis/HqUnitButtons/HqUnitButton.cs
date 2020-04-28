@@ -23,7 +23,7 @@ namespace UI.HqUis.HqUnitButtons {
             }
         }
 
-        public void bind(Action onClick, string text, string cost) {
+        public void Bind(Action onClick, string text, string cost) {
             unitName.text = text;
             unitCost.text = cost;
             onButtonClick = onClick;

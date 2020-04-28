@@ -10,8 +10,8 @@ namespace Actors.Players {
 
         private PlayerData data;
 
-        public void Init(PlayerData data) {
-            this.data = data;
+        public void Init(PlayerData inData) {
+            data = inData;
         }
 
         public (GridCoords coords, Player owner) GetBaseInfo() => (data.BaseCoordinates, this);

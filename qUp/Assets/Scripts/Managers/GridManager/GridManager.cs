@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Actors.Hqs;
 using Actors.Tiles;
 using Actors.Units;
 using Base.Managers;
@@ -8,7 +7,6 @@ using Common;
 using Extensions;
 using Managers.GridManager.GridInfos;
 using Managers.PlayerManagers;
-using Managers.UIManagers;
 using UnityEngine;
 
 namespace Managers.GridManager {
@@ -41,19 +39,22 @@ namespace Managers.GridManager {
                 .ForEach(it => it.Tile.ApplyMarkings(Color.green));
         }
 
-        public bool SpawningCanceled(GridCoords coords) {
+        public bool HandleHq(GridCoords coords) {
             if (isHqSelected) {
-                if (coords.IsNeighbourOf(hqCoords)) {
-                    return false;
+                var isHqNeighbour = coords.IsNeighbourOf(hqCoords);
+                if (isHqNeighbour) {
+                    GlobalManager.GetManager<PlayerManager>().SpawnUnit(grid[coords].Tile.ProvideTilePosition());
                 }
                 
                 grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
                     .ForEach(it => it.Tile.ResetMarkings());
                 
                 isHqSelected = false;
+
+                return isHqNeighbour;
             }
 
-            return true;
+            return false;
         }
 
         public void SelectTile(GridCoords coords) {
@@ -64,7 +65,7 @@ namespace Managers.GridManager {
             // } else {
             //     SetState(new GroupSelected());
             // }
-            if (SpawningCanceled(coords)) {
+            if (!HandleHq(coords)) {
                 //temp
             }
         }
@@ -77,8 +78,8 @@ namespace Managers.GridManager {
             path = FindPath(path.Last().Coords, coords);
         }
 
-        private List<TileInfo> FindPath(GridCoords pathOrigin, GridCoords pathTarget) {
-            return grid.GetValues(pathOrigin.PathTo(pathTarget, maxCoords.y));
+        private List<TileInfo> FindPath(GridCoords inPathOrigin, GridCoords pathTarget) {
+            return grid.GetValues(inPathOrigin.PathTo(pathTarget, maxCoords.y));
         }
     }
 }

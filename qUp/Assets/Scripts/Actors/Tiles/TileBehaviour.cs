@@ -15,7 +15,7 @@ namespace Actors.Tiles {
         }
 
         private void Init(GridCoords coords) {
-            Controller.Init(coords);
+            Controller.Init(coords, transform.position);
         }
 
         protected override void OnStateHandler(TileState inState) {

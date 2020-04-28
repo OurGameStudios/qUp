@@ -10,6 +10,8 @@ namespace Managers.UIManagers {
         public HqUiInteractor hqUiInteractor = ApiManager.ProvideInteractor<HqUiInteractor>();
         public SpawnUiInteractor spawnUiInteractor = ApiManager.ProvideInteractor<SpawnUiInteractor>();
 
+        private UnitData selectedSpawnUnitData;
+
         public void SetSelectedItem(Hq hq) {
             SetState(new BaseSelected(hq.ToString()));
         }
@@ -21,6 +23,9 @@ namespace Managers.UIManagers {
         public void UnitToSpawnSelected(UnitData unitData) {
             spawnUiInteractor.ShowMenu(unitData.unitUiImage, unitData.name, unitData.cost, unitData.hp, unitData.attack, unitData.tickPoints);
             GlobalManager.GetManager<GridManager.GridManager>().UnitToSpawnSelected();
+            selectedSpawnUnitData = unitData;
         }
+
+        public UnitData ProvideSelectedUnit() => selectedSpawnUnitData;
     }
 }

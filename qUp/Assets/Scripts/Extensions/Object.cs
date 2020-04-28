@@ -19,7 +19,7 @@ namespace Extensions {
 
         public static bool IsNotDefault<T>(this T it) => !it.Equals(default);
 
-        public static T nullIfDefault<T>(this T it) where T : class => it.IsDefault() ? null : it;
+        public static T NullIfDefault<T>(this T it) where T : class => it.IsDefault() ? null : it;
 
         public static T ReturnOrRunIfNull<T>(this T it, Func<T> func) => it.IsNotNull() ? it : func.Invoke();
 

@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Extensions {
