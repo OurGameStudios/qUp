@@ -1,4 +1,4 @@
-using Actors.PlayerBases;
+using Actors.Hqs;
 using Actors.Units;
 using Base.Managers;
 using Managers.ApiManagers;
@@ -10,8 +10,8 @@ namespace Managers.UIManagers {
         public HqUiInteractor hqUiInteractor = ApiManager.ProvideInteractor<HqUiInteractor>();
         public SpawnUiInteractor spawnUiInteractor = ApiManager.ProvideInteractor<SpawnUiInteractor>();
 
-        public void SetSelectedItem(PlayerBase playerBase) {
-            SetState(new BaseSelected(playerBase.ToString()));
+        public void SetSelectedItem(Hq hq) {
+            SetState(new BaseSelected(hq.ToString()));
         }
 
         public void OnStart() {
@@ -20,6 +20,7 @@ namespace Managers.UIManagers {
 
         public void UnitToSpawnSelected(UnitData unitData) {
             spawnUiInteractor.ShowMenu(unitData.unitUiImage, unitData.name, unitData.cost, unitData.hp, unitData.attack, unitData.tickPoints);
+            GlobalManager.GetManager<GridManager.GridManager>().UnitToSpawnSelected();
         }
     }
 }

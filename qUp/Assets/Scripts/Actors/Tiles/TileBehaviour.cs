@@ -1,4 +1,3 @@
-using Base;
 using Base.MonoBehaviours;
 using Common;
 using UnityEngine;
@@ -7,6 +6,8 @@ using Wrappers.Shaders;
 namespace Actors.Tiles {
     public class TileBehaviour : BaseMonoBehaviour<Tile, TileState> {
         private FieldShader fieldShader;
+
+        private bool isHoverHighlightEnabled = true;
 
         public static void Instantiate(GameObject prefab, Transform parent, Vector3 position, GridCoords coords) {
             Instantiate(prefab, position, Quaternion.identity, parent)
@@ -18,9 +19,13 @@ namespace Actors.Tiles {
         }
 
         protected override void OnStateHandler(TileState inState) {
-            if (inState is Highlight highlight) {
+            if (inState is MarkingsChange markingsChangeState) {
+                fieldShader.SetMarkingsColor(markingsChangeState.MarkingColor);
+            } else if (inState is HighlightActivated) {
                 fieldShader.SetHighlightOn(true);
-                fieldShader.SetAnimationTimeOffset(-Time.timeSinceLevelLoad);
+            } else if (inState is Idle) {
+                fieldShader.SetHighlightOn(false);
+                isHoverHighlightEnabled = true;
             }
         }
 
@@ -29,16 +34,20 @@ namespace Actors.Tiles {
         }
 
         private void OnMouseEnter() {
-            fieldShader.SetHighlightOn(true);
-            fieldShader.SetAnimationTimeOffset(-Time.timeSinceLevelLoad);
+            if (isHoverHighlightEnabled) {
+                fieldShader.SetHighlightOn(true);
+            }
         }
 
         private void OnMouseExit() {
-            fieldShader.SetHighlightOn(false);
+            if (isHoverHighlightEnabled) {
+                fieldShader.SetHighlightOn(false);
+            }
         }
 
         private void Start() {
             fieldShader = new FieldShader(GetComponent<MeshRenderer>().material);
+            Controller.InitMarkings(fieldShader.GetMarkingsColor());
         }
     }
 }

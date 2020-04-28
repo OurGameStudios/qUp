@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Actors.PlayerBases;
+using Actors.Hqs;
 using Actors.Tiles;
 using Actors.Units;
 using Base.Managers;
@@ -23,31 +23,49 @@ namespace Managers.GridManager {
         private List<TileInfo> path;
 
         private Unit selectedUnit;
-        private PlayerBase selectedBase;
+        
+        private bool isHqSelected;
+        private GridCoords hqCoords;
 
         public void RegisterTile(Tile tile) {
             grid.Add(tile.Coords, new TileInfo(tile.Coords, tile));
         }
 
-        public void SelectBase(PlayerBase playerBase) {
+        public void UnitToSpawnSelected() {
             var currentPlayer = GlobalManager.GetManager<PlayerManager>().GetCurrentPlayer();
-            if (playerBase.Owner == currentPlayer) {
-                GlobalManager.GetManager<UiManager>().SetSelectedItem(playerBase);
-                selectedBase = playerBase;
-                SetState(new BaseSelected());
-                playerBase.SetSelected(true);
-                grid.GetValues(playerBase.Coords.GetNeighbourCoordsOfGrid(maxCoords))
-                    .ForEach(it => it.Tile.SetHighlighted(Color.white));
+            hqCoords = currentPlayer.GetBaseCoordinates();
+            
+            isHqSelected = true;
+
+            grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
+                .ForEach(it => it.Tile.ApplyMarkings(Color.green));
+        }
+
+        public bool SpawningCanceled(GridCoords coords) {
+            if (isHqSelected) {
+                if (coords.IsNeighbourOf(hqCoords)) {
+                    return false;
+                }
+                
+                grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
+                    .ForEach(it => it.Tile.ResetMarkings());
+                
+                isHqSelected = false;
             }
+
+            return true;
         }
 
         public void SelectTile(GridCoords coords) {
             pathOrigin = grid[coords];
-            var originUnits = pathOrigin.ticks.First().units;
-            if (originUnits.Count == 1) {
-                SetState(new UnitSelected(originUnits.First()));
-            } else {
-                SetState(new GroupSelected());
+            // var originUnits = pathOrigin.ticks.First().units;
+            // if (originUnits.Count == 1) {
+            //     SetState(new UnitSelected(originUnits.First()));
+            // } else {
+            //     SetState(new GroupSelected());
+            // }
+            if (SpawningCanceled(coords)) {
+                //temp
             }
         }
 
