@@ -1,4 +1,4 @@
-﻿using Actors.PlayerBases;
+﻿using Actors.Hqs;
 using Actors.Players;
 using Actors.Tiles;
 using Base;
@@ -47,7 +47,7 @@ namespace Actors.Grid.Generator {
         }
 
         private void OnBaseGenerate(Vector3 offset, GridCoords coords, Player owner) {
-            PlayerBaseBehaviour.Instantiate(transform.position + offset, coords, owner);
+            HqBehaviour.Instantiate(transform.position + offset, coords, owner);
         }
     }
 }

@@ -1,6 +1,7 @@
 using Base.Interfaces;
 using Base.MonoBehaviours;
 using Common;
+using Extensions;
 using Managers;
 using Managers.GridManager;
 using UnityEngine;
@@ -13,13 +14,21 @@ namespace Actors.Tiles {
             Coords = coords;
             GlobalManager.GetManager<GridManager>().RegisterTile(this);
         }
-        
+
         public void OnClick() {
-            
+            GlobalManager.GetManager<GridManager>().SelectTile(Coords);
         }
 
-        public void SetHighlighted(Color color) {
-            SetState(new Highlight(color));
+        public void SetMarkings(Color color) {
+            SetState(new MarkingsChange(color));
+        }
+
+        public void ActivateHighlight(Color color) {
+            SetState(new HighlightActivated(color.IsNull() ? Color.white : color));
+        }
+
+        public void DeactivateHighlight() {
+            SetState(new Idle());
         }
     }
 }
