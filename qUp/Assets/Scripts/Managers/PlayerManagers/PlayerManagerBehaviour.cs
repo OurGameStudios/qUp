@@ -7,7 +7,6 @@ namespace Managers.PlayerManagers {
         protected override void OnStateHandler(PlayerManagerState inState) { }
 
         protected override void OnAwake() {
-            
             Controller.Init(data);
         }
     }

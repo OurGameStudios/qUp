@@ -41,10 +41,10 @@ namespace Managers.GridManager {
                 .ForEach(it => it.Tile.ApplyMarkings(Color.green));
         }
 
-        public bool SpawningCanceled(GridCoords coords) {
+        public bool HandleHq(GridCoords coords) {
             if (isHqSelected) {
                 if (coords.IsNeighbourOf(hqCoords)) {
-                    return false;
+                    return true;
                 }
                 
                 grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
@@ -53,7 +53,7 @@ namespace Managers.GridManager {
                 isHqSelected = false;
             }
 
-            return true;
+            return false;
         }
 
         public void SelectTile(GridCoords coords) {
@@ -64,7 +64,7 @@ namespace Managers.GridManager {
             // } else {
             //     SetState(new GroupSelected());
             // }
-            if (SpawningCanceled(coords)) {
+            if (!HandleHq(coords)) {
                 //temp
             }
         }
