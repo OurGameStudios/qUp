@@ -43,14 +43,17 @@ namespace Managers.GridManager {
 
         public bool HandleHq(GridCoords coords) {
             if (isHqSelected) {
-                if (coords.IsNeighbourOf(hqCoords)) {
-                    return true;
+                var isHqNeighbour = coords.IsNeighbourOf(hqCoords);
+                if (isHqNeighbour) {
+                    GlobalManager.GetManager<PlayerManager>().SpawnUnit(grid[coords].Tile);
                 }
                 
                 grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
                     .ForEach(it => it.Tile.ResetMarkings());
                 
                 isHqSelected = false;
+
+                return isHqNeighbour;
             }
 
             return false;
