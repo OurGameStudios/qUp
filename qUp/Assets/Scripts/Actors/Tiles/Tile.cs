@@ -12,7 +12,6 @@ namespace Actors.Tiles {
         private Color markingsColor;
 
         public void Init(GridCoords coords) {
-            
             Coords = coords;
             GlobalManager.GetManager<GridManager>().RegisterTile(this);
         }

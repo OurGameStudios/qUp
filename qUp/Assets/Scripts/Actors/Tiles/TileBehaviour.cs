@@ -23,7 +23,6 @@ namespace Actors.Tiles {
                 fieldShader.SetMarkingsColor(markingsChangeState.MarkingColor);
             } else if (inState is HighlightActivated) {
                 fieldShader.SetHighlightOn(true);
-                fieldShader.SetAnimationTimeOffset(-Time.timeSinceLevelLoad);
             } else if (inState is Idle) {
                 fieldShader.SetHighlightOn(false);
                 isHoverHighlightEnabled = true;
@@ -37,7 +36,6 @@ namespace Actors.Tiles {
         private void OnMouseEnter() {
             if (isHoverHighlightEnabled) {
                 fieldShader.SetHighlightOn(true);
-                fieldShader.SetAnimationTimeOffset(-Time.timeSinceLevelLoad);
             }
         }
 

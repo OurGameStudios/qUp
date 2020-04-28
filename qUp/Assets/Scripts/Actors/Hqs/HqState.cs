@@ -3,9 +3,9 @@ using Base.Interfaces;
 namespace Actors.Hqs {
     public abstract class HqState : IState { }
 
-    public class BaseSelection : HqState {
+    public class HqSelection : HqState {
         public bool IsSelected { get; }
 
-        public BaseSelection(bool isSelected) => IsSelected = isSelected;
+        public HqSelection(bool isSelected) => IsSelected = isSelected;
     }
 }

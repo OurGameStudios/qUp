@@ -22,7 +22,7 @@ namespace Actors.Hqs {
         }
 
         protected override void OnStateHandler(HqState inBaseState) {
-            if (inBaseState is BaseSelection selectionState) {
+            if (inBaseState is HqSelection selectionState) {
                 playerBaseShader.SetIsSelected(selectionState.IsSelected);
             }
         }

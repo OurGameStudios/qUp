@@ -17,7 +17,7 @@ namespace Actors.Hqs {
         }
 
         public void SetSelected(bool isSelected) {
-            SetState(new BaseSelection(isSelected));
+            SetState(new HqSelection(isSelected));
         }
     }
 }

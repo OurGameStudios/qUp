@@ -15,13 +15,14 @@ namespace Wrappers.Shaders {
 
         public Color GetMarkingsColor() => GetColor(MarkingsColor);
 
-        public void SetHighlightOn(bool isOn) => SetBool(HighlightOn, isOn);
+        public void SetHighlightOn(bool isOn) {
+            SetBool(HighlightOn, isOn);
+            if (isOn) SetFloat(HighlightStartTime, -Time.timeSinceLevelLoad);
+        }
 
         public void SetHighlightOn(bool isOn, Color highlightColor) {
             SetBool(HighlightOn, isOn);
             SetColor(HighlightOnColor, highlightColor);
         }
-
-        public void SetAnimationTimeOffset(float timeOffset) => SetFloat(HighlightStartTime, timeOffset);
     }
 }
