@@ -8,10 +8,10 @@ namespace Actors.Units {
         private int currentHealth;
         private int currentTicks;
 
-        public void Init(UnitData data) {
-            this.data = data;
-            currentHealth = data.hp;
-            currentTicks = data.tickPoints;
+        public void Init(UnitData inData) {
+            this.data = inData;
+            currentHealth = inData.hp;
+            currentTicks = inData.tickPoints;
         }
         
         public void OnClick() {

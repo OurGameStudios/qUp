@@ -1,9 +1,6 @@
 using Actors.Players;
-using Base.Interfaces;
 using Base.MonoBehaviours;
 using Common;
-using Managers;
-using Managers.GridManager;
 
 namespace Actors.Hqs {
     public class Hq : BaseController<HqState> {

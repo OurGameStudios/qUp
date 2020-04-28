@@ -12,7 +12,7 @@ namespace Managers.UIManagers {
         }
         
         public class UnitToSpawnSelected : UiManagerState {
-            public UnitData UnitData;
+            public UnitData UnitData { get; }
 
             public UnitToSpawnSelected(UnitData unitData) {
                 UnitData = unitData;

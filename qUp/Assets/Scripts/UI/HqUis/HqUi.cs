@@ -10,10 +10,10 @@ namespace UI.HqUis {
 
         private List<UnitData> units;
 
-        public void Init(List<UnitData> units) {
-            this.units = units;
-            for (var i = 0; i < units.Count; i++) {
-                SetState(new UnitInfo(i, units[i].prefab, units[i].name, units[i].cost.ToString()));
+        public void Init(List<UnitData> inUnits) {
+            this.units = inUnits;
+            for (var i = 0; i < inUnits.Count; i++) {
+                SetState(new UnitInfo(i, inUnits[i].prefab, inUnits[i].name, inUnits[i].cost.ToString()));
             }
         }
 

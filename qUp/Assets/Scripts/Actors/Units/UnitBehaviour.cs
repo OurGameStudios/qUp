@@ -23,7 +23,7 @@ namespace Actors.Units {
         }
 
         protected override void OnStateHandler(UnitState inState) {
-            if (inState is UnitSelected unitSelected) {
+            if (inState is UnitSelected) {
                 OnSelected();
             }
         }

@@ -47,7 +47,7 @@ namespace Actors.Tiles {
             SetState(new Idle());
         }
 
-        public Vector3 ProvideSpawnPoint() {
+        public Vector3 ProvideTilePosition() {
             return tilePosition;
         }
     }

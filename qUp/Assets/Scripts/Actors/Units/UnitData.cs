@@ -13,6 +13,6 @@ namespace Actors.Units {
         public int hp = 10;
         public int attack = 5;
         public int tickPoints = 3;
-        public int Overpowers;
+        public int overpowers;
     }
 }

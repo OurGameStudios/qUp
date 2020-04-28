@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Actors.Hqs;
 using Actors.Tiles;
 using Actors.Units;
 using Base.Managers;
@@ -8,7 +7,6 @@ using Common;
 using Extensions;
 using Managers.GridManager.GridInfos;
 using Managers.PlayerManagers;
-using Managers.UIManagers;
 using UnityEngine;
 
 namespace Managers.GridManager {
@@ -45,7 +43,7 @@ namespace Managers.GridManager {
             if (isHqSelected) {
                 var isHqNeighbour = coords.IsNeighbourOf(hqCoords);
                 if (isHqNeighbour) {
-                    GlobalManager.GetManager<PlayerManager>().SpawnUnit(grid[coords].Tile);
+                    GlobalManager.GetManager<PlayerManager>().SpawnUnit(grid[coords].Tile.ProvideTilePosition());
                 }
                 
                 grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
@@ -80,8 +78,8 @@ namespace Managers.GridManager {
             path = FindPath(path.Last().Coords, coords);
         }
 
-        private List<TileInfo> FindPath(GridCoords pathOrigin, GridCoords pathTarget) {
-            return grid.GetValues(pathOrigin.PathTo(pathTarget, maxCoords.y));
+        private List<TileInfo> FindPath(GridCoords inPathOrigin, GridCoords pathTarget) {
+            return grid.GetValues(inPathOrigin.PathTo(pathTarget, maxCoords.y));
         }
     }
 }
