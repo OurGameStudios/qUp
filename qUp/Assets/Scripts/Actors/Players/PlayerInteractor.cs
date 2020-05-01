@@ -12,7 +12,7 @@ namespace Actors.Players {
             players.Add(exposed as Player);
         }
 
-        public List<(GridCoords coords, Player owner)> GetPlayerBases() => players.ConvertAll(it => it.GetBaseInfo());
+        public List<(GridCoords coords, Player owner)> GetPlayerHqs() => players.ConvertAll(it => it.GetHqInfo());
 
         public List<UnitData> GetPlayerUnits() => players.First().UnitDatas;
     }

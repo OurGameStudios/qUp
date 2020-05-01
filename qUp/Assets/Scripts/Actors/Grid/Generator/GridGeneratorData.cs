@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Actors.Grid.GeneratorFunctions.Base;
 using Actors.Grid.SymmetryFunctions.Base;
+using Actors.Grid.TerrainGeneratorFunctions.Base;
 using Base.Common;
 using Common;
 using Extensions;
@@ -19,8 +20,12 @@ namespace Actors.Grid.Generator {
 
         [SerializeField]
         private GeneratorFunction generatorFunction;
+
         [SerializeField]
         private SymmetryFunction symmetryFunction;
+
+        [SerializeField]
+        private TerrainGeneratorFunction terrainGeneratorFunction;
 
         public float fieldSize = 30;
 
@@ -44,5 +49,7 @@ namespace Actors.Grid.Generator {
         public GeneratorFunction GeneratorFunction => generatorFunction;
 
         public SymmetryFunction SymmetryFunction => symmetryFunction;
+
+        public TerrainGeneratorFunction TerrainGeneratorFunction => terrainGeneratorFunction;
     }
 }

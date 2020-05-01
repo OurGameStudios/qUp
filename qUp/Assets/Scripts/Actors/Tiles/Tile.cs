@@ -46,9 +46,13 @@ namespace Actors.Tiles {
         public void DeactivateHighlight() {
             SetState(new Idle());
         }
+        
+        private float noiseScale = 50f;
+        private float heightScale = 10f;
 
         public Vector3 ProvideTilePosition() {
-            return tilePosition;
+            var positionHeight = Mathf.PerlinNoise(tilePosition.x / noiseScale, tilePosition.z / noiseScale);
+            return tilePosition.AddY(positionHeight * heightScale);
         }
     }
 }
