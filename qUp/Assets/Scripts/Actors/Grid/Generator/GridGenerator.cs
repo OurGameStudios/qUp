@@ -12,19 +12,20 @@ namespace Actors.Grid.Generator {
 
         private GridGeneratorData data;
         private SymmetryFunction symmetryFunction;
-
         private readonly PlayerInteractor playerInteractor = ApiManager.ProvideInteractor<PlayerInteractor>();
 
         private readonly List<GridCoords> preInstantiatedFields = new List<GridCoords>();
 
         public void Init(GridGeneratorData inData) {
-            this.data = inData;
+            data = inData;
             symmetryFunction = inData.SymmetryFunction;
             symmetryFunction.SupplyGeneratorFunction(inData.GeneratorFunction);
         }
 
+        public float SampleTerrain(Vector2 position) => data.TerrainGeneratorFunction.SampleTerrain(position);
+
         public void GenerateGrid() {
-            CreatePlayerBases();
+            CreatePlayerHqs();
             SetState(new GridWorldSize(data.XOffset,
                 data.YOffset,
                 data.MapWidth * data.XOffset,
@@ -39,9 +40,9 @@ namespace Actors.Grid.Generator {
             }
         }
 
-        private void CreatePlayerBases() {
+        private void CreatePlayerHqs() {
             playerInteractor
-                .GetPlayerBases()
+                .GetPlayerHqs()
                 .ForEach(baseDetails => {
                     var x = baseDetails.coords.x;
                     var y = baseDetails.coords.y;

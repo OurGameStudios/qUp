@@ -1,5 +1,7 @@
+using System.Linq;
 using Base.MonoBehaviours;
 using UnityEngine;
+using UnityEngine.AI;
 using Wrappers.Shaders;
 
 namespace Actors.Units {
@@ -7,15 +9,25 @@ namespace Actors.Units {
         public UnitData data;
         public UnitShader unitShader;
 
+        public Vector3 moveTo;
+        public bool move;
+
         public static Unit Instantiate(UnitData data, Vector3 position) {
             return Instantiate(data.prefab, position, Quaternion.identity)
-                                .GetComponent<UnitBehaviour>()
-                                .Controller;
+                   .GetComponent<UnitBehaviour>()
+                   .Controller;
+        }
+
+        private void Update() {
+            if (move) {
+                GetComponent<NavMeshAgent>()?.SetDestination(moveTo);
+                move = false;
+            }
         }
 
         protected override void OnAwake() {
             Controller.Init(data);
-            unitShader = new UnitShader(transform.GetComponent<MeshRenderer>().material);
+            // unitShader = new UnitShader(transform.GetComponent<MeshRenderer>().material);
         }
 
         private void OnMouseDown() {

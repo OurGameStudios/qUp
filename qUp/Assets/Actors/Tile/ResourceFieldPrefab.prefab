@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4677865671271912430}
   - component: {fileID: 4498233090833432168}
   - component: {fileID: 6587577431041879083}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ResourceFieldPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,6 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07296f2d9c2f07445ac4014e14a9d715, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  decorator: {fileID: 8047332168934952001, guid: 7cb9c562e0a56a44586373950a10fb7c,
+    type: 3}
+  bakeNavMesh: 0
 --- !u!64 &4677865671271912430
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -57,9 +60,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 5062246478642505140, guid: bdcd4ea41e8fb43a7b482674be62ea3a, type: 3}
+  m_Mesh: {fileID: 5062246478642505140, guid: 7ec47650da6cb674280ee09693b2925f, type: 3}
 --- !u!23 &4498233090833432168
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -106,4 +109,4 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4902512073435256882}
-  m_Mesh: {fileID: 5062246478642505140, guid: bdcd4ea41e8fb43a7b482674be62ea3a, type: 3}
+  m_Mesh: {fileID: 5062246478642505140, guid: 7ec47650da6cb674280ee09693b2925f, type: 3}

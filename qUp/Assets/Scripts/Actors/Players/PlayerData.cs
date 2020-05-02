@@ -4,6 +4,7 @@ using Actors.Units;
 using Base.Common;
 using Common;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Actors.Players {
     [CreateAssetMenu(fileName = "Player/Player", menuName = "PlayerData")]
@@ -15,24 +16,25 @@ namespace Actors.Players {
         private Color playerColor;
 
         [Serializable]
-        private class PlayerBaseInfo {
+        private class PlayerHqInfo {
             public GameObject prefab;
             public int x;
             public int y;
         }
 
+        [FormerlySerializedAs("baseInfo")]
         [SerializeField]
-        private PlayerBaseInfo baseInfo;
+        private PlayerHqInfo hqInfo;
 
         [SerializeField]
         private List<UnitData> unitDatas;
 
 
-        public GridCoords BaseCoordinates => new GridCoords(baseInfo.x, baseInfo.y);
+        public GridCoords HqCoordinates => new GridCoords(hqInfo.x, hqInfo.y);
 
         public Color PlayerColor => playerColor;
 
-        public GameObject BasePrefab => baseInfo.prefab;
+        public GameObject HqPrefab => hqInfo.prefab;
 
         public string PlayerName => playerName;
 

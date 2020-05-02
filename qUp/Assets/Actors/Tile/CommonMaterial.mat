@@ -21,7 +21,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - Texture2D_169D9D20:
-        m_Texture: {fileID: 2800000, guid: 62a27f659d4004ce9992f5da8591ac67, type: 3}
+        m_Texture: {fileID: 2800000, guid: c07c42188678dac4698182d6dffeea3e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -54,6 +54,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_102C5011_Out_0:
+        m_Texture: {fileID: 2800000, guid: 067eb909daa2b664f8367c69b4cb2335, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -95,6 +99,7 @@ Material:
     - Color_F603D475: {r: 0.872, g: 0.872, b: 0.872, a: 1}
     - HighlightColor: {r: 0.59, g: 0.59, b: 0.59, a: 1}
     - HighlightOnColor: {r: 1, g: 1, b: 1, a: 1}
+    - MarkingsColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - TextureColor: {r: 0.735849, g: 0.4681058, b: 0.2742079, a: 1}
     - Vector3_DF2C8660: {r: 1, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}

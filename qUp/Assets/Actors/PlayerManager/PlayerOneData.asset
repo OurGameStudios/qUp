@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: Player one
   playerColor: {r: 0, g: 0.099416494, b: 1, a: 1}
-  baseInfo:
+  hqInfo:
     prefab: {fileID: 6702595339068739768, guid: 21ff650d4aaa24855bb2c02222623e0c,
       type: 3}
     x: 0
@@ -22,4 +22,3 @@ MonoBehaviour:
   unitDatas:
   - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}
   - {fileID: 11400000, guid: 2349728b978dc7f48803b83fec3ae69f, type: 2}
-  - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}
