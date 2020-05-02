@@ -9,7 +9,7 @@ namespace Actors.Units {
         private int currentTicks;
 
         public void Init(UnitData inData) {
-            this.data = inData;
+            data = inData;
             currentHealth = inData.hp;
             currentTicks = inData.tickPoints;
         }

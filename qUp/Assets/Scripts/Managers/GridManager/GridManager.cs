@@ -15,7 +15,7 @@ namespace Managers.GridManager {
 
         private Dictionary<GridCoords, TileInfo> grid = new Dictionary<GridCoords, TileInfo>();
         private Dictionary<TileInfo, GridCoords> conflictedTiles = new Dictionary<TileInfo, GridCoords>();
-        private Dictionary<Unit, TileTickInfo> unitPath = new Dictionary<Unit, TileTickInfo>();
+        private Dictionary<Unit, List<TileTickInfo>> unitPath = new Dictionary<Unit, List<TileTickInfo>>();
 
         private TileInfo pathOrigin;
         private List<TileInfo> path;
@@ -27,6 +27,15 @@ namespace Managers.GridManager {
 
         public void RegisterTile(Tile tile) {
             grid.Add(tile.Coords, new TileInfo(tile.Coords, tile));
+        }
+
+        public void RegisterUnit(Unit unit, GridCoords coords) {
+            var ticks = grid[coords].ticks;
+            //Testing purposes
+            // ticks.ForEach(it => it.units.Add(unit));
+            ticks[0].units.Add(unit);
+
+            unitPath.Add(unit, new List<TileTickInfo>{ticks[0]});
         }
 
         public void UnitToSpawnSelected() {
@@ -68,6 +77,12 @@ namespace Managers.GridManager {
             if (!HandleHq(coords)) {
                 //temp
             }
+        }
+
+        public void SelectUnit(Unit unit) {
+            selectedUnit = unit;
+            
+            
         }
 
         public void SelectPath(GridCoords coords) {

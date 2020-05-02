@@ -12,6 +12,8 @@ namespace Managers.GridManager.GridInfos {
         public TileInfo(GridCoords coords, Tile tile) {
             Coords = coords;
             Tile = tile;
+            
+            ticks = new List<TileTickInfo>{new TileTickInfo(), new TileTickInfo(), new TileTickInfo(), new TileTickInfo(), new TileTickInfo()};
         }
     }
 }

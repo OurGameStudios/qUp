@@ -1,4 +1,3 @@
-using System.Linq;
 using Base.MonoBehaviours;
 using UnityEngine;
 using UnityEngine.AI;
@@ -27,7 +26,7 @@ namespace Actors.Units {
 
         protected override void OnAwake() {
             Controller.Init(data);
-            // unitShader = new UnitShader(transform.GetComponent<MeshRenderer>().material);
+            unitShader = new UnitShader(transform.GetComponent<MeshRenderer>().material);
         }
 
         private void OnMouseDown() {
