@@ -29,7 +29,6 @@ namespace Actors.Grid.TerrainGeneratorFunctions {
             } else {
                 if (generatedSeed.IsNull()) {
                     generatedSeed = Mathf.RoundToInt(Time.time);
-                    
                 }
                 var random = new Random(generatedSeed ?? 0).Next(-10000, 10000);
                 offsetCoordinates += new Vector2(random, random);
