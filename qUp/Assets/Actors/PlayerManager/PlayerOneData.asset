@@ -22,5 +22,3 @@ MonoBehaviour:
   unitDatas:
   - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}
   - {fileID: 11400000, guid: 2349728b978dc7f48803b83fec3ae69f, type: 2}
-  - {fileID: 11400000, guid: 1a790fd478e32e84291ca2f29fa92da6, type: 2}
-  - {fileID: 11400000, guid: b5f3f5ab8ddc32d4b8bf21ee41b26d4b, type: 2}

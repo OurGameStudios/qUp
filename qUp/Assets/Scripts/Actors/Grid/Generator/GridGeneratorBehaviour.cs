@@ -6,6 +6,7 @@ using Actors.Players;
 using Actors.Tiles;
 using Base.MonoBehaviours;
 using Common;
+using Extensions;
 using Managers;
 using Managers.CameraManagers;
 using UnityEngine;
@@ -75,7 +76,8 @@ namespace Actors.Grid.Generator {
         }
 
         private void OnBaseGenerate(Vector3 offset, GridCoords coords, Player owner) {
-            HqBehaviour.Instantiate(transform.position + offset, coords, owner);
+            var position = transform.position;
+            HqBehaviour.Instantiate(position + offset, coords, owner, data.TerrainGeneratorFunction.SampleTerrain);
         }
     }
 }
