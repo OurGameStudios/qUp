@@ -9,6 +9,7 @@ using Common;
 using Managers;
 using Managers.CameraManagers;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Actors.Grid.Generator {
     public class GridGeneratorBehaviour : BaseMonoBehaviour<GridGenerator, GridGeneratorState> {

@@ -1,5 +1,7 @@
 using System;
 using Base.Interfaces;
+using Extensions;
+using UnityEngine;
 
 namespace Actors.Grid.Generator {
     public class GridInteractor : IBaseInteractor {
@@ -9,5 +11,7 @@ namespace Actors.Grid.Generator {
         public void AddExposed<TExposed>(TExposed exposed) {
             generator = new WeakReference<GridGenerator>(exposed as GridGenerator);
         }
+
+        public float? SampleTerrain(Vector2 position) => generator.GetOrNull()?.SampleTerrain(position);
     }
 }

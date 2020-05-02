@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7014093897807515558}
   - component: {fileID: 5607935013435441769}
   - component: {fileID: 2403428772999113791}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CommonFieldPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,6 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07296f2d9c2f07445ac4014e14a9d715, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  decorator: {fileID: 8047332168934952001, guid: 7cb9c562e0a56a44586373950a10fb7c,
+    type: 3}
+  bakeNavMesh: 0
 --- !u!64 &7014093897807515558
 MeshCollider:
   m_ObjectHideFlags: 0

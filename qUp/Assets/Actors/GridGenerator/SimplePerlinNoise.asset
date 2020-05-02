@@ -16,5 +16,5 @@ MonoBehaviour:
   seed: 0
   density: 50
   amplitude: 10
-  widthHeightRatio: 1
+  widthHeightRatio: 2
   offset: {x: 0, y: 0}

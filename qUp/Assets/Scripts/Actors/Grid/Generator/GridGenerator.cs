@@ -22,6 +22,8 @@ namespace Actors.Grid.Generator {
             symmetryFunction.SupplyGeneratorFunction(inData.GeneratorFunction);
         }
 
+        public float SampleTerrain(Vector2 position) => data.TerrainGeneratorFunction.SampleTerrain(position);
+
         public void GenerateGrid() {
             CreatePlayerHqs();
             SetState(new GridWorldSize(data.XOffset,

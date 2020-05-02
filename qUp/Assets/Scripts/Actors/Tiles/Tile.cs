@@ -1,13 +1,18 @@
+using Actors.Grid.Generator;
 using Base.Interfaces;
 using Base.MonoBehaviours;
 using Common;
 using Extensions;
 using Managers;
+using Managers.ApiManagers;
 using Managers.GridManager;
 using UnityEngine;
 
 namespace Actors.Tiles {
     public class Tile : BaseController<TileState>, IClickable {
+
+        private GridInteractor gridInteractor = ApiManager.ProvideInteractor<GridInteractor>();
+        
         public GridCoords Coords { get; private set; }
         private Color markingsColor;
         private Vector3 tilePosition;
@@ -46,13 +51,10 @@ namespace Actors.Tiles {
         public void DeactivateHighlight() {
             SetState(new Idle());
         }
-        
-        private float noiseScale = 50f;
-        private float heightScale = 10f;
 
         public Vector3 ProvideTilePosition() {
-            var positionHeight = Mathf.PerlinNoise(tilePosition.x / noiseScale, tilePosition.z / noiseScale);
-            return tilePosition.AddY(positionHeight * heightScale);
+            var positionHeight = gridInteractor.SampleTerrain(new Vector2(tilePosition.x, tilePosition.z)) ?? 0f;
+            return new Vector3(tilePosition.x, positionHeight, tilePosition.z);
         }
     }
 }

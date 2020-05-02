@@ -1,5 +1,8 @@
-﻿using Actors.Grid.TerrainGeneratorFunctions.Base;
+﻿using System;
+using Actors.Grid.TerrainGeneratorFunctions.Base;
+using Extensions;
 using UnityEngine;
+using UnityEngine.AI;
 using Random = System.Random;
 
 namespace Actors.Grid.TerrainGeneratorFunctions {
@@ -15,14 +18,20 @@ namespace Actors.Grid.TerrainGeneratorFunctions {
 
         public Vector2 offset = Vector2.zero;
 
-
+        [NonSerialized]
+        private int? generatedSeed = null;
+        
         public override float SampleTerrain(Vector2 worldCoordinates) {
             var offsetCoordinates = worldCoordinates + offset;
             if (seed != 0) {
                 var random = new Random(seed).Next(-10000, 10000);
                 offsetCoordinates += new Vector2(random, random);
             } else {
-                var random = new Random(Mathf.RoundToInt(Time.time)).Next(-10000, 10000);
+                if (generatedSeed.IsNull()) {
+                    generatedSeed = Mathf.RoundToInt(Time.time);
+                    
+                }
+                var random = new Random(generatedSeed ?? 0).Next(-10000, 10000);
                 offsetCoordinates += new Vector2(random, random);
             }
 

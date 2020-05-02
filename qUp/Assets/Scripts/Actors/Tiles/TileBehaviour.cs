@@ -11,7 +11,8 @@ namespace Actors.Tiles {
 
         private bool isHoverHighlightEnabled = true;
 
-        public static void Instantiate(GameObject prefab, Transform parent, Vector3 position, GridCoords coords, Func<Vector2, float> sampleHeight) {
+        public static void Instantiate(GameObject prefab, Transform parent, Vector3 position, GridCoords coords,
+                                       Func<Vector2, float> sampleHeight) {
             Instantiate(prefab, position, Quaternion.identity, parent)
                 .GetComponent<TileBehaviour>()
                 .Init(coords, sampleHeight);
@@ -27,9 +28,10 @@ namespace Actors.Tiles {
             var vertices = mesh.vertices;
             for (var i = 0; i < vertices.Length; i++) {
                 var vertexWorldPosition = transform.TransformPoint(vertices[i]);
-                var vertexHeight = sampleHeight.Invoke(vertexWorldPosition);
+                var vertexHeight = sampleHeight.Invoke(vertexWorldPosition.ToVectro2XZ());
                 vertices[i] = vertices[i].AddY(vertexHeight);
             }
+
             mesh.vertices = vertices;
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
