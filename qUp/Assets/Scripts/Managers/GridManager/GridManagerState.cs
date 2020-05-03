@@ -1,7 +1,13 @@
+using System.Collections.Generic;
 using Base.Interfaces;
+using UnityEngine;
 
 namespace Managers.GridManager {
     public abstract class GridManagerState : IState { }
+
+    public class Test : GridManagerState {
+        public List<(Vector3 position, string text)> gizmos;
+    }
 
     public class UnitSelected : GridManagerState {
         public object Unit { get; }

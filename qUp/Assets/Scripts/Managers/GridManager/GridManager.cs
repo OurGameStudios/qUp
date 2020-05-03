@@ -16,8 +16,7 @@ namespace Managers.GridManager {
         private Dictionary<GridCoords, TileInfo> grid = new Dictionary<GridCoords, TileInfo>();
         private Dictionary<TileInfo, GridCoords> conflictedTiles = new Dictionary<TileInfo, GridCoords>();
         private Dictionary<Unit, List<TileTickInfo>> unitPath = new Dictionary<Unit, List<TileTickInfo>>();
-
-        private TileInfo pathOrigin;
+        
         private List<TileInfo> path;
 
         private Unit selectedUnit;
@@ -67,7 +66,7 @@ namespace Managers.GridManager {
         }
 
         public void SelectTile(GridCoords coords) {
-            pathOrigin = grid[coords];
+            // pathOrigin = grid[coords];
             // var originUnits = pathOrigin.ticks.First().units;
             // if (originUnits.Count == 1) {
             //     SetState(new UnitSelected(originUnits.First()));
@@ -82,18 +81,31 @@ namespace Managers.GridManager {
         public void SelectUnit(Unit unit) {
             selectedUnit = unit;
 
-            var originCoords = unitPath[unit][0].TileInfo.Coords;
-            var pathRange = Pathfinder.FindRangeWeighted(originCoords, unit.data.tickPoints);
+            var pathOrigin = unitPath[unit][0];
+            var pathRange = Pathfinder.FindRangeV2(pathOrigin, unit.data.tickPoints, grid);
 
-            foreach (var coords in pathRange.Values) {
-                if (coords != null) {
-                    grid.GetOrNull((GridCoords)coords)?.Tile.ActivateHighlight(Color.red);
-                }
+            foreach (var tileTickInfoPair in pathRange) {
+                tileTickInfoPair.Key?.TileInfo.Tile.ActivateHighlight(Color.red);
             }
+            
+            SetState(new Test().Also(it=> {
+                it.gizmos = pathRange.Keys.ToList()
+                                     .ConvertAll(value =>
+                                         (value?.TileInfo.Tile.ProvideTilePosition() ?? Vector3.zero, value?.Tick.ToString() ?? "fail"));
+            }));
+
+            // var originCoords = unitPath[unit][0].TileInfo.Coords;
+            // var pathRange = Pathfinder.FindRangeWeighted(originCoords, unit.data.tickPoints);
+            //
+            // foreach (var coords in pathRange.Values) {
+            //     if (coords != null) {
+            //         grid.GetOrNull((GridCoords)coords)?.Tile.ActivateHighlight(Color.red);
+            //     }
+            // }
         }
 
         public void SelectPath(GridCoords coords) {
-            path = FindPath(pathOrigin.Coords, coords);
+            // path = FindPath(pathOrigin.Coords, coords);
         }
 
         public void SelectFixedPath(GridCoords coords) {

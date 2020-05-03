@@ -43,8 +43,8 @@ namespace Actors.Tiles {
         protected override void OnStateHandler(TileState inState) {
             if (inState is MarkingsChange markingsChangeState) {
                 fieldShader.SetMarkingsColor(markingsChangeState.MarkingColor);
-            } else if (inState is HighlightActivated) {
-                fieldShader.SetHighlightOn(true);
+            } else if (inState is HighlightActivated highlightActivatedState) {
+                fieldShader.SetHighlightOn(true, highlightActivatedState.HighlightColor);
             } else if (inState is Idle) {
                 fieldShader.SetHighlightOn(false);
                 isHoverHighlightEnabled = true;

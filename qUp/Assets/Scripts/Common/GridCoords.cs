@@ -262,7 +262,7 @@ namespace Common {
         /// <param name="coords">Coordinates in center of range.</param>
         /// <param name="range">Maximum distance from coords. Center of range.</param>
         /// <returns>List of coordinates in range with center coordinate.</returns>
-        public List<GridCoords> RangeOf(GridCoords coords, int range) {
+        public static List<GridCoords> RangeOf(GridCoords coords, int range) {
             var coordsInRange = new List<GridCoords>();
             for (var rx = coords.x - range; rx <= coords.x + range; rx++) {
                 for (var ry = coords.x - 2 * range + Math.Abs(coords.x - rx);
@@ -274,6 +274,8 @@ namespace Common {
 
             return coordsInRange;
         }
+
+        public List<GridCoords> InRange(int range) => RangeOf(this, range);
 
         /// <summary>
         /// Count of Coordinates in range.

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Extensions {
     public static class DictionaryExtensions {
@@ -21,5 +22,8 @@ namespace Extensions {
 
         public static List<V> GetValues<K, V>(this Dictionary<K, V> dictionary, List<K> keys) where V : class =>
             keys.FindAll(dictionary.ContainsKey).ConvertAll(key => dictionary[key]);
+
+        public static IEnumerable<KeyValuePair<K, V>> GetPairsFromKeys<K, V>(this Dictionary<K, V> dictionary, List<K> keys) =>
+            dictionary.Where(pair => keys.Contains(pair.Key));
     }
 }
