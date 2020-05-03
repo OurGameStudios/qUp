@@ -1,5 +1,6 @@
 using Actors.Units;
 using Base.Managers;
+using Common;
 using UnityEngine;
 
 namespace Managers.PlayerManagers {
@@ -8,7 +9,7 @@ namespace Managers.PlayerManagers {
 
         protected override void OnStateHandler(PlayerManagerState inState) {
             if (inState is SpawnUnit spawnUnitState) {
-                SpawnUnit(spawnUnitState.SpawnPosition, spawnUnitState.UnitData);
+                SpawnUnit(spawnUnitState.SpawnPosition, spawnUnitState.UnitData, spawnUnitState.Coords);
             }
         }
 
@@ -16,8 +17,9 @@ namespace Managers.PlayerManagers {
             Controller.Init(data);
         }
 
-        private void SpawnUnit(Vector3 position, UnitData unitData) {
-            UnitBehaviour.Instantiate(unitData, position);
+        private void SpawnUnit(Vector3 position, UnitData unitData, GridCoords coords) {
+            var unit = UnitBehaviour.Instantiate(unitData, position);
+            unit.SetCoords(coords);
         }
     }
 }

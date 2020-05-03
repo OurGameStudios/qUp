@@ -124,11 +124,11 @@ namespace Common {
         /// </summary>
         /// <param name="maxGridCoords">Maximum coordinates in grid.</param>
         /// <returns>Neighbour coordinates</returns>
-        public List<GridCoords> GetNeighbourCoordsOfGrid(GridCoords coords, GridCoords maxGridCoords) {
+        public static List<GridCoords> GetNeighbourCoordsOfGrid(GridCoords coords, GridCoords maxGridCoords) {
             var neighbourCoords = new List<GridCoords>();
             for (var i = 0; i < 6; i++) {
                 var possibleNeighbour = NeighbourTransforms[i] + coords;
-                if (possibleNeighbour < Origin || possibleNeighbour > maxGridCoords) {
+                if ((possibleNeighbour.x >= Origin.x && possibleNeighbour.y >= Origin.y) && possibleNeighbour < maxGridCoords) {
                     neighbourCoords.Add(possibleNeighbour);
                 }
             }

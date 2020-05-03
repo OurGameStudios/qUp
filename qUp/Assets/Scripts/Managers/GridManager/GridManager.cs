@@ -52,7 +52,7 @@ namespace Managers.GridManager {
             if (isHqSelected) {
                 var isHqNeighbour = coords.IsNeighbourOf(hqCoords);
                 if (isHqNeighbour) {
-                    GlobalManager.GetManager<PlayerManager>().SpawnUnit(grid[coords].Tile.ProvideTilePosition());
+                    GlobalManager.GetManager<PlayerManager>().SpawnUnit(grid[coords].Tile.ProvideTilePosition(), coords);
                 }
                 
                 grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
@@ -81,8 +81,15 @@ namespace Managers.GridManager {
 
         public void SelectUnit(Unit unit) {
             selectedUnit = unit;
-            
-            
+
+            var originCoords = unitPath[unit][0].TileInfo.Coords;
+            var pathRange = Pathfinder.FindRangeWeighted(originCoords, unit.data.tickPoints);
+
+            foreach (var coords in pathRange.Values) {
+                if (coords != null) {
+                    grid.GetOrNull((GridCoords)coords)?.Tile.ActivateHighlight(Color.red);
+                }
+            }
         }
 
         public void SelectPath(GridCoords coords) {

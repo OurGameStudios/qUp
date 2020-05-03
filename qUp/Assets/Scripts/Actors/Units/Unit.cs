@@ -1,5 +1,8 @@
 using Base.Interfaces;
 using Base.MonoBehaviours;
+using Common;
+using Managers;
+using Managers.GridManager;
 
 namespace Actors.Units {
     public class Unit : BaseController<UnitState>, IClickable {
@@ -8,6 +11,8 @@ namespace Actors.Units {
         private int currentHealth;
         private int currentTicks;
 
+        private GridCoords coords;
+
         public void Init(UnitData inData) {
             data = inData;
             currentHealth = inData.hp;
@@ -15,7 +20,13 @@ namespace Actors.Units {
         }
         
         public void OnClick() {
+            GlobalManager.GetManager<GridManager>().SelectUnit(this);
             SetState(new UnitSelected());
+        }
+
+        public void SetCoords(GridCoords inCoords) {
+            this.coords = inCoords;
+            GlobalManager.GetManager<GridManager>().RegisterUnit(this, inCoords);
         }
     }
 }

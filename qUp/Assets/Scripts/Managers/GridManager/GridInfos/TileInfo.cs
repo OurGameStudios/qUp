@@ -13,7 +13,7 @@ namespace Managers.GridManager.GridInfos {
             Coords = coords;
             Tile = tile;
             
-            ticks = new List<TileTickInfo>{new TileTickInfo(), new TileTickInfo(), new TileTickInfo(), new TileTickInfo(), new TileTickInfo()};
+            ticks = new List<TileTickInfo>{new TileTickInfo(this), new TileTickInfo(this), new TileTickInfo(this), new TileTickInfo(this), new TileTickInfo(this)};
         }
     }
 }

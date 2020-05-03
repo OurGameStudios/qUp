@@ -3,8 +3,13 @@ using Actors.Units;
 
 namespace Managers.GridManager.GridInfos {
     public class TileTickInfo {
-        public TileInfo tileInfo;
-        public List<Unit> units;
-        public List<Unit> owerflownUnits;
+
+        public TileTickInfo(TileInfo tileInfo) {
+            TileInfo = tileInfo;
+        }
+        
+        public TileInfo TileInfo { get; }
+        public List<Unit> units = new List<Unit>();
+        public List<Unit> owerflownUnits = new List<Unit>();
     }
 }
