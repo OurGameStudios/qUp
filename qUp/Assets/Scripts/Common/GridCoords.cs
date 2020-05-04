@@ -39,12 +39,14 @@ namespace Common {
         /// Coordinates of (-1, -1) or lower left tile from origin.
         /// </summary>
         public static GridCoords DownLeft { get; } = new GridCoords(-1, -1);
+        
+        private static List<GridCoords> neighbourTransforms = new List<GridCoords> {Up, Down, UpRight, UpLeft, DownRight, DownLeft};
 
         /// <summary>
         /// Transform coordinates that are needed to find all neighbours; 
         /// </summary>
         /// <returns>Up, Down, UpRight, UpLeft, DownRight, DownLeft</returns>
-        public static List<GridCoords> NeighbourTransforms => new List<GridCoords> {Up, Down, UpRight, UpLeft, DownRight, DownLeft};
+        public static List<GridCoords> NeighbourTransforms => neighbourTransforms;
 
         /// <summary>
         /// GridCoords X coordinate on grid
@@ -110,7 +112,7 @@ namespace Common {
         /// </summary>
         /// <returns>Neighbour coordinates</returns>
         public static List<GridCoords> GetNeighbourCoords(GridCoords coords) {
-            var neighbourCoords = new List<GridCoords>(6);
+            var neighbourCoords = new List<GridCoords>();
             for (var i = 0; i < 6; i++) {
                 neighbourCoords.Add(NeighbourTransforms[i] + coords);
             }
@@ -359,10 +361,13 @@ namespace Common {
 
         // Equals
         public static bool operator ==(GridCoords a, GridCoords b) => a.x == b.x && a.y == b.y;
+        
+        public static bool operator ==(GridCoords a, (int x, int y) b) => a.x == b.x && a.y == b.y;
 
         //UnEquals
         public static bool operator !=(GridCoords a, GridCoords b) => a.x != b.x && a.y != b.y;
-
+        
+        public static bool operator !=(GridCoords a, (int x, int y) b) => a.x != b.x && a.y != b.y;
         public static bool operator <(GridCoords a, GridCoords b) => a.x < b.x || a.y < b.y;
 
         public static bool operator >(GridCoords a, GridCoords b) => a.x > b.x || a.y > b.y;

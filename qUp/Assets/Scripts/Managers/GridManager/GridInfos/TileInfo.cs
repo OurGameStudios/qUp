@@ -1,9 +1,13 @@
 using System.Collections.Generic;
 using Actors.Tiles;
 using Common;
+using Priority_Queue;
 
 namespace Managers.GridManager.GridInfos {
-    public class TileInfo {
+    public class TileInfo : IFastPriorityQueueNode {
+        public float Priority { get; set; }
+        public int QueueIndex { get; set; }
+
         public GridCoords Coords { get; }
         public Tile Tile { get; }
         public List<TileTickInfo> ticks;

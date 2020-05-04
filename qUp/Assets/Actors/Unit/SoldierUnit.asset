@@ -18,5 +18,5 @@ MonoBehaviour:
   cost: 200
   hp: 10
   attack: 5
-  tickPoints: 3
+  tickPoints: 5
   overpowers: 0

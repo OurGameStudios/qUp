@@ -2,6 +2,7 @@ using Base.Interfaces;
 using Extensions;
 using Managers.CameraManagers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Managers.InputManagers {
     public class InputManagerBehaviour : MonoBehaviour, IManager {
@@ -46,11 +47,10 @@ namespace Managers.InputManagers {
             mouseWorldPosition = null;
         }
 
-        private Vector3 GetMouseWorldPosition() {
-            if (mouseWorldPosition == null) {
-                var mousePosition = Input.mousePosition;
-                mouseWorldPosition = mainCamera.ScreenToWorldPoint(mousePosition.AddZ(mainCamera.nearClipPlane));
-            }
+        private Vector3 GetMouseWorldPosition() { ;
+            if (mouseWorldPosition != null) return (Vector3) mouseWorldPosition;
+            var mousePosition = Input.mousePosition;
+            mouseWorldPosition = mainCamera.ScreenToWorldPoint(mousePosition.AddZ(mainCamera.nearClipPlane));
 
             return (Vector3) mouseWorldPosition;
         }

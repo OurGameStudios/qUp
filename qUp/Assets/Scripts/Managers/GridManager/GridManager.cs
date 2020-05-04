@@ -24,6 +24,15 @@ namespace Managers.GridManager {
         private bool isHqSelected;
         private GridCoords hqCoords;
 
+        private Dictionary<TileTickInfo, TileTickInfo> pathsInRange;
+
+        private Pathfinder pathfinder;
+
+        public GridManager() {
+            pathsInRange = new Dictionary<TileTickInfo, TileTickInfo>(StaticPathfinder.MAX_NUM_OF_TILES);
+            pathfinder = new Pathfinder();
+        }
+
         public void RegisterTile(Tile tile) {
             grid.Add(tile.Coords, new TileInfo(tile.Coords, tile));
         }
@@ -43,7 +52,7 @@ namespace Managers.GridManager {
             
             isHqSelected = true;
 
-            grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
+            grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords)).ToList()
                 .ForEach(it => it.Tile.ApplyMarkings(Color.green));
         }
 
@@ -54,7 +63,7 @@ namespace Managers.GridManager {
                     GlobalManager.GetManager<PlayerManager>().SpawnUnit(grid[coords].Tile.ProvideTilePosition(), coords);
                 }
                 
-                grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
+                grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords)).ToList()
                     .ForEach(it => it.Tile.ResetMarkings());
                 
                 isHqSelected = false;
@@ -73,6 +82,10 @@ namespace Managers.GridManager {
             // } else {
             //     SetState(new GroupSelected());
             // }
+            for (int i = 0; i < 5; i++) {
+                grid[coords].ticks[i].units.AddRange(new []{new Unit(), new Unit(), new Unit()});
+            }
+
             if (!HandleHq(coords)) {
                 //temp
             }
@@ -82,17 +95,17 @@ namespace Managers.GridManager {
             selectedUnit = unit;
 
             var pathOrigin = unitPath[unit][0];
-            var pathRange = Pathfinder.FindRangeV2(pathOrigin, unit.data.tickPoints, grid);
+            pathfinder.FindRange(pathOrigin, 1, unit.data.tickPoints, grid, ref pathsInRange);
 
-            foreach (var tileTickInfoPair in pathRange) {
+            foreach (var tileTickInfoPair in pathsInRange) {
                 tileTickInfoPair.Key?.TileInfo.Tile.ActivateHighlight(Color.red);
             }
-            
-            SetState(new Test().Also(it=> {
-                it.gizmos = pathRange.Keys.ToList()
-                                     .ConvertAll(value =>
-                                         (value?.TileInfo.Tile.ProvideTilePosition() ?? Vector3.zero, value?.Tick.ToString() ?? "fail"));
-            }));
+
+            // SetState(new Test().Also(it=> {
+            //     it.gizmos = pathRange.Keys.ToList()
+            //                          .ConvertAll(value =>
+            //                              (value?.TileInfo.Tile.ProvideTilePosition() ?? Vector3.zero, value?.Tick.ToString() ?? "fail"));
+            // }));
 
             // var originCoords = unitPath[unit][0].TileInfo.Coords;
             // var pathRange = Pathfinder.FindRangeWeighted(originCoords, unit.data.tickPoints);
@@ -102,18 +115,6 @@ namespace Managers.GridManager {
             //         grid.GetOrNull((GridCoords)coords)?.Tile.ActivateHighlight(Color.red);
             //     }
             // }
-        }
-
-        public void SelectPath(GridCoords coords) {
-            // path = FindPath(pathOrigin.Coords, coords);
-        }
-
-        public void SelectFixedPath(GridCoords coords) {
-            path = FindPath(path.Last().Coords, coords);
-        }
-
-        private List<TileInfo> FindPath(GridCoords inPathOrigin, GridCoords pathTarget) {
-            return grid.GetValues(inPathOrigin.PathTo(pathTarget, maxCoords.y));
         }
     }
 }

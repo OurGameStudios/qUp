@@ -1,183 +1,130 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Actors.Tiles;
 using Extensions;
 using Managers.GridManager.GridInfos;
+using Priority_Queue;
 
 namespace Common {
-    public static class Pathfinder {
-        public static Dictionary<GridCoords, GridCoords?> FindRangeWeighted(GridCoords start, int movementRange) {
-            var frontier = new PriorityQueue<int, GridCoords>();
-            var cameFrom = new Dictionary<GridCoords, GridCoords?>();
-            var costSoFar = new Dictionary<GridCoords, int>();
+    public class Pathfinder {
+        public const int MAX_NUM_OF_UNITS = 3;
+        public const int MAX_NUM_OF_TILES = 200;
 
-            frontier.Add(0, start);
-            cameFrom.Add(start, null);
-            costSoFar.Add(start, 0);
+        private GridCoords neighbourCoords;
+        private readonly FastPriorityQueue<TileInfo> frontier;
+        private readonly Dictionary<TileInfo, TileInfo> cameFrom;
+        private readonly Dictionary<TileInfo, int> costSoFar;
+        private readonly List<TileInfo> neighbours;
+        private TileInfo start;
 
-            var safetyBreak = 100;
-            var safetyCount = 0;
+        private readonly FastPriorityQueue<TileInfo> forgottenTilesFast;
 
-            while (!frontier.IsEmpty() && safetyCount < safetyBreak) {
-                var current = frontier.Pop();
-
-                //If point found break
-
-                //get neighbour cords should return coords with matching tick point// max should be max of grid
-                var neighbours = current.GetNeighbourCoords();
-                foreach (var next in neighbours) {
-                    var newCost = costSoFar[current] + 1;
-
-                    //newCost > movementRange to limit the range of search
-                    if (costSoFar.ContainsKey(next))
-                        if (newCost >= costSoFar[next])
-                            continue;
-                    if (newCost > movementRange + 1) continue;
-                    costSoFar.AddOrUpdate(next, newCost);
-                    frontier.Add(newCost, next);
-                    cameFrom.AddOrUpdate(next, current);
-                }
-
-                safetyCount++;
-            }
-
-            return cameFrom;
+        public Pathfinder(int maxNumOfTiles = MAX_NUM_OF_TILES) {
+            neighbourCoords = new GridCoords();
+            frontier = new FastPriorityQueue<TileInfo>(maxNumOfTiles);
+            cameFrom = new Dictionary<TileInfo, TileInfo>(maxNumOfTiles);
+            costSoFar = new Dictionary<TileInfo, int>(maxNumOfTiles);
+            neighbours = new List<TileInfo>(6);
+            forgottenTilesFast = new FastPriorityQueue<TileInfo>(maxNumOfTiles);
+            start = null;
         }
 
-        public static Dictionary<TileTickInfo, TileTickInfo> FindRange(TileTickInfo start, int movementRange,
-                                                                       Dictionary<GridCoords, TileInfo> graph) {
-            var frontier = new PriorityQueue<int, TileTickInfo>();
-            var cameFrom = new Dictionary<TileTickInfo, TileTickInfo>();
-            var costSoFar = new Dictionary<TileTickInfo, int>();
-            var visited = new HashSet<TileInfo> {start.TileInfo};
+        public void FindRange(
+            TileTickInfo start, 
+            int numOfUnits, 
+            int movementRange, 
+            IReadOnlyDictionary<GridCoords, TileInfo> graph,
+            ref Dictionary<TileTickInfo, TileTickInfo> pathsInRange) {
+            this.start = start.TileInfo;
+            frontier.Clear();
+            cameFrom.Clear();
+            costSoFar.Clear();
+            forgottenTilesFast.Clear();
+            pathsInRange.Clear();
 
-            frontier.Add(0, start);
-            cameFrom.Add(start, null);
-            costSoFar.Add(start, 0);
+            frontier.Enqueue(this.start, 0);
+            cameFrom.Add(this.start, null);
+            costSoFar.Add(this.start, start.Tick);
 
-            var safetyBreak = 100;
-            var safetyCount = 0;
+            while (frontier.Count != 0) {
+                var current = frontier.Dequeue();
 
-            while (!frontier.IsEmpty() && safetyCount < safetyBreak) {
-                var current = frontier.Pop();
-
-                var neighbours = GetNeighbours(current, graph);
+                GetNeighbours(current, graph, costSoFar[current], movementRange, numOfUnits);
                 foreach (var next in neighbours) {
                     var newCost = costSoFar[current] + 1;
 
                     if (costSoFar.ContainsKey(next))
                         if (newCost >= costSoFar[next])
                             continue;
-                    if (newCost > movementRange + 1) continue;
-                    if (visited.Contains(next.TileInfo)) continue;
-
-                    costSoFar.AddOrUpdate(next, newCost);
-                    frontier.Add(newCost, next);
-                    cameFrom.AddOrUpdate(next, current);
-                    visited.Add(next.TileInfo);
+                    
+                    if (forgottenTilesFast.Contains(next))
+                        forgottenTilesFast.Remove(next);
+                    costSoFar[next] = newCost;
+                    frontier.Enqueue(next, newCost);
+                    cameFrom[next] = current;
                 }
-
-                safetyCount++;
             }
 
-            return cameFrom;
-        }
-
-        private static List<TileTickInfo> GetNeighbours(TileTickInfo tileTickInfo,
-                                                        Dictionary<GridCoords, TileInfo> graph) {
-            var tileCords = tileTickInfo.TileInfo.Coords;
-            var nextTick = tileTickInfo.Tick + 1;
-
-            var tileNeighbours = tileCords.GetNeighbourCoords();
-            var tileNeighboursInfos = graph.GetValues(tileNeighbours);
-            return tileNeighboursInfos.FindAll(it => it.ticks.Count > nextTick)
-                                      .ConvertAll(it => it.ticks[nextTick])
-                                      .FindAll(it => !it.IsOverflown);
-        }
-
-
-        public static Dictionary<TileTickInfo, TileTickInfo> FindRangeV2(
-            TileTickInfo start, int movementRange, Dictionary<GridCoords, TileInfo> graph) {
-
-            var frontier = new PriorityQueue<int, TileInfo>();
-            var cameFrom = new Dictionary<TileInfo, TileInfo>();
-            var costSoFar = new Dictionary<TileInfo, int>();
-
-            frontier.Add(0, start.TileInfo);
-            cameFrom.Add(start.TileInfo, null);
-            costSoFar.Add(start.TileInfo, start.Tick);
-
-            var safetyBreak = 100;
-            var safetyCount = 0;
-
-            while (!frontier.IsEmpty() && safetyCount < safetyBreak) {
-                var current = frontier.Pop();
-
-                var neighbours = GetNeighboursV2(current, graph, costSoFar[current]);
-                foreach (var next in neighbours) {
-                    var newCost = costSoFar[current] + 1;
-
-                    if (costSoFar.ContainsKey(next))
-                        if (newCost >= costSoFar[next])
-                            continue;
-                    if (newCost > movementRange) continue;
-
-                    costSoFar.AddOrUpdate(next, newCost);
-                    frontier.Add(newCost, next);
-                    cameFrom.AddOrUpdate(next, current);
-                }
-
-
-                safetyCount++;
+            AddForgottenTiles(numOfUnits, movementRange, graph);
+            foreach (var pair in cameFrom) {
+                pathsInRange.Add(pair.Key.ticks[costSoFar[pair.Key]],
+                    pair.Value?.ticks[costSoFar[pair.Value]]);
             }
-
-            AddForgottenTiles(start, movementRange, cameFrom, costSoFar, graph);
-
-            return cameFrom.ToDictionary(pair => pair.Key.ticks[costSoFar[pair.Key]], pair => pair.Value?.ticks[costSoFar[pair.Value]]);
         }
 
-        private static List<TileInfo> GetNeighboursV2(TileInfo currentTileInfo, Dictionary<GridCoords, TileInfo> graph,
-                                                      int currentTick) {
+        private void GetNeighbours(TileInfo currentTileInfo,
+                                          IReadOnlyDictionary<GridCoords, TileInfo> graph,
+                                          int currentTick, int movementRange, int numOfUnits) {
+            
             var tileCords = currentTileInfo.Tile.Coords;
             var nextTick = currentTick + 1;
 
-            var tileNeighbours = tileCords.GetNeighbourCoords();
-            var tileNeighboursInfos = graph.GetValues(tileNeighbours);
+            neighbours.Clear();
 
-            return tileNeighboursInfos.FindAll(it => {
-                if (it.ticks.Count > nextTick) return !it.ticks[nextTick].IsOverflown;
-                return false;
-            });
+            foreach (var neighbourTransform in GridCoords.NeighbourTransforms) {
+                neighbourCoords.SetCoords(tileCords.x + neighbourTransform.x, tileCords.y + neighbourTransform.y);
+                if (!graph.TryGetValue(neighbourCoords, out var tile)) continue;
+                if (tile.ticks.Count <= nextTick || nextTick >= movementRange) continue;
+                if (MAX_NUM_OF_UNITS - tile.ticks[nextTick].units.Count > numOfUnits) {
+                    neighbours.Add(tile);
+                } else if (tile != start && !forgottenTilesFast.Contains(tile)) {
+                    forgottenTilesFast.Enqueue(tile, tile.Coords.DistanceTo(start.Coords));
+                }
+            }
         }
 
-        private static void AddForgottenTiles(
-            TileTickInfo start, int movementRange, Dictionary<TileInfo, TileInfo> cameFrom, Dictionary<TileInfo, int> costSoFar,Dictionary<GridCoords, TileInfo> graph) {
+        private void AddForgottenTiles(int numOfUnits, int movementRange,
+                                              IReadOnlyDictionary<GridCoords, TileInfo> graph) {
+            if (forgottenTilesFast.Count == 0) return;
 
-            var tilesInRange = start.TileInfo.Coords.InRange(movementRange - start.Tick);
+            TileInfo bestNeighbour = null;
+            var minTileCost = 100;
+            TileInfo forgottenTile;
 
-            var tilesNotInPath = tilesInRange.Where(tile => cameFrom.Keys.FirstOrDefault(it => it.Coords == tile) == null)?.ToList();
+            while (forgottenTilesFast.Count > 0) {
+                forgottenTile = forgottenTilesFast.Dequeue(); 
+                for (var i = 0; i < 6; i++) {
+                    neighbourCoords.SetCoords(forgottenTile.Coords.x + GridCoords.NeighbourTransforms[i].x,
+                        forgottenTile.Coords.y + GridCoords.NeighbourTransforms[i].y);
+                    if (!graph.TryGetValue(neighbourCoords, out var tile)) continue;
+                    if (!costSoFar.TryGetValue(tile, out var tileCost)) continue;
+                    if (tileCost >= minTileCost) continue;
+                    bestNeighbour = tile;
+                    minTileCost = tileCost;
+                }
 
-            var forgottenTiles = tilesNotInPath.FindAll(graph.ContainsKey)
-                                               .ConvertAll(it => graph[it])
-                                               .FindAll(it => it.ticks.TrueForAll(tick => !tick.IsOverflown));
-            if (forgottenTiles.IsEmpty()) return;
-
-            var orderForgottenTiles = forgottenTiles.OrderBy(it => it.Coords.DistanceTo(start.TileInfo.Coords));
-
-            foreach (var forgottenTile in orderForgottenTiles) {
-                var neighbourCoords = forgottenTile.Coords.GetNeighbourCoords();
-
-                var neighbours = graph.GetValues(neighbourCoords);
-                var neighbourCosts = costSoFar.GetPairsFromKeys(neighbours).ToList();
-                if (neighbourCosts.IsEmpty()) continue;
-
-                var bestNeighbour = neighbourCosts.OrderBy(pair => pair.Value).FirstOrDefault().Key;
                 if (bestNeighbour.IsNull()) continue;
 
-                var firstAvailableTick = forgottenTile.ticks.First(tick => !tick.IsOverflown);
+                foreach (var tick in forgottenTile.ticks) {
+                    if (MAX_NUM_OF_UNITS - tick.units.Count > numOfUnits && tick.Tick > costSoFar[bestNeighbour] &&
+                        tick.Tick <= movementRange) {
+                        costSoFar.Add(forgottenTile, tick.Tick);
+                        cameFrom.Add(forgottenTile, bestNeighbour);
+                        break;
+                    }
+                }
 
-                costSoFar.Add(forgottenTile, firstAvailableTick.Tick);
-                cameFrom.Add(forgottenTile, bestNeighbour);
+                bestNeighbour = null;
+                minTileCost = 0;
+                
             }
         }
     }

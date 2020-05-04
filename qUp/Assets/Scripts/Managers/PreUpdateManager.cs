@@ -11,7 +11,7 @@ namespace Managers {
         }
 
         private void Update() { Preupdate?.Invoke(); }
-
+        
         public void SubscribeToPreUpdate(Action onPreUpdate) => Preupdate += onPreUpdate;
     }
 }

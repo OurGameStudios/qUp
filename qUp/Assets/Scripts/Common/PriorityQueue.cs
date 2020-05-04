@@ -10,8 +10,7 @@ namespace Common {
         private SortedList<TPriority, Queue<TValue>> sortedList = new SortedList<TPriority, Queue<TValue>>();
 
         public void Add(TPriority priority, TValue value) {
-            Queue<TValue> queue; 
-            sortedList.TryGetValue(priority, out queue);
+            sortedList.TryGetValue(priority, out var queue);
             if (queue != null) {
                 queue.Enqueue(value);
             } else {

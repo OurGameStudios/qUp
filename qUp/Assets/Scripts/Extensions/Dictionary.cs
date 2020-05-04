@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Common;
 
 namespace Extensions {
     public static class DictionaryExtensions {
@@ -20,10 +21,14 @@ namespace Extensions {
             return dictionary.ContainsKey(key) ? dictionary[key] : elseValue;
         }
 
-        public static List<V> GetValues<K, V>(this Dictionary<K, V> dictionary, List<K> keys) where V : class =>
-            keys.FindAll(dictionary.ContainsKey).ConvertAll(key => dictionary[key]);
+        public static IEnumerable<V> GetValues<K, V>(this Dictionary<K, V> dictionary, IEnumerable<K> keys) where V : class =>
+            keys.Intersect(dictionary.Keys).Select(key => dictionary[key]);
 
         public static IEnumerable<KeyValuePair<K, V>> GetPairsFromKeys<K, V>(this Dictionary<K, V> dictionary, List<K> keys) =>
             dictionary.Where(pair => keys.Contains(pair.Key));
+
+        public static object GetValues(this Dictionary<object, object> dictionary, GridCoords[] tileNeighbours) {
+            throw new System.NotImplementedException();
+        }
     }
 }
