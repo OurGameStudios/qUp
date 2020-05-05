@@ -9,18 +9,6 @@ namespace Managers.GridManager {
         private List<(Vector3, string)> gizmos = new List<(Vector3, string)>();
         
         protected override void OnStateHandler(GridManagerState inState) {
-            if (inState is Test test) {
-                gizmos = test.gizmos;
-
-            }
         }
-        #if UNITY_EDITOR
-
-        private void OnDrawGizmos() {
-            foreach (var gizmo in gizmos) {
-                Handles.Label(gizmo.Item1.AddY(10), gizmo.Item2);
-            }
-        }
-        #endif
     }
 }

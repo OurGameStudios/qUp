@@ -39,8 +39,8 @@ namespace Managers.GridManager {
 
         public void RegisterUnit(Unit unit, GridCoords coords) {
             var ticks = grid[coords].ticks;
-            //Testing purposes
-            // ticks.ForEach(it => it.units.Add(unit));
+            
+            //TODO spawned unit should take 5 ticks
             ticks[0].units.Add(unit);
 
             unitPath.Add(unit, new List<TileTickInfo>{ticks[0]});
@@ -82,9 +82,6 @@ namespace Managers.GridManager {
             // } else {
             //     SetState(new GroupSelected());
             // }
-            for (int i = 0; i < 5; i++) {
-                grid[coords].ticks[i].units.AddRange(new []{new Unit(), new Unit(), new Unit()});
-            }
 
             if (!HandleHq(coords)) {
                 //temp
@@ -100,21 +97,6 @@ namespace Managers.GridManager {
             foreach (var tileTickInfoPair in pathsInRange) {
                 tileTickInfoPair.Key?.TileInfo.Tile.ActivateHighlight(Color.red);
             }
-
-            // SetState(new Test().Also(it=> {
-            //     it.gizmos = pathRange.Keys.ToList()
-            //                          .ConvertAll(value =>
-            //                              (value?.TileInfo.Tile.ProvideTilePosition() ?? Vector3.zero, value?.Tick.ToString() ?? "fail"));
-            // }));
-
-            // var originCoords = unitPath[unit][0].TileInfo.Coords;
-            // var pathRange = Pathfinder.FindRangeWeighted(originCoords, unit.data.tickPoints);
-            //
-            // foreach (var coords in pathRange.Values) {
-            //     if (coords != null) {
-            //         grid.GetOrNull((GridCoords)coords)?.Tile.ActivateHighlight(Color.red);
-            //     }
-            // }
         }
     }
 }
