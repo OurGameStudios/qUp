@@ -5,7 +5,7 @@ using Common;
 using UnityEngine;
 
 namespace Actors.Players {
-    public class Player : BaseController<PlayerState> {
+    public class Player : BaseController<IPlayerState> {
         protected override bool Expose => true;
 
         private PlayerData data;

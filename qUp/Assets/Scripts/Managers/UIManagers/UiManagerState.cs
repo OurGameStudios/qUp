@@ -1,22 +1,7 @@
-using Actors.Units;
 using Base.Interfaces;
 
 namespace Managers.UIManagers {
-    public class UiManagerState : IState { }
-
-    public class BaseSelected : UiManagerState {
-        public string Name { get; }
-
-        public BaseSelected(string name) {
-            Name = name;
-        }
-        
-        public class UnitToSpawnSelected : UiManagerState {
-            public UnitData UnitData { get; }
-
-            public UnitToSpawnSelected(UnitData unitData) {
-                UnitData = unitData;
-            }
-        }
-    }
+    
+    public interface IUiManagerState : IState { }
+    public class UiManagerState<TState> : State<TState>, IUiManagerState where TState : class, new() { }
 }

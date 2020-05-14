@@ -7,7 +7,7 @@ using UnityEngine;
 using Wrappers.Shaders;
 
 namespace Actors.Hqs {
-    public class HqBehaviour : BaseMonoBehaviour<Hq, HqState> {
+    public class HqBehaviour : BaseMonoBehaviour<Hq, IHqState> {
         private PlayerBaseShader playerBaseShader;
 
         public static void Instantiate(Vector3 position, GridCoords coords, Player owner, Func<Vector2, float> sampleHeight) {
@@ -24,7 +24,7 @@ namespace Actors.Hqs {
             DisplaceVertices(sampleHeight);
         }
 
-        protected override void OnStateHandler(HqState inBaseState) {
+        protected override void OnStateHandler(IHqState inBaseState) {
             if (inBaseState is HqSelection selectionState) {
                 playerBaseShader.SetIsSelected(selectionState.IsSelected);
             }

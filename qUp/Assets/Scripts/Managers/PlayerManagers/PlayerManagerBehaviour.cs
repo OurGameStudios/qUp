@@ -4,11 +4,11 @@ using Common;
 using UnityEngine;
 
 namespace Managers.PlayerManagers {
-    public class PlayerManagerBehaviour : BaseManagerMonoBehaviour<PlayerManager, PlayerManagerState> {
+    public class PlayerManagerBehaviour : BaseManagerMonoBehaviour<PlayerManager, IPlayerManagerState> {
         public PlayerManagerData data;
 
-        protected override void OnStateHandler(PlayerManagerState inState) {
-            if (inState is SpawnUnit spawnUnitState) {
+        protected override void OnStateHandler(IPlayerManagerState inState) {
+            if (inState is UnitSpawn spawnUnitState) {
                 SpawnUnit(spawnUnitState.SpawnPosition, spawnUnitState.UnitData, spawnUnitState.Coords);
             }
         }

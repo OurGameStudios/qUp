@@ -1,0 +1,90 @@
+{
+    "name": "Inputs",
+    "maps": [
+        {
+            "name": "NoUnitSelected",
+            "id": "ba4eb942-9cf5-45f2-9cc8-3ee68d593025",
+            "actions": [
+                {
+                    "name": "SelectUnit",
+                    "type": "Button",
+                    "id": "9473a6b6-c5b7-4c71-b469-dfd5edcba00e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "CameraRotation",
+                    "type": "Button",
+                    "id": "d6037670-8c32-46af-959c-9f3fe1f7248b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Hold"
+                },
+                {
+                    "name": "CameraZoom",
+                    "type": "Value",
+                    "id": "f3fecfb8-e708-48be-823d-4bc17f86bc9b",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "CameraPan",
+                    "type": "Value",
+                    "id": "e43c5166-5909-4152-876d-0ca8a29b6441",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "13d7d1ed-310f-458b-9a00-e8068c769610",
+                    "path": "<Mouse>/press",
+                    "interactions": "Press",
+                    "processors": "Normalize(max=1)",
+                    "groups": "",
+                    "action": "SelectUnit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b54dabff-4d3e-4e28-ab40-5f3a8fda6ebd",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "Normalize(min=-1,max=1)",
+                    "groups": "",
+                    "action": "CameraZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "453d2945-cfbc-4bc7-8c62-555332070b90",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraPan",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "066caa6c-d949-43bc-9981-df2ff7f60382",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraRotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

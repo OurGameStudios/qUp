@@ -2,27 +2,34 @@
 using UnityEngine;
 
 namespace UI.InfoUis.SpawnUis {
-    public abstract class SpawnUiState : IState { }
+    
+    public interface ISpawnUiState : IState { }
+    public abstract class SpawnUiState<TState> : State<TState>, ISpawnUiState where TState : class, new() { }
 
-    public class SetUI : SpawnUiState{
-        public Sprite UnitSprite { get; }
-        public string UnitName { get; }
-        public string UnitCost { get; }
-        public string UnitHp { get; }
-        public string UnitAtt { get; }
-        public string UnitTp { get; }
+    public class SetUI : SpawnUiState<SetUI> {
+        public Sprite UnitSprite { get; private set; }
+        public string UnitName { get; private set; }
+        public string UnitCost { get; private set; }
+        public string UnitHp { get; private set; }
+        public string UnitAtt { get; private set; }
+        public string UnitTp { get; private set; }
 
-        public SetUI(Sprite sprite, string unitName, string unitCost, string unitHp, string unitAtt, string unitTp) {
-            UnitSprite = sprite;
-            UnitName = unitName;
-            UnitCost = unitCost;
-            UnitHp = unitHp;
-            UnitAtt = unitAtt;
-            UnitTp = unitTp;
+        public static SetUI Where(Sprite sprite, string unitName, string unitCost, string unitHp, string unitAtt, string unitTp) {
+            Cache.UnitSprite = sprite;
+            Cache.UnitName = unitName;
+            Cache.UnitCost = unitCost;
+            Cache.UnitHp = unitHp;
+            Cache.UnitAtt = unitAtt;
+            Cache.UnitTp = unitTp;
+            return Cache;
         }
     }
 
-    public class ShowUI : SpawnUiState { }
+    public class ShowUI : SpawnUiState<ShowUI> {
+        public static ShowUI Where() => Cache;
+    }
 
-    public class HideUI : SpawnUiState { }
+    public class HideUI : SpawnUiState<HideUI> {
+        public static HideUI Where() => Cache;
+    }
 }

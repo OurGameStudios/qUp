@@ -1,5 +1,6 @@
 using Base.Interfaces;
 
 namespace Actors.Players {
-    public abstract class PlayerState : IState{ }
+    public interface IPlayerState : IState { }
+    public abstract class PlayerState<TState> : State<TState>, IPlayerState where TState : class, new() { }
 }

@@ -1,11 +1,17 @@
 using Base.Interfaces;
 using Base.MonoBehaviours;
 using Common;
-using Managers;
-using Managers.GridManager;
+using Managers.ApiManagers;
+using Managers.GridManagers;
+using Managers.InputManagers;
+using UnityEngine;
 
 namespace Actors.Units {
-    public class Unit : BaseController<UnitState>, IClickable {
+    public class Unit : BaseController<IUnitState>, IClickable {
+        
+        private readonly InputManagerBehaviour inputManager = ApiManager.ProvideManager<InputManagerBehaviour>();
+        private readonly GridManager gridManager = ApiManager.ProvideManager<GridManager>();
+        
         public UnitData data;
         
         private int currentHealth;
@@ -13,20 +19,21 @@ namespace Actors.Units {
 
         private GridCoords coords;
 
-        public void Init(UnitData inData) {
+        public void Init(UnitData inData, GameObject gameObject) {
             data = inData;
             currentHealth = inData.hp;
             currentTicks = inData.tickPoints;
+            inputManager.RegisterClickable(this, gameObject);
         }
         
         public void OnClick() {
-            GlobalManager.GetManager<GridManager>().SelectUnit(this);
-            SetState(new UnitSelected());
+            gridManager.SelectUnit(this);
+            SetState(UnitSelected.Where());
         }
 
         public void SetCoords(GridCoords inCoords) {
             this.coords = inCoords;
-            GlobalManager.GetManager<GridManager>().RegisterUnit(this, inCoords);
+            gridManager.RegisterUnit(this, inCoords);
         }
     }
 }

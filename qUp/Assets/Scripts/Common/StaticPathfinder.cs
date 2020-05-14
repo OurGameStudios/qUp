@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Extensions;
-using Managers.GridManager.GridInfos;
+using Managers.GridManagers.GridInfos;
 using Priority_Queue;
 using UnityEngine;
 

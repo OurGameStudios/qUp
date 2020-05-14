@@ -2,7 +2,7 @@ using System;
 using Base.Scripts;
 
 namespace Actors.Players {
-    public class PlayerScript : BaseScript<Player, PlayerState> {
+    public class PlayerScript : BaseScript<Player, IPlayerState> {
 
         public PlayerData data;
         
@@ -10,7 +10,7 @@ namespace Actors.Players {
             Controller.Init(data);
         }
 
-        protected override void OnStateHandler(PlayerState inState) {
+        protected override void OnStateHandler(IPlayerState inState) {
             throw new NotImplementedException();
         }
 

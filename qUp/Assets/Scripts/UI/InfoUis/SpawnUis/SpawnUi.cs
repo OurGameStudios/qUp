@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace UI.InfoUis.SpawnUis {
-    public class SpawnUi : BaseController<SpawnUiState> {
+    public class SpawnUi : BaseController<ISpawnUiState> {
         protected override bool Expose => true;
 
         private Sprite unitSprite;
@@ -16,9 +16,9 @@ namespace UI.InfoUis.SpawnUis {
   
         public void ShowMenu(Sprite sprite, string name, int cost, int hp, int att, int tp) {
             if (unitSprite != sprite || unitName != name || unitCost != cost || unitHp != hp || unitAtt != att || unitTp != tp) {
-                SetState(new SetUI(sprite, name, cost.ToString(), hp.ToString(), att.ToString(), tp.ToString()));
+                SetState(SetUI.Where(sprite, name, cost.ToString(), hp.ToString(), att.ToString(), tp.ToString()));
             } else {
-                SetState(new ShowUI());
+                SetState(ShowUI.Where());
             }
             unitSprite = sprite;
             unitName = name;

@@ -19,10 +19,12 @@ namespace Managers.ApiManagers {
             new Dictionary<Type, IBaseInteractor> {
                                                   {typeof(Player), new PlayerInteractor()},
                                                   {typeof(GridGenerator), new GridInteractor()},
-                                                  {typeof(Tile), new FieldInteractor()},
+                                                  {typeof(Tile), new TileInteractor()},
                                                   {typeof(HqUi), new HqUiInteractor()}, 
                                                   {typeof(SpawnUi), new SpawnUiInteractor()}
                                               };
+        
+        private readonly Dictionary<Type, IManager> managers = new Dictionary<Type, IManager>();
 
         public static void Expose<TExposed>(TExposed exposed) {
             Instance.interactors[exposed.GetType()].AddExposed(exposed);
@@ -30,6 +32,12 @@ namespace Managers.ApiManagers {
 
         public static TInteractor ProvideInteractor<TInteractor>() where TInteractor : IBaseInteractor {
             return (TInteractor)  Instance.interactors.Values.FirstOrDefault(it => it is TInteractor);
+        }
+        
+        public static void ExposeManager(IManager manager) => Instance.managers.Add(manager.GetType(), manager);
+
+        public static TManager ProvideManager<TManager>() where TManager : IManager {
+            return (TManager) Instance.managers.Values.FirstOrDefault(it => it is TManager);
         }
 
         public static void Clear() {
