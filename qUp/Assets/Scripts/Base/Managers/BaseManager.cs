@@ -10,7 +10,6 @@ namespace Base.Managers {
         
         public void InitBase(Action<TState> eventListener) {
             State = eventListener;
-            // GlobalManager.ExposeManager(this);
             ApiManager.ExposeManager(this);
         }
 
