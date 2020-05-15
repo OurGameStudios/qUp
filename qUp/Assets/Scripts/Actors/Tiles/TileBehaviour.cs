@@ -50,22 +50,6 @@ namespace Actors.Tiles {
             }
         }
 
-        // private void OnMouseDown() {
-        //     Controller.OnClick();
-        // }
-        //
-        // private void OnMouseEnter() {
-        //     if (isHoverHighlightEnabled) {
-        //         fieldShader.SetHighlightOn(true);
-        //     }
-        // }
-        //
-        // private void OnMouseExit() {
-        //     if (isHoverHighlightEnabled) {
-        //         fieldShader.SetHighlightOn(false);
-        //     }
-        // }
-
         protected override void OnAwake() {
             fieldShader = new FieldShader(GetComponent<MeshRenderer>().material);
             Controller.InitMarkings(fieldShader.GetMarkingsColor());
