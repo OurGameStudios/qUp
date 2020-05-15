@@ -6,7 +6,7 @@ using UnityEngine;
 using Wrappers.Shaders;
 
 namespace Actors.Tiles {
-    public class TileBehaviour : BaseMonoBehaviour<Tile, TileState> {
+    public class TileBehaviour : BaseMonoBehaviour<Tile, ITileState> {
         private FieldShader fieldShader;
 
         private bool isHoverHighlightEnabled = true;
@@ -19,7 +19,7 @@ namespace Actors.Tiles {
         }
 
         private void Init(GridCoords coords, Func<Vector2, float> sampleHeight) {
-            Controller.Init(coords, transform.position);
+            Controller.Init(coords, transform.position, gameObject);
             DisplaceVertices(sampleHeight);
         }
 
@@ -40,34 +40,17 @@ namespace Actors.Tiles {
             GetComponent<MeshCollider>().sharedMesh = mesh;
         }
 
-        protected override void OnStateHandler(TileState inState) {
+        protected override void OnStateHandler(ITileState inState) {
             if (inState is MarkingsChange markingsChangeState) {
                 fieldShader.SetMarkingsColor(markingsChangeState.MarkingColor);
-            } else if (inState is HighlightActivated) {
-                fieldShader.SetHighlightOn(true);
+            } else if (inState is HighlightActivated highlightActivatedState) {
+                fieldShader.SetHighlightOn(true, highlightActivatedState.HighlightColor);
             } else if (inState is Idle) {
                 fieldShader.SetHighlightOn(false);
-                isHoverHighlightEnabled = true;
             }
         }
 
-        private void OnMouseDown() {
-            Controller.OnClick();
-        }
-
-        private void OnMouseEnter() {
-            if (isHoverHighlightEnabled) {
-                fieldShader.SetHighlightOn(true);
-            }
-        }
-
-        private void OnMouseExit() {
-            if (isHoverHighlightEnabled) {
-                fieldShader.SetHighlightOn(false);
-            }
-        }
-
-        private void Start() {
+        protected override void OnAwake() {
             fieldShader = new FieldShader(GetComponent<MeshRenderer>().material);
             Controller.InitMarkings(fieldShader.GetMarkingsColor());
         }

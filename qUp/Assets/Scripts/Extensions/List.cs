@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace Extensions {
     static class ListExtensions {
+
+        public static bool IsEmpty<T>(this List<T> list) => list.Count == 0;
         public static List<T> RemoveLast<T>(this List<T> list) => list.Also((it) => it.RemoveAt(it.Count - 1));
 
         public static T GetRandom<T>(this List<T> list) where T : class {

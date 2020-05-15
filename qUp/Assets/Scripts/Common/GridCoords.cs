@@ -39,12 +39,14 @@ namespace Common {
         /// Coordinates of (-1, -1) or lower left tile from origin.
         /// </summary>
         public static GridCoords DownLeft { get; } = new GridCoords(-1, -1);
+        
+        private static List<GridCoords> neighbourTransforms = new List<GridCoords> {Up, Down, UpRight, UpLeft, DownRight, DownLeft};
 
         /// <summary>
         /// Transform coordinates that are needed to find all neighbours; 
         /// </summary>
         /// <returns>Up, Down, UpRight, UpLeft, DownRight, DownLeft</returns>
-        public static List<GridCoords> NeighbourTransforms => new List<GridCoords> {Up, Down, UpRight, UpLeft, DownRight, DownLeft};
+        public static List<GridCoords> NeighbourTransforms => neighbourTransforms;
 
         /// <summary>
         /// GridCoords X coordinate on grid
@@ -110,7 +112,7 @@ namespace Common {
         /// </summary>
         /// <returns>Neighbour coordinates</returns>
         public static List<GridCoords> GetNeighbourCoords(GridCoords coords) {
-            var neighbourCoords = new List<GridCoords>(6);
+            var neighbourCoords = new List<GridCoords>();
             for (var i = 0; i < 6; i++) {
                 neighbourCoords.Add(NeighbourTransforms[i] + coords);
             }
@@ -124,11 +126,11 @@ namespace Common {
         /// </summary>
         /// <param name="maxGridCoords">Maximum coordinates in grid.</param>
         /// <returns>Neighbour coordinates</returns>
-        public List<GridCoords> GetNeighbourCoordsOfGrid(GridCoords coords, GridCoords maxGridCoords) {
+        public static List<GridCoords> GetNeighbourCoordsOfGrid(GridCoords coords, GridCoords maxGridCoords) {
             var neighbourCoords = new List<GridCoords>();
             for (var i = 0; i < 6; i++) {
                 var possibleNeighbour = NeighbourTransforms[i] + coords;
-                if (possibleNeighbour < Origin || possibleNeighbour > maxGridCoords) {
+                if ((possibleNeighbour.x >= Origin.x && possibleNeighbour.y >= Origin.y) && possibleNeighbour < maxGridCoords) {
                     neighbourCoords.Add(possibleNeighbour);
                 }
             }
@@ -262,7 +264,7 @@ namespace Common {
         /// <param name="coords">Coordinates in center of range.</param>
         /// <param name="range">Maximum distance from coords. Center of range.</param>
         /// <returns>List of coordinates in range with center coordinate.</returns>
-        public List<GridCoords> RangeOf(GridCoords coords, int range) {
+        public static List<GridCoords> RangeOf(GridCoords coords, int range) {
             var coordsInRange = new List<GridCoords>();
             for (var rx = coords.x - range; rx <= coords.x + range; rx++) {
                 for (var ry = coords.x - 2 * range + Math.Abs(coords.x - rx);
@@ -274,6 +276,8 @@ namespace Common {
 
             return coordsInRange;
         }
+
+        public List<GridCoords> InRange(int range) => RangeOf(this, range);
 
         /// <summary>
         /// Count of Coordinates in range.
@@ -357,10 +361,13 @@ namespace Common {
 
         // Equals
         public static bool operator ==(GridCoords a, GridCoords b) => a.x == b.x && a.y == b.y;
+        
+        public static bool operator ==(GridCoords a, (int x, int y) b) => a.x == b.x && a.y == b.y;
 
         //UnEquals
         public static bool operator !=(GridCoords a, GridCoords b) => a.x != b.x && a.y != b.y;
-
+        
+        public static bool operator !=(GridCoords a, (int x, int y) b) => a.x != b.x && a.y != b.y;
         public static bool operator <(GridCoords a, GridCoords b) => a.x < b.x || a.y < b.y;
 
         public static bool operator >(GridCoords a, GridCoords b) => a.x > b.x || a.y > b.y;

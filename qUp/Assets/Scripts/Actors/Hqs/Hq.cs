@@ -3,7 +3,7 @@ using Base.MonoBehaviours;
 using Common;
 
 namespace Actors.Hqs {
-    public class Hq : BaseController<HqState> {
+    public class Hq : BaseController<IHqState> {
         public GridCoords Coords { get; private set; }
         
         public Player Owner { get; private set; }
@@ -14,7 +14,7 @@ namespace Actors.Hqs {
         }
 
         public void SetSelected(bool isSelected) {
-            SetState(new HqSelection(isSelected));
+            SetState(HqSelection.With(isSelected));
         }
     }
 }

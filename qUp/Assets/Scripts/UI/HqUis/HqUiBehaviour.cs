@@ -4,13 +4,13 @@ using UI.HqUis.HqUnitButtons;
 using UnityEngine;
 
 namespace UI.HqUis {
-    public class HqUiBehaviour : BaseMonoBehaviour<HqUi, HqUiState> {
+    public class HqUiBehaviour : BaseMonoBehaviour<HqUi, IHqUiState> {
         [SerializeField]
         private GameObject hqUnitButtonPrefab;
 
         private List<HqUnitButton> buttons = new List<HqUnitButton>();
 
-        protected override void OnStateHandler(HqUiState inState) {
+        protected override void OnStateHandler(IHqUiState inState) {
             if (inState is UnitInfo unitInfoState) {
                 BindButton(unitInfoState.MenuPosition, unitInfoState.UnitName, unitInfoState.UnitCost);
             }

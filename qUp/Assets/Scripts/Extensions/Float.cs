@@ -15,6 +15,8 @@ namespace Extensions {
 
         public static float Sqr(this float value) => Mathf.Pow(value, 2);
 
+        public static float Sign(this float value) => Mathf.Sign(value);
+
         public static bool IsBetween(this float value, float min, float max) => !(value < min) && !(value > max);
         }
 }

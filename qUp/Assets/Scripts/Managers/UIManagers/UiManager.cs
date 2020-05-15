@@ -1,31 +1,32 @@
-using Actors.Hqs;
+using System;
 using Actors.Units;
 using Base.Managers;
 using Managers.ApiManagers;
+using Managers.GridManagers;
 using UI.HqUis;
 using UI.InfoUis.SpawnUis;
 
 namespace Managers.UIManagers {
-    public class UiManager : BaseManager<UiManagerState> {
-        public HqUiInteractor hqUiInteractor = ApiManager.ProvideInteractor<HqUiInteractor>();
-        public SpawnUiInteractor spawnUiInteractor = ApiManager.ProvideInteractor<SpawnUiInteractor>();
+    public class UiManager : BaseManager<IUiManagerState> {
+
+        private readonly Lazy<GridManager> gridManagerLazy = new Lazy<GridManager>(ApiManager.ProvideManager<GridManager>);
+        private readonly Lazy<SpawnUiInteractor> spawnUiInteractorLazy = new Lazy<SpawnUiInteractor>(ApiManager.ProvideInteractor<SpawnUiInteractor>);
+
+        private GridManager GridManager => gridManagerLazy.Value;
+        private SpawnUiInteractor SpawnUiInteractor => spawnUiInteractorLazy.Value;
 
         private UnitData selectedSpawnUnitData;
 
-        public void SetSelectedItem(Hq hq) {
-            SetState(new BaseSelected(hq.ToString()));
-        }
-
-        public void OnStart() {
-            hqUiInteractor.InitHqUi();
-        }
-
         public void UnitToSpawnSelected(UnitData unitData) {
-            spawnUiInteractor.ShowMenu(unitData.unitUiImage, unitData.name, unitData.cost, unitData.hp, unitData.attack, unitData.tickPoints);
-            GlobalManager.GetManager<GridManager.GridManager>().UnitToSpawnSelected();
+            SpawnUiInteractor.ShowMenu(unitData.unitUiImage, unitData.name, unitData.cost, unitData.hp, unitData.attack, unitData.tickPoints);
+            GridManager.UnitToSpawnSelected();
             selectedSpawnUnitData = unitData;
         }
 
         public UnitData ProvideSelectedUnit() => selectedSpawnUnitData;
+
+        public void OnAwake() {
+            ApiManager.ProvideInteractor<HqUiInteractor>().InitHqUi();
+        }
     }
 }

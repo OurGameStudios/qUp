@@ -1,0 +1,128 @@
+{
+    "name": "Inputs",
+    "maps": [
+        {
+            "name": "NoUnitSelected",
+            "id": "ba4eb942-9cf5-45f2-9cc8-3ee68d593025",
+            "actions": [
+                {
+                    "name": "SelectUnit",
+                    "type": "Button",
+                    "id": "9473a6b6-c5b7-4c71-b469-dfd5edcba00e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "CameraRotation",
+                    "type": "Button",
+                    "id": "d6037670-8c32-46af-959c-9f3fe1f7248b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Hold"
+                },
+                {
+                    "name": "CameraZoom",
+                    "type": "Value",
+                    "id": "f3fecfb8-e708-48be-823d-4bc17f86bc9b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "CameraPan",
+                    "type": "Value",
+                    "id": "e43c5166-5909-4152-876d-0ca8a29b6441",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "PointerPosition",
+                    "type": "Value",
+                    "id": "0521b053-47a0-4354-9ab7-9f51d3c96b12",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "MouseDelta",
+                    "type": "Value",
+                    "id": "e860118d-eb83-4832-84d9-477d93da87a6",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "13d7d1ed-310f-458b-9a00-e8068c769610",
+                    "path": "<Mouse>/press",
+                    "interactions": "Press",
+                    "processors": "Normalize(max=1)",
+                    "groups": "",
+                    "action": "SelectUnit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b54dabff-4d3e-4e28-ab40-5f3a8fda6ebd",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "Normalize(min=-1,max=1)",
+                    "groups": "",
+                    "action": "CameraZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "453d2945-cfbc-4bc7-8c62-555332070b90",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraPan",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "066caa6c-d949-43bc-9981-df2ff7f60382",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraRotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dfcb2b84-92a7-4ff8-a2f5-2235e1475059",
+                    "path": "<Pointer>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PointerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "92d2e1d7-de72-4554-88d1-54c4dd7a90f6",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseDelta",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

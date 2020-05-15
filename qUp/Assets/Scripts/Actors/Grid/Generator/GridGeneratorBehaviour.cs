@@ -6,20 +6,18 @@ using Actors.Players;
 using Actors.Tiles;
 using Base.MonoBehaviours;
 using Common;
-using Extensions;
-using Managers;
+using Managers.ApiManagers;
 using Managers.CameraManagers;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace Actors.Grid.Generator {
-    public class GridGeneratorBehaviour : BaseMonoBehaviour<GridGenerator, GridGeneratorState> {
+    public class GridGeneratorBehaviour : BaseMonoBehaviour<GridGenerator, IGridGeneratorState> {
+
         public GridGeneratorData data;
 
-        
         private List<FieldGenerated> generatedFields = new List<FieldGenerated>();
 
-        protected override void OnStateHandler(GridGeneratorState inState) {
+        protected override void OnStateHandler(IGridGeneratorState inState) {
             if (inState is FieldGenerated fieldGeneratedState) {
                 // generatedFields.Add(fieldGeneratedState);
                 GenerateField(fieldGeneratedState.Prefab,
@@ -35,10 +33,10 @@ namespace Actors.Grid.Generator {
             }
         }
 
-        private void Start() {
+        protected override void OnAwake() {
             Controller.Init(data);
             Controller.GenerateGrid();
-            // StartCoroutine(AsyncGridGenerator());
+            StartCoroutine(AsyncGridGenerator());
         }
 
         private IEnumerator AsyncGridGenerator() {
@@ -49,11 +47,11 @@ namespace Actors.Grid.Generator {
 
         private void OnGridWorldSize(float xMinOffset, float yMinOffset, float xMaxOffset, float yMaxOffset) {
             var position = transform.position;
-            GlobalManager.GetManager<CameraManager>()
-                         .SetWorldSize(position.x + xMinOffset,
-                             position.z + yMinOffset,
-                             position.x + xMaxOffset,
-                             position.z + yMaxOffset);
+            ApiManager.ProvideManager<CameraManager>()
+                      .SetWorldSize(position.x + xMinOffset,
+                          position.z + yMinOffset,
+                          position.x + xMaxOffset,
+                          position.z + yMaxOffset);
         }
 
         private IEnumerator AsyncGenerateField(GameObject prefab, Vector3 offset, GridCoords mapCoordinates) {

@@ -7,7 +7,7 @@ using Managers.ApiManagers;
 using UnityEngine;
 
 namespace Actors.Grid.Generator {
-    public class GridGenerator : BaseController<GridGeneratorState> {
+    public class GridGenerator : BaseController<IGridGeneratorState> {
         protected override bool Expose => true;
 
         private GridGeneratorData data;
@@ -26,7 +26,7 @@ namespace Actors.Grid.Generator {
 
         public void GenerateGrid() {
             CreatePlayerHqs();
-            SetState(new GridWorldSize(data.XOffset,
+            SetState(GridWorldSize.With(data.XOffset,
                 data.YOffset,
                 data.MapWidth * data.XOffset,
                 data.MapHeight * data.YOffset));
@@ -35,7 +35,7 @@ namespace Actors.Grid.Generator {
                     if (preInstantiatedFields.Contains((i, j))) continue;
                     var prefab = symmetryFunction.ProvideTile(new GridCoords(i, j),
                         new GridCoords(data.MapWidth, data.MapHeight));
-                    SetState(new FieldGenerated(prefab, new Vector3(i * data.XOffset, 0, j * data.YOffset), (i, j)));
+                    SetState(FieldGenerated.With(prefab, new Vector3(i * data.XOffset, 0, j * data.YOffset), (i, j)));
                 }
             }
         }
@@ -50,7 +50,7 @@ namespace Actors.Grid.Generator {
                     if (y > data.MapHeight - 1) y = data.MapHeight;
                     preInstantiatedFields.Add((x, y));
                     var offset = new Vector3(x * data.XOffset, 0, y * data.YOffset);
-                    SetState(new BaseGenerated(offset, (x, y), baseDetails.owner));
+                    SetState(BaseGenerated.With(offset, (x, y), baseDetails.owner));
                 });
         }
     }

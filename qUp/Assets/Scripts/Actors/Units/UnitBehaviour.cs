@@ -1,11 +1,11 @@
-using System.Linq;
 using Base.MonoBehaviours;
+using Common;
 using UnityEngine;
 using UnityEngine.AI;
 using Wrappers.Shaders;
 
 namespace Actors.Units {
-    public class UnitBehaviour : BaseMonoBehaviour<Unit, UnitState> {
+    public class UnitBehaviour : BaseMonoBehaviour<Unit, IUnitState> {
         public UnitData data;
         public UnitShader unitShader;
 
@@ -26,15 +26,11 @@ namespace Actors.Units {
         }
 
         protected override void OnAwake() {
-            Controller.Init(data);
-            // unitShader = new UnitShader(transform.GetComponent<MeshRenderer>().material);
+            Controller.Init(data, gameObject);
+            unitShader = new UnitShader(transform.GetComponent<MeshRenderer>().material);
         }
 
-        private void OnMouseDown() {
-            Controller.OnClick();
-        }
-
-        protected override void OnStateHandler(UnitState inState) {
+        protected override void OnStateHandler(IUnitState inState) {
             if (inState is UnitSelected) {
                 OnSelected();
             }

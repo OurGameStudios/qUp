@@ -1,16 +1,23 @@
 using Actors.Units;
 using Base.Interfaces;
+using Common;
 using UnityEngine;
 
 namespace Managers.PlayerManagers {
-    public class PlayerManagerState : IState { }
+    
+    public interface IPlayerManagerState : IState { }
+    public class PlayerManagerState<TState> : State<TState>, IPlayerManagerState where TState : class, new(){ }
 
-    public class SpawnUnit : PlayerManagerState {
-        public Vector3 SpawnPosition { get; }
-        public UnitData UnitData { get; }
-        public SpawnUnit(Vector3 spawnPosition, UnitData unitData) {
-            SpawnPosition = spawnPosition;
-            UnitData = unitData;
+    public class UnitSpawn : PlayerManagerState<UnitSpawn> {
+        public Vector3 SpawnPosition { get; private set; }
+        public UnitData UnitData { get; private set; }
+
+        public GridCoords Coords { get; private set; }
+        public static UnitSpawn Where(Vector3 spawnPosition, UnitData unitData, GridCoords coords) {
+            Cache.SpawnPosition = spawnPosition;
+            Cache.UnitData = unitData;
+            Cache.Coords = coords;
+            return Cache;
         }
     }
 }

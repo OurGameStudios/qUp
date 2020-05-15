@@ -3,24 +3,28 @@ using Base.Interfaces;
 using Base.MonoBehaviours;
 using Common;
 using Extensions;
-using Managers;
 using Managers.ApiManagers;
-using Managers.GridManager;
+using Managers.GridManagers;
+using Managers.InputManagers;
 using UnityEngine;
 
 namespace Actors.Tiles {
-    public class Tile : BaseController<TileState>, IClickable {
+    public class Tile : BaseController<ITileState>, IClickable, IHoverable {
+        private readonly GridInteractor gridInteractor = ApiManager.ProvideInteractor<GridInteractor>();
+        private readonly GridManager gridManager = ApiManager.ProvideManager<GridManager>();
 
-        private GridInteractor gridInteractor = ApiManager.ProvideInteractor<GridInteractor>();
-        
         public GridCoords Coords { get; private set; }
         private Color markingsColor;
         private Vector3 tilePosition;
 
-        public void Init(GridCoords coords, Vector3 position) {
+        public void Init(GridCoords coords, Vector3 position, GameObject gameObject) {
             Coords = coords;
             tilePosition = position;
-            GlobalManager.GetManager<GridManager>().RegisterTile(this);
+            gridManager.RegisterTile(this);
+            ApiManager.ProvideManager<InputManagerBehaviour>().Let(it => {
+                    it.RegisterClickable(this, gameObject);
+                    it.RegisterHoverable(this, gameObject);
+                });
         }
 
         public void InitMarkings(Color color) {
@@ -28,28 +32,36 @@ namespace Actors.Tiles {
         }
 
         public void OnClick() {
-            GlobalManager.GetManager<GridManager>().SelectTile(Coords);
+            gridManager.SelectTile(Coords);
+        }
+
+        public void OnHoverStart() {
+            SetState(HighlightActivated.With(Color.white));
+        }
+
+        public void OnHoverEnd() {
+            SetState(new Idle());
         }
 
         public void ResetMarkings() {
-            SetState(new MarkingsChange(markingsColor));
+            SetState(MarkingsChange.With(markingsColor));
         }
 
         public void ApplyMarkings(Color color) {
-            SetState(new MarkingsChange(color));
+            SetState(MarkingsChange.With(color));
         }
 
         public void SetMarkings(Color color) {
             markingsColor = color;
-            SetState(new MarkingsChange(color));
+            SetState(MarkingsChange.With(color));
         }
 
-        public void ActivateHighlight(Color color) {
-            SetState(new HighlightActivated(color.IsNull() ? Color.white : color));
+        public void ActivateHighlight(Color? color) {
+            SetState(HighlightActivated.With(color ?? Color.white));
         }
 
         public void DeactivateHighlight() {
-            SetState(new Idle());
+            SetState(Idle.With());
         }
 
         public Vector3 ProvideTilePosition() {

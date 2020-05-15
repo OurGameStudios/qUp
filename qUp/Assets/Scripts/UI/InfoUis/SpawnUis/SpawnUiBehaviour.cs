@@ -1,19 +1,23 @@
 ﻿using Base.MonoBehaviours;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.InfoUis.SpawnUis {
-    public class SpawnUiBehaviour : BaseMonoBehaviour<SpawnUi, SpawnUiState> {
+    public class SpawnUiBehaviour : BaseMonoBehaviour<SpawnUi, ISpawnUiState> {
+
+        public Canvas spawnUiCanvas;
+        
         public Image unitImage;
         private UnityEngine.UIElements.Image test;
-        public Text unitName;
-        public Text unitCost;
-        public Text unitHp;
-        public Text unitAtt;
-        public Text unitTp;
+        public TextMeshProUGUI unitName;
+        public TextMeshProUGUI unitCost;
+        public TextMeshProUGUI unitHp;
+        public TextMeshProUGUI unitAtt;
+        public TextMeshProUGUI unitTp;
 
         protected override void OnAwake() {
-            gameObject.SetActive(false);
+            spawnUiCanvas.enabled = false;
         }
 
         public void InitMenu(Sprite unitSprite, string name, string cost, string hp, string att, string tp) {
@@ -23,10 +27,10 @@ namespace UI.InfoUis.SpawnUis {
             unitHp.text = hp;
             unitAtt.text = att;
             unitTp.text = tp;
-            gameObject.SetActive(true);
+            spawnUiCanvas.enabled = true;
         }
 
-        protected override void OnStateHandler(SpawnUiState inState) {
+        protected override void OnStateHandler(ISpawnUiState inState) {
             if (inState is SetUI setUiState) {
                 InitMenu(setUiState.UnitSprite,
                     setUiState.UnitName,
@@ -35,9 +39,9 @@ namespace UI.InfoUis.SpawnUis {
                     setUiState.UnitAtt,
                     setUiState.UnitTp);
             } else if (inState is ShowUI) {
-                gameObject.SetActive(true);
+                spawnUiCanvas.enabled = true; //.gameObject.SetActive(true);
             } else if (inState is HideUI) {
-                gameObject.SetActive(false);
+                spawnUiCanvas.enabled = false; //gameObject.SetActive(false);
             }
         }
     }

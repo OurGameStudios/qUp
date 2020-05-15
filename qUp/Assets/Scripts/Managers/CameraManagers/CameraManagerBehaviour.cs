@@ -1,10 +1,14 @@
+using System;
+using System.Collections;
 using Base.Managers;
 using Extensions;
+using UnityEditor;
 using UnityEngine;
 using static Extensions.Vector3Extensions;
 
 namespace Managers.CameraManagers {
-    public class CameraManagerBehaviour : BaseManagerMonoBehaviour<CameraManager, CameraManagerState> {
+    public class CameraManagerBehaviour : BaseManagerMonoBehaviour<CameraManager, ICameraManagerState> {
+        public Camera camera;
 
         [Header("Zoom")]
         public float minHeight = 100;
@@ -23,9 +27,6 @@ namespace Managers.CameraManagers {
         public float rotationSpeed = 1f;
 
         [Header("Pan")]
-        [Range(0, 1f)]
-        public float edgePercentage = 0.1f;
-
         public float panSpeed;
 
 
@@ -37,65 +38,65 @@ namespace Managers.CameraManagers {
         private Vector2 minWorldPosition;
         private Vector2 maxWorldPosition;
 
-        private Camera mainCamera;
+        private Vector3 maxOffsetFromWorld;
 
-        protected override void OnStateHandler(CameraManagerState inState) {
-            if (inState is CameraMove moveState) {
-                Move(moveState.Direction);
-            } else if (inState is CameraPan panState) {
-                Rotate(panState.Direction);
+        private Transform cameraTransform;
+        private Vector3 cameraPosition;
+
+        protected override void OnAwake() {
+            cameraTransform = camera.transform;
+            cameraPosition = cameraTransform.position;
+        }
+
+        protected override void OnStateHandler(ICameraManagerState inState) {
+            if (inState is CameraPan moveState) {
+                Pan(moveState.Direction);
             } else if (inState is CameraZoom zoomState) {
                 Zoom(zoomState.Direction, zoomState.MouseWorldPosition);
             } else if (inState is CameraRotationStart) {
                 SetRotationPoint();
+            } else if (inState is CameraRotate rotateState) {
+                Rotate(rotateState.Offset);
             } else if (inState is WorldSize worldSizeState) {
                 minWorldPosition = worldSizeState.MinWorldPosition;
                 maxWorldPosition = worldSizeState.MaxWorldPosition;
             }
         }
 
-        protected override void OnAwake() {
-            mainCamera = Camera.main;
-        }
-
         private void Update() {
             ZoomAnimation();
         }
 
-        private void Move(Vector2 mousePosition) {
-            var cameraTransform = mainCamera.transform;
+        private void Pan(Vector2 panDirection) {
             var rotY = Quaternion.Euler(0, cameraTransform.rotation.eulerAngles.y, 0);
-            if (1f - Mathf.Abs(mousePosition.x) < edgePercentage) {
-                cameraTransform.Translate(Mathf.Sign(mousePosition.x) * panSpeed, 0, 0, Space.Self);
-            }
-
-            if (1f - Mathf.Abs(mousePosition.y) < edgePercentage) {
-                cameraTransform.Translate(rotY * Vector3.forward * (Mathf.Sign(mousePosition.y) * panSpeed),
-                    Space.World);
-            }
+            cameraTransform.Translate(panDirection.x * panSpeed, 0, 0, Space.Self);
+            cameraTransform.Translate(rotY * Vector3.forward * (panDirection.y * panSpeed), Space.World);
 
 
             var position = cameraTransform.position;
-            var maxDistanceByAngle =
-                position.y /
-                Mathf.Tan((cameraTransform.rotation.eulerAngles.x) * (Mathf.PI / 180f));
-            var maxDistanceByAngleVector = rotY * -Vector3.forward * maxDistanceByAngle;
             cameraTransform.position = position.ClampAxis(Vector3Axis.X,
-                                                   minWorldPosition.x + maxDistanceByAngleVector.x,
-                                                   maxWorldPosition.x + maxDistanceByAngleVector.x)
+                                                   minWorldPosition.x + maxOffsetFromWorld.x,
+                                                   maxWorldPosition.x + maxOffsetFromWorld.x)
                                                .ClampAxis(Vector3Axis.Z,
-                                                   minWorldPosition.y + maxDistanceByAngleVector.z,
-                                                   maxWorldPosition.y + maxDistanceByAngleVector.z);
+                                                   minWorldPosition.y + maxOffsetFromWorld.z,
+                                                   maxWorldPosition.y + maxOffsetFromWorld.z);
         }
 
         private void Rotate(Vector2 direction) {
-            var cameraTransform = mainCamera.transform;
             cameraTransform.RotateAround(panPoint, Vector3.up, -direction.x * rotationSpeed);
             cameraTransform.RotateAroundClamped(panPoint, direction.y * rotationSpeed, minXRotate, maxXRotate);
+            CalculateMaxOffsetFromWorld();
+        }
+
+        private void CalculateMaxOffsetFromWorld() {
+            var position = cameraTransform.position;
+            var rotation = cameraTransform.rotation;
+            var rotY = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
+            var maxDistanceByAngle = position.y / Mathf.Tan(rotation.eulerAngles.x * (Mathf.PI / 180f));
+            maxOffsetFromWorld = rotY * -Vector3.forward * maxDistanceByAngle;
         }
 
         private void SetRotationPoint() {
-            var cameraTransform = mainCamera.transform;
             var cameraPosition = cameraTransform.position;
             var cameraRotation = cameraTransform.rotation;
             panPoint = cameraPosition + cameraTransform.forward *
@@ -103,22 +104,21 @@ namespace Managers.CameraManagers {
         }
 
         private void Zoom(float direction, Vector3 mousePosition) {
-            var cameraTransform = mainCamera.transform;
             if (cameraTransform.position.y > minHeight && direction > 0f ||
                 cameraTransform.position.y < maxHeight && direction < 0f) {
                 zoomPosition = MoveTowards(cameraTransform.position,
                     mousePosition,
-                    Mathf.Sign(direction) * zoomStepDistance);
+                    direction.Sign() * zoomStepDistance);
                 isZooming = true;
             }
         }
 
         private void ZoomAnimation() {
-            if ((mainCamera.transform.position - zoomPosition).magnitude >= 10 && isZooming) {
+            if ((cameraTransform.position - zoomPosition).magnitude >= 10 && isZooming) {
                 var newPosition =
-                    Vector3.Lerp(mainCamera.transform.position, zoomPosition, Time.deltaTime * zoomAnimationSpeed);
-                mainCamera.transform.position = newPosition.ClampAxis(Vector3Axis.Y, minHeight, maxHeight);
-                if (!mainCamera.transform.position.y.IsBetween(minHeight + 1, maxHeight - 1)) {
+                    Vector3.Lerp(cameraTransform.position, zoomPosition, Time.deltaTime * zoomAnimationSpeed);
+                cameraTransform.position = newPosition.ClampAxis(Vector3Axis.Y, minHeight, maxHeight);
+                if (!cameraTransform.position.y.IsBetween(minHeight + 1, maxHeight - 1)) {
                     isZooming = false;
                 }
             } else {
