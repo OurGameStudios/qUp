@@ -29,9 +29,5 @@ namespace Managers.CameraManagers {
         public void SetWorldSize(float minX, float minY, float maxX, float maxY) {
             SetState(WorldSize.Where(new Vector2(minX, minY), new Vector2(maxX, maxY)));
         }
-
-        public void RegisterClick() {
-            Debug.Log(hoveredGameObject.name);
-        }
     }
 }

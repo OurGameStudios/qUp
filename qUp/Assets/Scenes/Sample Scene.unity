@@ -304,7 +304,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 30
+  m_fontSize: 17.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1064,7 +1064,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 30
+  m_fontSize: 15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1336,6 +1336,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b27d4a41cdc4d0a9ebc5fb26b7f9d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 963194227}
+  cameraPanEdgePercentage: 0
 --- !u!114 &279548669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2166,7 +2168,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 30
+  m_fontSize: 17.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3095,7 +3097,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 115, y: 500, z: 130}
+  m_LocalPosition: {x: 115, y: 300, z: 130}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3145,15 +3147,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 963194227}
-  minHeight: 100
-  maxHeight: 500
-  zoomStepDistance: 50
+  minHeight: 50
+  maxHeight: 300
+  zoomStepDistance: 100
   zoomAnimationSpeed: 25
   minXRotate: 60
   maxXRotate: 89
-  rotationSpeed: 1
-  edgePercentage: 0
-  panSpeed: 1
+  rotationSpeed: 0.01
+  panSpeed: 75
 --- !u!1 &982848355
 GameObject:
   m_ObjectHideFlags: 0
@@ -6840,7 +6841,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 30
+  m_fontSize: 17.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

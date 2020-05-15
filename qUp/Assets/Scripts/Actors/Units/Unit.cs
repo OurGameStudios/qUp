@@ -8,12 +8,11 @@ using UnityEngine;
 
 namespace Actors.Units {
     public class Unit : BaseController<IUnitState>, IClickable {
-        
         private readonly InputManagerBehaviour inputManager = ApiManager.ProvideManager<InputManagerBehaviour>();
         private readonly GridManager gridManager = ApiManager.ProvideManager<GridManager>();
-        
+
         public UnitData data;
-        
+
         private int currentHealth;
         private int currentTicks;
 
@@ -25,14 +24,14 @@ namespace Actors.Units {
             currentTicks = inData.tickPoints;
             inputManager.RegisterClickable(this, gameObject);
         }
-        
+
         public void OnClick() {
             gridManager.SelectUnit(this);
             SetState(UnitSelected.Where());
         }
 
         public void SetCoords(GridCoords inCoords) {
-            this.coords = inCoords;
+            coords = inCoords;
             gridManager.RegisterUnit(this, inCoords);
         }
     }

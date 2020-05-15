@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Actors.Tiles;
@@ -13,7 +14,8 @@ using UnityEngine;
 namespace Managers.GridManagers {
     public class GridManager : BaseManager<IGridManagerState> {
 
-        // private readonly PlayerManager playerManager = ApiManager.ProvideManager<PlayerManager>();
+        private readonly Lazy<PlayerManager> playerManagerLazy = new Lazy<PlayerManager>(ApiManager.ProvideManager<PlayerManager>);
+        private PlayerManager PlayerManager => playerManagerLazy.Value;
         
         private GridCoords maxCoords;
 
@@ -51,7 +53,7 @@ namespace Managers.GridManagers {
         }
 
         public void UnitToSpawnSelected() {
-            var currentPlayer = ApiManager.ProvideManager<PlayerManager>().GetCurrentPlayer();
+            var currentPlayer = PlayerManager.GetCurrentPlayer();
             hqCoords = currentPlayer.GetBaseCoordinates();
             
             isHqSelected = true;
@@ -64,7 +66,7 @@ namespace Managers.GridManagers {
             if (isHqSelected) {
                 var isHqNeighbour = coords.IsNeighbourOf(hqCoords);
                 if (isHqNeighbour) {
-                    ApiManager.ProvideManager<PlayerManager>().SpawnUnit(grid[coords].Tile.ProvideTilePosition(), coords);
+                    PlayerManager.SpawnUnit(grid[coords].Tile.ProvideTilePosition(), coords);
                 }
                 
                 grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords)).ToList()

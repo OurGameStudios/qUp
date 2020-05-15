@@ -25,7 +25,7 @@
                     "name": "CameraZoom",
                     "type": "Value",
                     "id": "f3fecfb8-e708-48be-823d-4bc17f86bc9b",
-                    "expectedControlType": "Axis",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press"
                 },
@@ -33,6 +33,22 @@
                     "name": "CameraPan",
                     "type": "Value",
                     "id": "e43c5166-5909-4152-876d-0ca8a29b6441",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "PointerPosition",
+                    "type": "Value",
+                    "id": "0521b053-47a0-4354-9ab7-9f51d3c96b12",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "MouseDelta",
+                    "type": "Value",
+                    "id": "e860118d-eb83-4832-84d9-477d93da87a6",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
@@ -80,6 +96,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "CameraRotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dfcb2b84-92a7-4ff8-a2f5-2235e1475059",
+                    "path": "<Pointer>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PointerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "92d2e1d7-de72-4554-88d1-54c4dd7a90f6",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseDelta",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

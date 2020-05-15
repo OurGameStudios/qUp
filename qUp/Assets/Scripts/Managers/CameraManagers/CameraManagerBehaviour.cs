@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using Base.Managers;
 using Extensions;
+using UnityEditor;
 using UnityEngine;
 using static Extensions.Vector3Extensions;
 
@@ -25,9 +27,6 @@ namespace Managers.CameraManagers {
         public float rotationSpeed = 1f;
 
         [Header("Pan")]
-        [Range(0, 1f)]
-        public float edgePercentage = 0.1f;
-
         public float panSpeed;
 
 
@@ -40,6 +39,14 @@ namespace Managers.CameraManagers {
         private Vector2 maxWorldPosition;
 
         private Vector3 maxOffsetFromWorld;
+
+        private Transform cameraTransform;
+        private Vector3 cameraPosition;
+
+        protected override void OnAwake() {
+            cameraTransform = camera.transform;
+            cameraPosition = cameraTransform.position;
+        }
 
         protected override void OnStateHandler(ICameraManagerState inState) {
             if (inState is CameraPan moveState) {
@@ -61,7 +68,6 @@ namespace Managers.CameraManagers {
         }
 
         private void Pan(Vector2 panDirection) {
-            var cameraTransform = camera.transform;
             var rotY = Quaternion.Euler(0, cameraTransform.rotation.eulerAngles.y, 0);
             cameraTransform.Translate(panDirection.x * panSpeed, 0, 0, Space.Self);
             cameraTransform.Translate(rotY * Vector3.forward * (panDirection.y * panSpeed), Space.World);
@@ -77,13 +83,12 @@ namespace Managers.CameraManagers {
         }
 
         private void Rotate(Vector2 direction) {
-            var cameraTransform = camera.transform;
             cameraTransform.RotateAround(panPoint, Vector3.up, -direction.x * rotationSpeed);
             cameraTransform.RotateAroundClamped(panPoint, direction.y * rotationSpeed, minXRotate, maxXRotate);
-            CalculateMaxOffsetFromWorld(cameraTransform);
+            CalculateMaxOffsetFromWorld();
         }
 
-        private void CalculateMaxOffsetFromWorld(Transform cameraTransform) {
+        private void CalculateMaxOffsetFromWorld() {
             var position = cameraTransform.position;
             var rotation = cameraTransform.rotation;
             var rotY = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
@@ -92,7 +97,6 @@ namespace Managers.CameraManagers {
         }
 
         private void SetRotationPoint() {
-            var cameraTransform = camera.transform;
             var cameraPosition = cameraTransform.position;
             var cameraRotation = cameraTransform.rotation;
             panPoint = cameraPosition + cameraTransform.forward *
@@ -100,22 +104,21 @@ namespace Managers.CameraManagers {
         }
 
         private void Zoom(float direction, Vector3 mousePosition) {
-            var cameraTransform = camera.transform;
             if (cameraTransform.position.y > minHeight && direction > 0f ||
                 cameraTransform.position.y < maxHeight && direction < 0f) {
                 zoomPosition = MoveTowards(cameraTransform.position,
                     mousePosition,
-                    Mathf.Sign(direction) * zoomStepDistance);
+                    direction.Sign() * zoomStepDistance);
                 isZooming = true;
             }
         }
 
         private void ZoomAnimation() {
-            if ((camera.transform.position - zoomPosition).magnitude >= 10 && isZooming) {
+            if ((cameraTransform.position - zoomPosition).magnitude >= 10 && isZooming) {
                 var newPosition =
-                    Vector3.Lerp(camera.transform.position, zoomPosition, Time.deltaTime * zoomAnimationSpeed);
-                camera.transform.position = newPosition.ClampAxis(Vector3Axis.Y, minHeight, maxHeight);
-                if (!camera.transform.position.y.IsBetween(minHeight + 1, maxHeight - 1)) {
+                    Vector3.Lerp(cameraTransform.position, zoomPosition, Time.deltaTime * zoomAnimationSpeed);
+                cameraTransform.position = newPosition.ClampAxis(Vector3Axis.Y, minHeight, maxHeight);
+                if (!cameraTransform.position.y.IsBetween(minHeight + 1, maxHeight - 1)) {
                     isZooming = false;
                 }
             } else {

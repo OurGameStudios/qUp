@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Actors.Units;
 using Base.MonoBehaviours;
 using Managers.ApiManagers;
@@ -6,8 +7,9 @@ using Managers.UIManagers;
 
 namespace UI.HqUis {
     public class HqUi : BaseController<IHqUiState> {
-        
-        // private readonly UiManager uiManager = ApiManager.ProvideManager<UiManager>();
+
+        private readonly Lazy<UiManager> uiManagerLazy = new Lazy<UiManager>(ApiManager.ProvideManager<UiManager>);
+        private UiManager UiManager => uiManagerLazy.Value;
         
         protected override bool Expose => true;
 
@@ -21,7 +23,7 @@ namespace UI.HqUis {
         }
 
         public void OnClick(int menuPosition) {
-            ApiManager.ProvideManager<UiManager>().UnitToSpawnSelected(units[menuPosition]);
+            UiManager.UnitToSpawnSelected(units[menuPosition]);
         }
     }
 }

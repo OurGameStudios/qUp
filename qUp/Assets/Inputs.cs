@@ -40,7 +40,7 @@ namespace InputControlls
                     ""name"": ""CameraZoom"",
                     ""type"": ""Value"",
                     ""id"": ""f3fecfb8-e708-48be-823d-4bc17f86bc9b"",
-                    ""expectedControlType"": ""Axis"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Press""
                 },
@@ -48,6 +48,22 @@ namespace InputControlls
                     ""name"": ""CameraPan"",
                     ""type"": ""Value"",
                     ""id"": ""e43c5166-5909-4152-876d-0ca8a29b6441"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""PointerPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""0521b053-47a0-4354-9ab7-9f51d3c96b12"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""MouseDelta"",
+                    ""type"": ""Value"",
+                    ""id"": ""e860118d-eb83-4832-84d9-477d93da87a6"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -97,6 +113,28 @@ namespace InputControlls
                     ""action"": ""CameraRotation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dfcb2b84-92a7-4ff8-a2f5-2235e1475059"",
+                    ""path"": ""<Pointer>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PointerPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92d2e1d7-de72-4554-88d1-54c4dd7a90f6"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseDelta"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -109,6 +147,8 @@ namespace InputControlls
             m_NoUnitSelected_CameraRotation = m_NoUnitSelected.FindAction("CameraRotation", throwIfNotFound: true);
             m_NoUnitSelected_CameraZoom = m_NoUnitSelected.FindAction("CameraZoom", throwIfNotFound: true);
             m_NoUnitSelected_CameraPan = m_NoUnitSelected.FindAction("CameraPan", throwIfNotFound: true);
+            m_NoUnitSelected_PointerPosition = m_NoUnitSelected.FindAction("PointerPosition", throwIfNotFound: true);
+            m_NoUnitSelected_MouseDelta = m_NoUnitSelected.FindAction("MouseDelta", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -162,6 +202,8 @@ namespace InputControlls
         private readonly InputAction m_NoUnitSelected_CameraRotation;
         private readonly InputAction m_NoUnitSelected_CameraZoom;
         private readonly InputAction m_NoUnitSelected_CameraPan;
+        private readonly InputAction m_NoUnitSelected_PointerPosition;
+        private readonly InputAction m_NoUnitSelected_MouseDelta;
         public struct NoUnitSelectedActions
         {
             private @Inputs m_Wrapper;
@@ -170,6 +212,8 @@ namespace InputControlls
             public InputAction @CameraRotation => m_Wrapper.m_NoUnitSelected_CameraRotation;
             public InputAction @CameraZoom => m_Wrapper.m_NoUnitSelected_CameraZoom;
             public InputAction @CameraPan => m_Wrapper.m_NoUnitSelected_CameraPan;
+            public InputAction @PointerPosition => m_Wrapper.m_NoUnitSelected_PointerPosition;
+            public InputAction @MouseDelta => m_Wrapper.m_NoUnitSelected_MouseDelta;
             public InputActionMap Get() { return m_Wrapper.m_NoUnitSelected; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -191,6 +235,12 @@ namespace InputControlls
                     @CameraPan.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraPan;
                     @CameraPan.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraPan;
                     @CameraPan.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraPan;
+                    @PointerPosition.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnPointerPosition;
+                    @PointerPosition.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnPointerPosition;
+                    @PointerPosition.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnPointerPosition;
+                    @MouseDelta.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnMouseDelta;
+                    @MouseDelta.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnMouseDelta;
+                    @MouseDelta.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnMouseDelta;
                 }
                 m_Wrapper.m_NoUnitSelectedActionsCallbackInterface = instance;
                 if (instance != null)
@@ -207,6 +257,12 @@ namespace InputControlls
                     @CameraPan.started += instance.OnCameraPan;
                     @CameraPan.performed += instance.OnCameraPan;
                     @CameraPan.canceled += instance.OnCameraPan;
+                    @PointerPosition.started += instance.OnPointerPosition;
+                    @PointerPosition.performed += instance.OnPointerPosition;
+                    @PointerPosition.canceled += instance.OnPointerPosition;
+                    @MouseDelta.started += instance.OnMouseDelta;
+                    @MouseDelta.performed += instance.OnMouseDelta;
+                    @MouseDelta.canceled += instance.OnMouseDelta;
                 }
             }
         }
@@ -217,6 +273,8 @@ namespace InputControlls
             void OnCameraRotation(InputAction.CallbackContext context);
             void OnCameraZoom(InputAction.CallbackContext context);
             void OnCameraPan(InputAction.CallbackContext context);
+            void OnPointerPosition(InputAction.CallbackContext context);
+            void OnMouseDelta(InputAction.CallbackContext context);
         }
     }
 }

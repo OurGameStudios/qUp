@@ -12,7 +12,7 @@ namespace Managers.CameraManagers {
         public Vector2 Direction => direction;
 
         public static CameraPan With(Vector2 direction) {
-            Cache.Direction.Set(direction.x, direction.y);
+            Cache.direction.Set(direction.x, direction.y);
             return Cache;
         }
     }
