@@ -30,10 +30,6 @@ namespace Actors.Units {
             unitShader = new UnitShader(transform.GetComponent<MeshRenderer>().material);
         }
 
-        // private void OnMouseDown() {
-        //     Controller.OnClick();
-        // }
-
         protected override void OnStateHandler(IUnitState inState) {
             if (inState is UnitSelected) {
                 OnSelected();
