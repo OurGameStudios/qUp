@@ -31,11 +31,11 @@ if %1==-rc (goto rcloneCmd)
 
 :pull
     if "%~2"=="" (
-        remote\rclone sync Remote: %rpath% -u
+        remote\rclone copy Remote: %rpath% -u
         goto eof
     )
     for /f "tokens=1,* delims= " %%a in ("%*") do set rcloneArgs=%%b
-    remote\rclone sync Remote: %rpath% -u %rcloneArgs%
+    remote\rclone copy Remote: %rpath% -u %rcloneArgs%
     goto epf
 
 :get
@@ -49,7 +49,7 @@ if %1==-rc (goto rcloneCmd)
 
 :push
     if "%~2"=="" (
-        remote\rclone sync %rpath% Remote: -u
+        remote\rclone copy %rpath% Remote: -u
         goto eof
     )
     if %2==-f (
@@ -59,7 +59,7 @@ if %1==-rc (goto rcloneCmd)
         goto pushdir
     )
     for /f "tokens=1,* delims= " %%a in ("%*") do set rcloneArgs=%%b
-    remote\rclone sync %rpath% Remote: -u %rcloneArgs%
+    remote\rclone copy %rpath% Remote: -u %rcloneArgs%
     goto eof
 
 :pushfile
@@ -73,7 +73,7 @@ if %1==-rc (goto rcloneCmd)
         set args=%*
         set args=!args:%3%=!
         for /f "tokens=2,* delims= " %%a in ("!args!") do set rcloneArgs=%%b
-        remote\rclone sync !rpath! Remote: --include "!filePath:\=/!" -u !rcloneArgs!
+        remote\rclone copy !rpath! Remote: --include "!filePath:\=/!" -u !rcloneArgs!
     setlocal DisableDelayedExpansion
     goto eof
 
@@ -88,7 +88,7 @@ if %1==-rc (goto rcloneCmd)
         set args=%*
         set args=!args:%3%=!
         for /f "tokens=2,* delims= " %%a in ("!args!") do set rcloneArgs=%%b
-        remote\rclone sync !rpath! Remote: --include "!filePath:\=/!*" -u !rcloneArgs!
+        remote\rclone copy !rpath! Remote: --include "!filePath:\=/!*" -u !rcloneArgs!
     setlocal DisableDelayedExpansion
     goto eof
 
