@@ -3,6 +3,7 @@
 set /p rclonePath=<remote\rclonePath.txt
 set rpath="%cd%%rclonePath%"
 set crpath=%cd%%rclonePath%
+set excludepath=%cd%/remote/rcloneExclude.txt
 set rcloneArgs=
 
 if "%~1"=="" (goto help)
@@ -31,25 +32,25 @@ if %1==-rc (goto rcloneCmd)
 
 :pull
     if "%~2"=="" (
-        remote\rclone copy Remote: %rpath% -u
+        remote\rclone copy Remote: %rpath% -u --exclude-from %excludepath%
         goto eof
     )
     for /f "tokens=1,* delims= " %%a in ("%*") do set rcloneArgs=%%b
-    remote\rclone copy Remote: %rpath% -u %rcloneArgs%
+    remote\rclone copy Remote: %rpath% -u --exclude-from %excludepath% %rcloneArgs%
     goto epf
 
 :get
     if "%~2"="" (
-        remote\rclone copy Remote: %rpath%
+        remote\rclone copy Remote: %rpath% --exclude-from %excludepath%
         goto eof
     )
     for /f "tokens=1,* delims= " %%a in ("%*") do set rcloneArgs=%%b
-    remote\rclone copy Remote: %rpath%
+    remote\rclone copy Remote: %rpath% --exclude-from %excludepath%
     goto eof
 
 :push
     if "%~2"=="" (
-        remote\rclone copy %rpath% Remote: -u
+        remote\rclone copy %rpath% Remote: -u --exclude-from %excludepath%
         goto eof
     )
     if %2==-f (
@@ -59,7 +60,7 @@ if %1==-rc (goto rcloneCmd)
         goto pushdir
     )
     for /f "tokens=1,* delims= " %%a in ("%*") do set rcloneArgs=%%b
-    remote\rclone copy %rpath% Remote: -u %rcloneArgs%
+    remote\rclone copy %rpath% Remote: -u --exclude-from %excludepath% %rcloneArgs%
     goto eof
 
 :pushfile
@@ -73,7 +74,7 @@ if %1==-rc (goto rcloneCmd)
         set args=%*
         set args=!args:%3%=!
         for /f "tokens=2,* delims= " %%a in ("!args!") do set rcloneArgs=%%b
-        remote\rclone copy !rpath! Remote: --include "!filePath:\=/!" -u !rcloneArgs!
+        remote\rclone copy !rpath! Remote: --exclude-from %excludepath% --include "!filePath:\=/!" -u !rcloneArgs!
     setlocal DisableDelayedExpansion
     goto eof
 
@@ -88,17 +89,17 @@ if %1==-rc (goto rcloneCmd)
         set args=%*
         set args=!args:%3%=!
         for /f "tokens=2,* delims= " %%a in ("!args!") do set rcloneArgs=%%b
-        remote\rclone copy !rpath! Remote: --include "!filePath:\=/!*" -u !rcloneArgs!
+        remote\rclone copy !rpath! Remote: --exclude-from %excludepath% --include "!filePath:\=/!*" -u !rcloneArgs!
     setlocal DisableDelayedExpansion
     goto eof
 
 :put
     if "%~2"=="" (
-        remote\rclone copy %rpath% Remote:
+        remote\rclone copy %rpath% Remote: --exclude-from %excludepath%
         goto eof
     )
     for /f "tokens=1,* delims= " %%a in ("%*") do set rcloneArgs=%%b
-    remote\rclone copy %rpath% Remote: %rcloneArgs%
+    remote\rclone copy %rpath% Remote: --exclude-from %excludepath% %rcloneArgs%
     goto eof
 
 :rebase
@@ -112,7 +113,7 @@ if %1==-rc (goto rcloneCmd)
 
         set /p confirm="(y/n)"
         if %confirm%==y (
-            remote\rclone sync Remote: %rpath%
+            remote\rclone sync Remote: %rpath% --exclude-from %excludepath%
         )
         goto eof
     )
@@ -129,7 +130,7 @@ if %1==-rc (goto rcloneCmd)
 
             for /f "tokens=2,* delims= " %%a in ("%*") do set rcloneArgs=%%b
             if %confirm%==y (
-                remote\rclone sync %rpath% Remote: %rcloneArgs%
+                remote\rclone sync %rpath% Remote: --exclude-from %excludepath% %rcloneArgs%
             )
             goto eof
         )
@@ -155,7 +156,7 @@ if %1==-rc (goto rcloneCmd)
     set /p confirm="(y/n)"
     for /f "tokens=1,* delims= " %%a in ("%*") do set rcloneArgs=%%b
     if %confirm%==y (
-        remote\rclone sync Remote: %rpath% %rcloneArgs%
+        remote\rclone sync Remote: %rpath% --exclude-from %excludepath% %rcloneArgs%
     )
     goto eof
 
@@ -177,7 +178,7 @@ if %1==-rc (goto rcloneCmd)
         set args=%*
         set args=!args:%3%=!
         for /f "tokens=2,* delims= " %%a in ("!args!") do set rcloneArgs=%%b
-        remote\rclone sync Remote: !rpath! --include "!filePath:\=/!" !rcloneArgs!
+        remote\rclone sync Remote: !rpath! --exclude-from %excludepath% --include "!filePath:\=/!" !rcloneArgs!
         setlocal DisableDelayedExpansion
     )
     goto eof
@@ -200,7 +201,7 @@ if %1==-rc (goto rcloneCmd)
     set args=%*
     set args=!args:%3%=!
     for /f "tokens=2,* delims= " %%a in ("!args!") do set rcloneArgs=%%b
-    remote\rclone sync !rpath! Remote: --include "!filePath:\=/!*" !rcloneArgs!
+    remote\rclone sync !rpath! Remote: --exclude-from %excludepath% --include "!filePath:\=/!*" !rcloneArgs!
     setlocal DisableDelayedExpansion
     )
     goto eof
@@ -223,7 +224,7 @@ if %1==-rc (goto rcloneCmd)
     set args=%*
     set args=!args:%3%=!
     for /f "tokens=2,* delims= " %%a in ("!args!") do set rcloneArgs=%%b
-    remote\rclone sync Remote: !rpath! --include "!filePath:\=/!" !rcloneArgs!
+    remote\rclone sync Remote: !rpath! --exclude-from %excludepath% --include "!filePath:\=/!" !rcloneArgs!
     setlocal DisableDelayedExpansion
     )
     goto eof
@@ -246,24 +247,24 @@ if %1==-rc (goto rcloneCmd)
     set args=%*
     set args=!args:%3%=!
     for /f "tokens=2,* delims= " %%a in ("!args!") do set rcloneArgs=%%b
-    remote\rclone sync Remote: !rpath! --include "!filePath:\=/!*" !rcloneArgs!
+    remote\rclone sync Remote: !rpath! --exclude-from %excludepath% --include "!filePath:\=/!*" !rcloneArgs!
     setlocal DisableDelayedExpansion
     )
     goto eof
 
 :list
     if "%~2"=="" (
-        remote\rclone tree Remote: --exclude *.meta
+        remote\rclone tree Remote: --exclude *.meta --exclude-from %excludepath%
         goto eof
     )
     if %2==-im (
         for /f "tokens=2,* delims= " %%a in ("%*") do set rcloneArgs=%%b
-        remote\rclone tree Remote: %rcloneArgs%
+        remote\rclone tree Remote: --exclude-from %excludepath% %rcloneArgs% 
         goto eof
     )
     for /f "tokens=1,* delims= " %%a in ("%*") do set rcloneArgs=%%b
     echo remote\rclone tree Remote: --exclude *.meta %rcloneArgs%
-    remote\rclone tree Remote: --exclude *.meta %rcloneArgs%
+    remote\rclone tree Remote: --exclude-from %excludepath% --exclude *.meta %rcloneArgs%
     goto eof
 
 :find
@@ -279,19 +280,19 @@ if %1==-rc (goto rcloneCmd)
     set args=%*
     set args=!args:%2%=!
     for /f "tokens=1,* delims= " %%a in ("!args!") do set rcloneArgs=%%b
-    remote\rclone ls Remote: --include "!filename!" !rcloneArgs!
+    remote\rclone ls Remote: --exclude-from %excludepath% --include "!filename!" !rcloneArgs!
     goto eof
     setlocal DisableDelayedExpansion
 goto eof
 
 :status
     for /f "tokens=1,* delims= " %%a in ("%*") do set rcloneArgs=%%b
-    remote\rclone check %rpath% Remote: %rcloneArgs%
+    remote\rclone check %rpath% Remote: --exclude-from %excludepath% %rcloneArgs%
     goto eof
 
 :quota
     for /f "tokens=1,* delims= " %%a in ("%*") do set rcloneArgs=%%b
-    remote\rclone about Remote: %rcloneArgs%
+    remote\rclone about Remote: --exclude-from %excludepath% %rcloneArgs%
     goto eof
 
 :rcloneCmd
