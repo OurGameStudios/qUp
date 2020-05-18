@@ -3148,7 +3148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 963194227}
   minHeight: 50
-  maxHeight: 300
+  maxHeight: 450
   zoomStepDistance: 100
   zoomAnimationSpeed: 25
   minXRotate: 60
