@@ -41,9 +41,7 @@ namespace Actors.Tiles {
         }
 
         protected override void OnStateHandler(ITileState inState) {
-            if (inState is MarkingsChange markingsChangeState) {
-                fieldShader.SetMarkingsColor(markingsChangeState.MarkingColor);
-            } else if (inState is HighlightActivated highlightActivatedState) {
+            if (inState is HighlightActivated highlightActivatedState) {
                 fieldShader.SetHighlightOn(true, highlightActivatedState.HighlightColor);
             } else if (inState is Idle) {
                 fieldShader.SetHighlightOn(false);
@@ -52,7 +50,7 @@ namespace Actors.Tiles {
 
         protected override void OnAwake() {
             fieldShader = new FieldShader(GetComponent<MeshRenderer>().material);
-            Controller.InitMarkings(fieldShader.GetMarkingsColor());
+            Controller.InitColors(fieldShader.GetMarkingsColor());
         }
     }
 }

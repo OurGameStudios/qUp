@@ -32,7 +32,7 @@ namespace Actors.Tiles {
                 });
         }
 
-        public void InitMarkings(Color color) {
+        public void InitColors(Color color) {
             baseColor = color;
             highlightColor = color;
             currentBaseColor = color;
@@ -48,15 +48,6 @@ namespace Actors.Tiles {
 
         public void OnHoverEnd() {
             SetState(Idle.With(currentBaseColor));
-        }
-        
-        public void ResetMarkings() {
-            SetState(MarkingsChange.With(baseColor));
-        }
-
-        public void ApplyMarkings(Color color) {
-            baseColor = color;
-            SetState(MarkingsChange.With(color));
         }
 
         public void ActivateHighlight(Color? baseHighlightColor = null, Color? color = null) {
