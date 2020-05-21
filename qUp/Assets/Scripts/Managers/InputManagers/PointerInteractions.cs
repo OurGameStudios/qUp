@@ -143,13 +143,13 @@ namespace Managers.InputManagers {
 
         private void HoverStart() {
             if (InteractableTags.IsHoverable(currentHitGameObject) == true) {
-                // hoverables[currentHitGameObject].OnHoverStart();
+                hoverables[currentHitGameObject].OnHoverStart();
             }
         }
 
         private void HoverEnd() {
             if (InteractableTags.IsHoverable(currentHitGameObject) == true) {
-                // hoverables[currentHitGameObject].OnHoverEnd();
+                hoverables[currentHitGameObject].OnHoverEnd();
             }
         }
 

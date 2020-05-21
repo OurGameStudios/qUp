@@ -3,7 +3,6 @@ using Base.Interfaces;
 using Base.MonoBehaviours;
 using Common;
 using Extensions;
-using JetBrains.Annotations;
 using Managers.ApiManagers;
 using Managers.GridManagers;
 using Managers.InputManagers;
@@ -19,7 +18,7 @@ namespace Actors.Tiles {
 
         private Color hoverHighlightColor = Color.white;
         private Color baseColor;
-        private Color highlightColor;
+        private Color? highlightColor = null;
         private Color currentBaseColor;
 
         public void Init(GridCoords coords, Vector3 position, GameObject gameObject) {
@@ -43,20 +42,27 @@ namespace Actors.Tiles {
         }
 
         public void OnHoverStart() {
-            SetState(HighlightActivated.With(currentBaseColor, highlightColor));
+            SetState(HighlightActivated.With(currentBaseColor, hoverHighlightColor));
         }
 
         public void OnHoverEnd() {
-            SetState(Idle.With(currentBaseColor));
+            if (highlightColor != null) {
+                SetState(HighlightActivated.With(currentBaseColor, highlightColor ?? hoverHighlightColor));
+            } else {
+                SetState(Idle.With(currentBaseColor));
+            }
+            
         }
 
         public void ActivateHighlight(Color? baseHighlightColor = null, Color? color = null) {
             baseHighlightColor?.Let(it => currentBaseColor = it);
-            SetState(HighlightActivated.With(baseHighlightColor ?? currentBaseColor, color ?? highlightColor));
+            color?.Let(it => highlightColor = it);
+            SetState(HighlightActivated.With(baseHighlightColor ?? currentBaseColor, color ?? hoverHighlightColor));
         }
 
         public void DeactivateHighlight() {
             currentBaseColor = baseColor;
+            highlightColor = null;
             SetState(Idle.With(currentBaseColor));
         }
 

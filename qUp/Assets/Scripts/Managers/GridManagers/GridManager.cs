@@ -75,7 +75,7 @@ namespace Managers.GridManagers {
             focusType = FocusType.HQ;
 
             foreach (var tileInfo in grid.GetValues(GridCoords.GetNeighbourCoords(hqCoords))) {
-                tileInfo.Tile.ActivateHighlight(Color.green);
+                tileInfo.Tile.ActivateHighlight(color : Color.green);
             }
         }
 
