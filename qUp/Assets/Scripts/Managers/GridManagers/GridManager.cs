@@ -13,6 +13,10 @@ using UnityEngine;
 
 namespace Managers.GridManagers {
     public class GridManager : BaseManager<IGridManagerState> {
+        
+        public const int MAX_NUM_OF_UNITS = 3;
+        public const int MAX_NUM_OF_TILES = 200;
+        
         private enum FocusType {
             None,
             HQ,
@@ -37,6 +41,7 @@ namespace Managers.GridManagers {
         private List<TileInfo> path;
 
         private GridCoords hqCoords;
+        private List<TileInfo> spawnTiles = new List<TileInfo>(2);
 
         private Dictionary<TileTickInfo, TileTickInfo> pathsInRange;
 
@@ -75,38 +80,33 @@ namespace Managers.GridManagers {
             focusType = FocusType.HQ;
 
             foreach (var tileInfo in grid.GetValues(GridCoords.GetNeighbourCoords(hqCoords))) {
+                if (tileInfo.ticks[0].units.Count >= MAX_NUM_OF_UNITS) continue;
+                spawnTiles.Add(tileInfo);
                 tileInfo.Tile.ActivateHighlight(color : Color.green);
             }
+
+            if (spawnTiles.Count != 0) return;
+            ClearFocus();
         }
 
         private bool HandleHq(GridCoords coords) {
             if (focusType != FocusType.HQ) return false;
-            var isHqNeighbour = coords.IsNeighbourOf(hqCoords);
-            if (isHqNeighbour) {
-                PlayerManager.SpawnUnit(grid[coords].Tile.ProvideTilePosition(), coords);
-            }
 
-            foreach (var tileInfo in grid.GetValues(GridCoords.GetNeighbourCoords(hqCoords))) {
-                tileInfo.Tile.DeactivateHighlight();
-            }
-
-            focusType = FocusType.None;
-
-            return isHqNeighbour;
-
+            spawnTiles.FirstOrDefault(it => it.Coords == coords)
+                      ?.Tile?.Let(it => PlayerManager.SpawnUnit(it.ProvideTilePosition(), coords));
+            
+            ClearFocus();
+            return true;
         }
 
         public void SelectTile(GridCoords coords) {
             if (focusType == FocusType.InteractableUnit) {
                 if (SetPath(coords)) return;
+            } else if (focusType == FocusType.HQ) {
+               if(HandleHq(coords)) return;
             }
-
-            if (!HandleHq(coords)) {
-                //temp
-            }
-
+            
             ClearFocus();
-            focusType = FocusType.None;
         }
 
         private int groupRange;
@@ -142,14 +142,24 @@ namespace Managers.GridManagers {
 
         private void ClearFocus() {
             if (focusType == FocusType.None) {
-                //return
-            } else if (focusType == FocusType.InteractableUnit) {
+                return;
+            }
+            if (focusType == FocusType.InteractableUnit) {
                 ClearUnitFocus();
             } else if (focusType == FocusType.UninteractableUnit) {
                 //TODO for units such as resource carriers
             } else if (focusType == FocusType.HQ) {
-                //TODO clear focus for HQ
+                ClearHqFocus();
             }
+
+            focusType = FocusType.None;
+        }
+
+        private void ClearHqFocus() {
+            foreach (var tileInfo in spawnTiles) {
+                tileInfo.Tile.DeactivateHighlight();
+            }
+            spawnTiles.Clear();
         }
 
         private bool hasPathChanged;

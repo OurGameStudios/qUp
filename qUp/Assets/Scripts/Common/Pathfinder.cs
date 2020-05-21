@@ -2,13 +2,12 @@
 using System.Linq;
 using Actors.Units;
 using Extensions;
+using Managers.GridManagers;
 using Managers.GridManagers.GridInfos;
 using Priority_Queue;
 
 namespace Common {
     public class Pathfinder {
-        public const int MAX_NUM_OF_UNITS = 3;
-        public const int MAX_NUM_OF_TILES = 200;
 
         private GridCoords neighbourCoords;
         private readonly FastPriorityQueue<TileInfo> frontier;
@@ -19,7 +18,7 @@ namespace Common {
 
         private readonly FastPriorityQueue<TileInfo> forgottenTilesFast;
 
-        public Pathfinder(int maxNumOfTiles = MAX_NUM_OF_TILES) {
+        public Pathfinder(int maxNumOfTiles = GridManager.MAX_NUM_OF_TILES) {
             neighbourCoords = new GridCoords();
             frontier = new FastPriorityQueue<TileInfo>(maxNumOfTiles);
             cameFrom = new Dictionary<TileInfo, TileInfo>(maxNumOfTiles);
@@ -94,7 +93,7 @@ namespace Common {
         }
 
         private int GetNumberOfUnitsOnTileTick(List<Unit> unitsOnTile, TileTickInfo tileTickInfo) {
-            return MAX_NUM_OF_UNITS - unitsOnTile.Aggregate(tileTickInfo.units.Count,
+            return GridManager.MAX_NUM_OF_UNITS - unitsOnTile.Aggregate(tileTickInfo.units.Count,
                 (current, t) => current - (tileTickInfo.units.Contains(t) ? 1 : 0));
         }
 
@@ -122,7 +121,7 @@ namespace Common {
                 if (bestNeighbour.IsNull()) continue;
 
                 foreach (var tick in forgottenTile.ticks) {
-                    if (MAX_NUM_OF_UNITS - tick.units.Count >= numOfUnits && tick.Tick > costSoFar[bestNeighbour] &&
+                    if (GridManager.MAX_NUM_OF_UNITS - tick.units.Count >= numOfUnits && tick.Tick > costSoFar[bestNeighbour] &&
                         tick.Tick <= movementRange) {
                         costSoFar.Add(forgottenTile, tick.Tick);
                         cameFrom.Add(forgottenTile, bestNeighbour);
