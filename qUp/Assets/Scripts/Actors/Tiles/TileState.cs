@@ -18,14 +18,21 @@ namespace Actors.Tiles {
 
     public class HighlightActivated : TileState<HighlightActivated> {
         public Color HighlightColor { get; private set; }
+        public Color BaseColor { get; private set; }
         
-        public static HighlightActivated With(Color highlightColor) {
+        public static HighlightActivated With(Color BaseColor, Color highlightColor) {
+            Cache.BaseColor = BaseColor;
             Cache.HighlightColor = highlightColor;
             return Cache;
         }
     }
 
     public class Idle : TileState<Idle> {
-        public static Idle With() => Cache;
+        public Color Color { get; private set; }
+        
+        public static Idle With(Color color) {
+            Cache.Color = color;
+            return Cache;
+        }
     }
 }

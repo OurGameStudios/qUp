@@ -3,6 +3,7 @@ using Base.Interfaces;
 using Base.MonoBehaviours;
 using Common;
 using Extensions;
+using JetBrains.Annotations;
 using Managers.ApiManagers;
 using Managers.GridManagers;
 using Managers.InputManagers;
@@ -14,8 +15,12 @@ namespace Actors.Tiles {
         private readonly GridManager gridManager = ApiManager.ProvideManager<GridManager>();
 
         public GridCoords Coords { get; private set; }
-        private Color markingsColor;
         private Vector3 tilePosition;
+
+        private Color hoverHighlightColor = Color.white;
+        private Color baseColor;
+        private Color highlightColor;
+        private Color currentBaseColor;
 
         public void Init(GridCoords coords, Vector3 position, GameObject gameObject) {
             Coords = coords;
@@ -28,7 +33,9 @@ namespace Actors.Tiles {
         }
 
         public void InitMarkings(Color color) {
-            markingsColor = color;
+            baseColor = color;
+            highlightColor = color;
+            currentBaseColor = color;
         }
 
         public void OnClick() {
@@ -36,32 +43,30 @@ namespace Actors.Tiles {
         }
 
         public void OnHoverStart() {
-            SetState(HighlightActivated.With(Color.white));
+            SetState(HighlightActivated.With(currentBaseColor, highlightColor));
         }
 
         public void OnHoverEnd() {
-            SetState(new Idle());
+            SetState(Idle.With(currentBaseColor));
         }
-
+        
         public void ResetMarkings() {
-            SetState(MarkingsChange.With(markingsColor));
+            SetState(MarkingsChange.With(baseColor));
         }
 
         public void ApplyMarkings(Color color) {
+            baseColor = color;
             SetState(MarkingsChange.With(color));
         }
 
-        public void SetMarkings(Color color) {
-            markingsColor = color;
-            SetState(MarkingsChange.With(color));
-        }
-
-        public void ActivateHighlight(Color? color) {
-            SetState(HighlightActivated.With(color ?? Color.white));
+        public void ActivateHighlight(Color? baseHighlightColor = null, Color? color = null) {
+            baseHighlightColor?.Let(it => currentBaseColor = it);
+            SetState(HighlightActivated.With(baseHighlightColor ?? currentBaseColor, color ?? highlightColor));
         }
 
         public void DeactivateHighlight() {
-            SetState(Idle.With());
+            currentBaseColor = baseColor;
+            SetState(Idle.With(currentBaseColor));
         }
 
         public Vector3 ProvideTilePosition() {

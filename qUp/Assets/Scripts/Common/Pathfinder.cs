@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Actors.Units;
 using Extensions;
 using Managers.GridManagers.GridInfos;
 using Priority_Queue;
@@ -28,11 +30,12 @@ namespace Common {
         }
 
         public void FindRange(
-            TileTickInfo start, 
-            int numOfUnits, 
-            int movementRange, 
+            TileTickInfo start,
+            List<Unit> units,
+            int movementRange,
             IReadOnlyDictionary<GridCoords, TileInfo> graph,
             ref Dictionary<TileTickInfo, TileTickInfo> pathsInRange) {
+            movementRange += 1;
             this.start = start.TileInfo;
             frontier.Clear();
             cameFrom.Clear();
@@ -47,14 +50,14 @@ namespace Common {
             while (frontier.Count != 0) {
                 var current = frontier.Dequeue();
 
-                GetNeighbours(current, graph, costSoFar[current], movementRange, numOfUnits);
+                GetNeighbours(current, units, graph, costSoFar[current], movementRange);
                 foreach (var next in neighbours) {
                     var newCost = costSoFar[current] + 1;
 
                     if (costSoFar.ContainsKey(next))
                         if (newCost >= costSoFar[next])
                             continue;
-                    
+
                     if (forgottenTilesFast.Contains(next))
                         forgottenTilesFast.Remove(next);
                     costSoFar[next] = newCost;
@@ -63,17 +66,16 @@ namespace Common {
                 }
             }
 
-            AddForgottenTiles(numOfUnits, movementRange, graph);
+            AddForgottenTiles(units.Count, movementRange, graph);
             foreach (var pair in cameFrom) {
                 pathsInRange.Add(pair.Key.ticks[costSoFar[pair.Key]],
                     pair.Value?.ticks[costSoFar[pair.Value]]);
             }
         }
 
-        private void GetNeighbours(TileInfo currentTileInfo,
-                                          IReadOnlyDictionary<GridCoords, TileInfo> graph,
-                                          int currentTick, int movementRange, int numOfUnits) {
-            
+        private void GetNeighbours(TileInfo currentTileInfo, List<Unit> units,
+                                   IReadOnlyDictionary<GridCoords, TileInfo> graph,
+                                   int currentTick, int movementRange) {
             var tileCords = currentTileInfo.Tile.Coords;
             var nextTick = currentTick + 1;
 
@@ -83,7 +85,7 @@ namespace Common {
                 neighbourCoords.SetCoords(tileCords.x + neighbourTransform.x, tileCords.y + neighbourTransform.y);
                 if (!graph.TryGetValue(neighbourCoords, out var tile)) continue;
                 if (tile.ticks.Count <= nextTick || nextTick >= movementRange) continue;
-                if (MAX_NUM_OF_UNITS - tile.ticks[nextTick].units.Count > numOfUnits) {
+                if (GetNumberOfUnitsOnTileTick(units, tile.ticks[nextTick]) >= units.Count) {
                     neighbours.Add(tile);
                 } else if (tile != start && !forgottenTilesFast.Contains(tile)) {
                     forgottenTilesFast.Enqueue(tile, tile.Coords.DistanceTo(start.Coords));
@@ -91,8 +93,13 @@ namespace Common {
             }
         }
 
+        private int GetNumberOfUnitsOnTileTick(List<Unit> unitsOnTile, TileTickInfo tileTickInfo) {
+            return MAX_NUM_OF_UNITS - unitsOnTile.Aggregate(tileTickInfo.units.Count,
+                (current, t) => current - (tileTickInfo.units.Contains(t) ? 1 : 0));
+        }
+
         private void AddForgottenTiles(int numOfUnits, int movementRange,
-                                              IReadOnlyDictionary<GridCoords, TileInfo> graph) {
+                                       IReadOnlyDictionary<GridCoords, TileInfo> graph) {
             if (forgottenTilesFast.Count == 0) return;
 
             TileInfo bestNeighbour = null;
@@ -100,7 +107,8 @@ namespace Common {
             TileInfo forgottenTile;
 
             while (forgottenTilesFast.Count > 0) {
-                forgottenTile = forgottenTilesFast.Dequeue(); 
+                forgottenTile = forgottenTilesFast.Dequeue();
+                if (cameFrom.Keys.Contains(forgottenTile)) continue;
                 for (var i = 0; i < 6; i++) {
                     neighbourCoords.SetCoords(forgottenTile.Coords.x + GridCoords.NeighbourTransforms[i].x,
                         forgottenTile.Coords.y + GridCoords.NeighbourTransforms[i].y);
@@ -114,7 +122,7 @@ namespace Common {
                 if (bestNeighbour.IsNull()) continue;
 
                 foreach (var tick in forgottenTile.ticks) {
-                    if (MAX_NUM_OF_UNITS - tick.units.Count > numOfUnits && tick.Tick > costSoFar[bestNeighbour] &&
+                    if (MAX_NUM_OF_UNITS - tick.units.Count >= numOfUnits && tick.Tick > costSoFar[bestNeighbour] &&
                         tick.Tick <= movementRange) {
                         costSoFar.Add(forgottenTile, tick.Tick);
                         cameFrom.Add(forgottenTile, bestNeighbour);
@@ -124,7 +132,6 @@ namespace Common {
 
                 bestNeighbour = null;
                 minTileCost = 0;
-                
             }
         }
     }
