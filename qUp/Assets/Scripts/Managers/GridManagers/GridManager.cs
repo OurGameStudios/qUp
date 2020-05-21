@@ -89,21 +89,19 @@ namespace Managers.GridManagers {
             ClearFocus();
         }
 
-        private bool HandleHq(GridCoords coords) {
-            if (focusType != FocusType.HQ) return false;
-
+        private void HandleHq(GridCoords coords) {
             spawnTiles.FirstOrDefault(it => it.Coords == coords)
                       ?.Tile?.Let(it => PlayerManager.SpawnUnit(it.ProvideTilePosition(), coords));
             
             ClearFocus();
-            return true;
         }
 
         public void SelectTile(GridCoords coords) {
             if (focusType == FocusType.InteractableUnit) {
                 if (SetPath(coords)) return;
             } else if (focusType == FocusType.HQ) {
-               if(HandleHq(coords)) return;
+                HandleHq(coords);
+                return;
             }
             
             ClearFocus();
