@@ -19,7 +19,7 @@ namespace Actors.Grid.TerrainGeneratorFunctions {
         public Vector2 offset = Vector2.zero;
 
         [NonSerialized]
-        private int? generatedSeed = null;
+        private int? generatedSeed;
         
         public override float SampleTerrain(Vector2 worldCoordinates) {
             var offsetCoordinates = worldCoordinates + offset;

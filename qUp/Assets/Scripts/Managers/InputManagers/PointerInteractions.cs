@@ -192,6 +192,7 @@ namespace Managers.InputManagers {
         }
 
         private void OnClick() {
+            if (currentHitGameObject == null) return;
             if (InteractableTags.IsClickable(currentHitGameObject) && !EventSystem.current.IsPointerOverGameObject()) {
                 interact.Invoke(clickables[currentHitGameObject]);
             }
