@@ -74,9 +74,9 @@ namespace Managers.GridManagers {
 
             focusType = FocusType.HQ;
 
-            grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
-                .ToList()
-                .ForEach(it => it.Tile.ApplyMarkings(Color.green));
+            foreach (var tileInfo in grid.GetValues(GridCoords.GetNeighbourCoords(hqCoords))) {
+                tileInfo.Tile.ActivateHighlight(Color.green);
+            }
         }
 
         private bool HandleHq(GridCoords coords) {
@@ -86,9 +86,9 @@ namespace Managers.GridManagers {
                 PlayerManager.SpawnUnit(grid[coords].Tile.ProvideTilePosition(), coords);
             }
 
-            grid.GetValues(hqCoords.GetNeighbourCoordsOfGrid(maxCoords))
-                .ToList()
-                .ForEach(it => it.Tile.ResetMarkings());
+            foreach (var tileInfo in grid.GetValues(GridCoords.GetNeighbourCoords(hqCoords))) {
+                tileInfo.Tile.DeactivateHighlight();
+            }
 
             focusType = FocusType.None;
 
