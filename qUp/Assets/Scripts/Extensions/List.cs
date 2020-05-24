@@ -5,9 +5,9 @@ namespace Extensions {
     static class ListExtensions {
 
         public static bool IsEmpty<T>(this List<T> list) => list.Count == 0;
-        public static List<T> RemoveLast<T>(this List<T> list) => list.Also((it) => it.RemoveAt(it.Count - 1));
+        public static void RemoveLast<T>(this List<T> list) => list.RemoveAt(list.Count - 1);
 
-        public static void Repopulate<T>(this List<T> list, IEnumerable<T> range) {
+            public static void Repopulate<T>(this List<T> list, IEnumerable<T> range) {
             list.Clear();
             list.AddRange(range);
         }

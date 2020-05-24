@@ -20,22 +20,29 @@ namespace Actors.Grid.TerrainGeneratorFunctions {
 
         [NonSerialized]
         private int? generatedSeed;
-        
-        public override float SampleTerrain(Vector2 worldCoordinates) {
-            var offsetCoordinates = worldCoordinates + offset;
+
+        [NonSerialized]
+        private int? random;
+
+        public override float SampleTerrain(Vector2 worldCoordinates) =>
+            SampleTerrain(worldCoordinates.x, worldCoordinates.y);
+
+        public override float SampleTerrain(float x, float y) {
+            x += offset.x;
+            y += offset.y;
             if (seed != 0) {
-                var random = new Random(seed).Next(-10000, 10000);
-                offsetCoordinates += new Vector2(random, random);
+                x += (int) (random ?? (random = new Random(seed).Next(-10000, 10000)));
+                y += (int) random;
             } else {
-                if (generatedSeed.IsNull()) {
-                    generatedSeed = Mathf.RoundToInt(Time.time);
-                }
-                var random = new Random(generatedSeed ?? 0).Next(-10000, 10000);
-                offsetCoordinates += new Vector2(random, random);
+                x += (int) (random ?? (random =
+                    new Random((int) (generatedSeed ?? (generatedSeed = Mathf.RoundToInt(Time.time))))
+                        .Next(-10000, 10000))
+                        );
+                y += (int) random;
             }
 
 
-            return (Mathf.PerlinNoise(offsetCoordinates.x / density, offsetCoordinates.y * widthHeightRatio / density) -
+            return (Mathf.PerlinNoise(x / density, y * widthHeightRatio / density) -
                     (onlyPositiveHeight ? 0 : 0.5f)) * amplitude;
         }
     }

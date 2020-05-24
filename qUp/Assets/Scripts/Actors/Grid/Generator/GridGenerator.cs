@@ -23,6 +23,7 @@ namespace Actors.Grid.Generator {
         }
 
         public float SampleTerrain(Vector2 position) => data.TerrainGeneratorFunction.SampleTerrain(position);
+        public float SampleTerrain(float x, float y) => data.TerrainGeneratorFunction.SampleTerrain(x, y);
 
         public void GenerateGrid() {
             CreatePlayerHqs();

@@ -108,4 +108,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 2349728b978dc7f48803b83fec3ae69f, type: 2}
   moveTo: {x: 0, y: 0, z: 0}
-  move: 0
+  speed: 5
