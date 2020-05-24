@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Base.Interfaces;
 using Common;
-using InputControlls;
 using Managers.ApiManagers;
 using Managers.CameraManagers;
 using UnityEngine;

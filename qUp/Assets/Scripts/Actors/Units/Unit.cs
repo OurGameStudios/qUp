@@ -34,5 +34,10 @@ namespace Actors.Units {
             coords = inCoords;
             gridManager.RegisterUnit(this, inCoords);
         }
+
+        //TODO decide if vector3 is best way to dictate move position
+        public void MoveToNextTile(Vector3 position, bool combatTile) {
+            SetState(UnitMovement.Where(position, combatTile));
+        }
     }
 }

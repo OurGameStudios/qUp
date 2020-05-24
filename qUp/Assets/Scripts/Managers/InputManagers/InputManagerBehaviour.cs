@@ -1,6 +1,7 @@
 using Base.Interfaces;
-using InputControlls;
 using Managers.ApiManagers;
+using Managers.PlayerManagers;
+using Managers.PlayManagers;
 using UnityEngine;
 using static Managers.InputManagers.PointerInteractions;
 
@@ -29,6 +30,8 @@ namespace Managers.InputManagers {
             inputs = new Inputs();
             inputs.Enable();
             inputs.NoUnitSelected.Enable();
+            inputs.General.Enable();
+            inputs.General.Next.performed += _ => ApiManager.ProvideManager<PlayManager>().NextPhase();
             SetupPointer();
         }
 

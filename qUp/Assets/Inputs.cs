@@ -6,14 +6,12 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-namespace InputControlls
+public class @Inputs : IInputActionCollection, IDisposable
 {
-    public class @Inputs : IInputActionCollection, IDisposable
+    public InputActionAsset asset { get; }
+    public @Inputs()
     {
-        public InputActionAsset asset { get; }
-        public @Inputs()
-        {
-            asset = InputActionAsset.FromJson(@"{
+        asset = InputActionAsset.FromJson(@"{
     ""name"": ""Inputs"",
     ""maps"": [
         {
@@ -137,144 +135,210 @@ namespace InputControlls
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""General"",
+            ""id"": ""2496e54f-d236-4ceb-9051-e309b756f5cc"",
+            ""actions"": [
+                {
+                    ""name"": ""Next"",
+                    ""type"": ""Button"",
+                    ""id"": ""c2b0e941-c260-4ca9-af28-8e8f5d808441"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""5adfb2b6-179f-443d-8684-6418f10425dd"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Next"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
 }");
-            // NoUnitSelected
-            m_NoUnitSelected = asset.FindActionMap("NoUnitSelected", throwIfNotFound: true);
-            m_NoUnitSelected_SelectUnit = m_NoUnitSelected.FindAction("SelectUnit", throwIfNotFound: true);
-            m_NoUnitSelected_CameraRotation = m_NoUnitSelected.FindAction("CameraRotation", throwIfNotFound: true);
-            m_NoUnitSelected_CameraZoom = m_NoUnitSelected.FindAction("CameraZoom", throwIfNotFound: true);
-            m_NoUnitSelected_CameraPan = m_NoUnitSelected.FindAction("CameraPan", throwIfNotFound: true);
-            m_NoUnitSelected_PointerPosition = m_NoUnitSelected.FindAction("PointerPosition", throwIfNotFound: true);
-            m_NoUnitSelected_MouseDelta = m_NoUnitSelected.FindAction("MouseDelta", throwIfNotFound: true);
-        }
-
-        public void Dispose()
-        {
-            UnityEngine.Object.Destroy(asset);
-        }
-
-        public InputBinding? bindingMask
-        {
-            get => asset.bindingMask;
-            set => asset.bindingMask = value;
-        }
-
-        public ReadOnlyArray<InputDevice>? devices
-        {
-            get => asset.devices;
-            set => asset.devices = value;
-        }
-
-        public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
-
-        public bool Contains(InputAction action)
-        {
-            return asset.Contains(action);
-        }
-
-        public IEnumerator<InputAction> GetEnumerator()
-        {
-            return asset.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Enable()
-        {
-            asset.Enable();
-        }
-
-        public void Disable()
-        {
-            asset.Disable();
-        }
-
         // NoUnitSelected
-        private readonly InputActionMap m_NoUnitSelected;
-        private INoUnitSelectedActions m_NoUnitSelectedActionsCallbackInterface;
-        private readonly InputAction m_NoUnitSelected_SelectUnit;
-        private readonly InputAction m_NoUnitSelected_CameraRotation;
-        private readonly InputAction m_NoUnitSelected_CameraZoom;
-        private readonly InputAction m_NoUnitSelected_CameraPan;
-        private readonly InputAction m_NoUnitSelected_PointerPosition;
-        private readonly InputAction m_NoUnitSelected_MouseDelta;
-        public struct NoUnitSelectedActions
+        m_NoUnitSelected = asset.FindActionMap("NoUnitSelected", throwIfNotFound: true);
+        m_NoUnitSelected_SelectUnit = m_NoUnitSelected.FindAction("SelectUnit", throwIfNotFound: true);
+        m_NoUnitSelected_CameraRotation = m_NoUnitSelected.FindAction("CameraRotation", throwIfNotFound: true);
+        m_NoUnitSelected_CameraZoom = m_NoUnitSelected.FindAction("CameraZoom", throwIfNotFound: true);
+        m_NoUnitSelected_CameraPan = m_NoUnitSelected.FindAction("CameraPan", throwIfNotFound: true);
+        m_NoUnitSelected_PointerPosition = m_NoUnitSelected.FindAction("PointerPosition", throwIfNotFound: true);
+        m_NoUnitSelected_MouseDelta = m_NoUnitSelected.FindAction("MouseDelta", throwIfNotFound: true);
+        // General
+        m_General = asset.FindActionMap("General", throwIfNotFound: true);
+        m_General_Next = m_General.FindAction("Next", throwIfNotFound: true);
+    }
+
+    public void Dispose()
+    {
+        UnityEngine.Object.Destroy(asset);
+    }
+
+    public InputBinding? bindingMask
+    {
+        get => asset.bindingMask;
+        set => asset.bindingMask = value;
+    }
+
+    public ReadOnlyArray<InputDevice>? devices
+    {
+        get => asset.devices;
+        set => asset.devices = value;
+    }
+
+    public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
+
+    public bool Contains(InputAction action)
+    {
+        return asset.Contains(action);
+    }
+
+    public IEnumerator<InputAction> GetEnumerator()
+    {
+        return asset.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public void Enable()
+    {
+        asset.Enable();
+    }
+
+    public void Disable()
+    {
+        asset.Disable();
+    }
+
+    // NoUnitSelected
+    private readonly InputActionMap m_NoUnitSelected;
+    private INoUnitSelectedActions m_NoUnitSelectedActionsCallbackInterface;
+    private readonly InputAction m_NoUnitSelected_SelectUnit;
+    private readonly InputAction m_NoUnitSelected_CameraRotation;
+    private readonly InputAction m_NoUnitSelected_CameraZoom;
+    private readonly InputAction m_NoUnitSelected_CameraPan;
+    private readonly InputAction m_NoUnitSelected_PointerPosition;
+    private readonly InputAction m_NoUnitSelected_MouseDelta;
+    public struct NoUnitSelectedActions
+    {
+        private @Inputs m_Wrapper;
+        public NoUnitSelectedActions(@Inputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @SelectUnit => m_Wrapper.m_NoUnitSelected_SelectUnit;
+        public InputAction @CameraRotation => m_Wrapper.m_NoUnitSelected_CameraRotation;
+        public InputAction @CameraZoom => m_Wrapper.m_NoUnitSelected_CameraZoom;
+        public InputAction @CameraPan => m_Wrapper.m_NoUnitSelected_CameraPan;
+        public InputAction @PointerPosition => m_Wrapper.m_NoUnitSelected_PointerPosition;
+        public InputAction @MouseDelta => m_Wrapper.m_NoUnitSelected_MouseDelta;
+        public InputActionMap Get() { return m_Wrapper.m_NoUnitSelected; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(NoUnitSelectedActions set) { return set.Get(); }
+        public void SetCallbacks(INoUnitSelectedActions instance)
         {
-            private @Inputs m_Wrapper;
-            public NoUnitSelectedActions(@Inputs wrapper) { m_Wrapper = wrapper; }
-            public InputAction @SelectUnit => m_Wrapper.m_NoUnitSelected_SelectUnit;
-            public InputAction @CameraRotation => m_Wrapper.m_NoUnitSelected_CameraRotation;
-            public InputAction @CameraZoom => m_Wrapper.m_NoUnitSelected_CameraZoom;
-            public InputAction @CameraPan => m_Wrapper.m_NoUnitSelected_CameraPan;
-            public InputAction @PointerPosition => m_Wrapper.m_NoUnitSelected_PointerPosition;
-            public InputAction @MouseDelta => m_Wrapper.m_NoUnitSelected_MouseDelta;
-            public InputActionMap Get() { return m_Wrapper.m_NoUnitSelected; }
-            public void Enable() { Get().Enable(); }
-            public void Disable() { Get().Disable(); }
-            public bool enabled => Get().enabled;
-            public static implicit operator InputActionMap(NoUnitSelectedActions set) { return set.Get(); }
-            public void SetCallbacks(INoUnitSelectedActions instance)
+            if (m_Wrapper.m_NoUnitSelectedActionsCallbackInterface != null)
             {
-                if (m_Wrapper.m_NoUnitSelectedActionsCallbackInterface != null)
-                {
-                    @SelectUnit.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnSelectUnit;
-                    @SelectUnit.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnSelectUnit;
-                    @SelectUnit.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnSelectUnit;
-                    @CameraRotation.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraRotation;
-                    @CameraRotation.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraRotation;
-                    @CameraRotation.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraRotation;
-                    @CameraZoom.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraZoom;
-                    @CameraZoom.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraZoom;
-                    @CameraZoom.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraZoom;
-                    @CameraPan.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraPan;
-                    @CameraPan.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraPan;
-                    @CameraPan.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraPan;
-                    @PointerPosition.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnPointerPosition;
-                    @PointerPosition.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnPointerPosition;
-                    @PointerPosition.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnPointerPosition;
-                    @MouseDelta.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnMouseDelta;
-                    @MouseDelta.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnMouseDelta;
-                    @MouseDelta.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnMouseDelta;
-                }
-                m_Wrapper.m_NoUnitSelectedActionsCallbackInterface = instance;
-                if (instance != null)
-                {
-                    @SelectUnit.started += instance.OnSelectUnit;
-                    @SelectUnit.performed += instance.OnSelectUnit;
-                    @SelectUnit.canceled += instance.OnSelectUnit;
-                    @CameraRotation.started += instance.OnCameraRotation;
-                    @CameraRotation.performed += instance.OnCameraRotation;
-                    @CameraRotation.canceled += instance.OnCameraRotation;
-                    @CameraZoom.started += instance.OnCameraZoom;
-                    @CameraZoom.performed += instance.OnCameraZoom;
-                    @CameraZoom.canceled += instance.OnCameraZoom;
-                    @CameraPan.started += instance.OnCameraPan;
-                    @CameraPan.performed += instance.OnCameraPan;
-                    @CameraPan.canceled += instance.OnCameraPan;
-                    @PointerPosition.started += instance.OnPointerPosition;
-                    @PointerPosition.performed += instance.OnPointerPosition;
-                    @PointerPosition.canceled += instance.OnPointerPosition;
-                    @MouseDelta.started += instance.OnMouseDelta;
-                    @MouseDelta.performed += instance.OnMouseDelta;
-                    @MouseDelta.canceled += instance.OnMouseDelta;
-                }
+                @SelectUnit.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnSelectUnit;
+                @SelectUnit.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnSelectUnit;
+                @SelectUnit.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnSelectUnit;
+                @CameraRotation.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraRotation;
+                @CameraRotation.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraRotation;
+                @CameraRotation.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraRotation;
+                @CameraZoom.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraZoom;
+                @CameraZoom.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraZoom;
+                @CameraZoom.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraZoom;
+                @CameraPan.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraPan;
+                @CameraPan.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraPan;
+                @CameraPan.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnCameraPan;
+                @PointerPosition.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnPointerPosition;
+                @PointerPosition.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnPointerPosition;
+                @PointerPosition.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnPointerPosition;
+                @MouseDelta.started -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnMouseDelta;
+                @MouseDelta.performed -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnMouseDelta;
+                @MouseDelta.canceled -= m_Wrapper.m_NoUnitSelectedActionsCallbackInterface.OnMouseDelta;
+            }
+            m_Wrapper.m_NoUnitSelectedActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @SelectUnit.started += instance.OnSelectUnit;
+                @SelectUnit.performed += instance.OnSelectUnit;
+                @SelectUnit.canceled += instance.OnSelectUnit;
+                @CameraRotation.started += instance.OnCameraRotation;
+                @CameraRotation.performed += instance.OnCameraRotation;
+                @CameraRotation.canceled += instance.OnCameraRotation;
+                @CameraZoom.started += instance.OnCameraZoom;
+                @CameraZoom.performed += instance.OnCameraZoom;
+                @CameraZoom.canceled += instance.OnCameraZoom;
+                @CameraPan.started += instance.OnCameraPan;
+                @CameraPan.performed += instance.OnCameraPan;
+                @CameraPan.canceled += instance.OnCameraPan;
+                @PointerPosition.started += instance.OnPointerPosition;
+                @PointerPosition.performed += instance.OnPointerPosition;
+                @PointerPosition.canceled += instance.OnPointerPosition;
+                @MouseDelta.started += instance.OnMouseDelta;
+                @MouseDelta.performed += instance.OnMouseDelta;
+                @MouseDelta.canceled += instance.OnMouseDelta;
             }
         }
-        public NoUnitSelectedActions @NoUnitSelected => new NoUnitSelectedActions(this);
-        public interface INoUnitSelectedActions
+    }
+    public NoUnitSelectedActions @NoUnitSelected => new NoUnitSelectedActions(this);
+
+    // General
+    private readonly InputActionMap m_General;
+    private IGeneralActions m_GeneralActionsCallbackInterface;
+    private readonly InputAction m_General_Next;
+    public struct GeneralActions
+    {
+        private @Inputs m_Wrapper;
+        public GeneralActions(@Inputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Next => m_Wrapper.m_General_Next;
+        public InputActionMap Get() { return m_Wrapper.m_General; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GeneralActions set) { return set.Get(); }
+        public void SetCallbacks(IGeneralActions instance)
         {
-            void OnSelectUnit(InputAction.CallbackContext context);
-            void OnCameraRotation(InputAction.CallbackContext context);
-            void OnCameraZoom(InputAction.CallbackContext context);
-            void OnCameraPan(InputAction.CallbackContext context);
-            void OnPointerPosition(InputAction.CallbackContext context);
-            void OnMouseDelta(InputAction.CallbackContext context);
+            if (m_Wrapper.m_GeneralActionsCallbackInterface != null)
+            {
+                @Next.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnNext;
+                @Next.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnNext;
+                @Next.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnNext;
+            }
+            m_Wrapper.m_GeneralActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Next.started += instance.OnNext;
+                @Next.performed += instance.OnNext;
+                @Next.canceled += instance.OnNext;
+            }
         }
+    }
+    public GeneralActions @General => new GeneralActions(this);
+    public interface INoUnitSelectedActions
+    {
+        void OnSelectUnit(InputAction.CallbackContext context);
+        void OnCameraRotation(InputAction.CallbackContext context);
+        void OnCameraZoom(InputAction.CallbackContext context);
+        void OnCameraPan(InputAction.CallbackContext context);
+        void OnPointerPosition(InputAction.CallbackContext context);
+        void OnMouseDelta(InputAction.CallbackContext context);
+    }
+    public interface IGeneralActions
+    {
+        void OnNext(InputAction.CallbackContext context);
     }
 }

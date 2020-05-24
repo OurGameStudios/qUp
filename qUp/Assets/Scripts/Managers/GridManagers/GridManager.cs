@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Actors.Tiles;
@@ -9,14 +10,15 @@ using Extensions;
 using Managers.ApiManagers;
 using Managers.GridManagers.GridInfos;
 using Managers.PlayerManagers;
+using Managers.PlayManagers;
 using UnityEngine;
 
 namespace Managers.GridManagers {
     public class GridManager : BaseManager<IGridManagerState> {
-        
         public const int MAX_NUM_OF_UNITS = 3;
         public const int MAX_NUM_OF_TILES = 200;
-        
+        public const int MAX_TICKS = 5;
+
         private enum FocusType {
             None,
             HQ,
@@ -31,6 +33,16 @@ namespace Managers.GridManagers {
             new Lazy<PlayerManager>(ApiManager.ProvideManager<PlayerManager>);
 
         private PlayerManager PlayerManager => playerManagerLazy.Value;
+
+        private readonly Lazy<PlayManager> playManagerLazy =
+            new Lazy<PlayManager>(ApiManager.ProvideManager<PlayManager>);
+
+        private PlayManager PlayManager => playManagerLazy.Value;
+
+        private readonly Lazy<CoroutineHandler> coroutineHandler =
+            new Lazy<CoroutineHandler>(ApiManager.ProvideManager<CoroutineHandler>);
+
+        private CoroutineHandler CoroutineHandler => coroutineHandler.Value;
 
         private GridCoords maxCoords;
 
@@ -49,7 +61,7 @@ namespace Managers.GridManagers {
 
         private bool isUnitSelected;
         private readonly List<Unit> selectedUnits = new List<Unit>(3);
-        private int currentTick = 0;
+        private int currentTick;
         private List<TileTickInfo> currentSelectedPath = new List<TileTickInfo>(5);
 
         private FocusType focusType = FocusType.None;
@@ -57,6 +69,9 @@ namespace Managers.GridManagers {
         public GridManager() {
             pathsInRange = new Dictionary<TileTickInfo, TileTickInfo>(StaticPathfinder.MAX_NUM_OF_TILES);
             pathfinder = new Pathfinder();
+            for (var i = 0; i <= MAX_TICKS; i++) {
+                executions.Add(i, new HashSet<TileTickInfo>());
+            }
         }
 
         public void RegisterTile(Tile tile) {
@@ -82,7 +97,7 @@ namespace Managers.GridManagers {
             foreach (var tileInfo in grid.GetValues(GridCoords.GetNeighbourCoords(hqCoords))) {
                 if (tileInfo.ticks[0].units.Count >= MAX_NUM_OF_UNITS) continue;
                 spawnTiles.Add(tileInfo);
-                tileInfo.Tile.ActivateHighlight(color : Color.green);
+                tileInfo.Tile.ActivateHighlight(color: Color.green);
             }
 
             if (spawnTiles.Count != 0) return;
@@ -92,7 +107,7 @@ namespace Managers.GridManagers {
         private void HandleHq(GridCoords coords) {
             spawnTiles.FirstOrDefault(it => it.Coords == coords)
                       ?.Tile?.Let(it => PlayerManager.SpawnUnit(it.ProvideTilePosition(), coords));
-            
+
             ClearFocus();
         }
 
@@ -103,7 +118,7 @@ namespace Managers.GridManagers {
                 HandleHq(coords);
                 return;
             }
-            
+
             ClearFocus();
         }
 
@@ -139,9 +154,8 @@ namespace Managers.GridManagers {
         }
 
         private void ClearFocus() {
-            if (focusType == FocusType.None) {
-                return;
-            }
+            if (focusType == FocusType.None) return;
+
             if (focusType == FocusType.InteractableUnit) {
                 ClearUnitFocus();
             } else if (focusType == FocusType.UninteractableUnit) {
@@ -157,6 +171,7 @@ namespace Managers.GridManagers {
             foreach (var tileInfo in spawnTiles) {
                 tileInfo.Tile.DeactivateHighlight();
             }
+
             spawnTiles.Clear();
         }
 
@@ -239,6 +254,62 @@ namespace Managers.GridManagers {
 
             hasPathChanged = true;
             return true;
+        }
+
+        private readonly List<Unit> dispatchedUnitList = new List<Unit>(200);
+        private readonly Dictionary<int, HashSet<TileTickInfo>> executions = new Dictionary<int, HashSet<TileTickInfo>>(200);
+
+        private bool hasPaths;
+        
+        public void StartExecution() {
+            hasPaths = false;
+            foreach (var unitPathPair in unitPath) {
+                foreach (var t in unitPathPair.Value) {
+                    executions[t.Tick].Add(t);
+                    hasPaths = true;
+                }
+            }
+            
+            if (!hasPaths) PlayManager.NextPhase();
+            else { DispatchTickToUnits(); }
+        }
+
+        private void EndExecution() {
+            currentTick = 0;
+            for (var i = 0; i <= MAX_TICKS; i++) {
+                foreach (var tileTickInfo in executions[i]) {
+                    tileTickInfo.units.Clear();
+                }
+                executions[i].Clear();
+            }
+
+            foreach (var unitPathPair in unitPath) {
+                unitPathPair.Value.Repopulate(unitPathPair.Value[0].TileInfo.ticks[0]);
+                unitPathPair.Value[0].TileInfo.ticks[0].AddUnit(unitPathPair.Key);
+            }
+            PlayManager.NextPhase();
+        }
+
+        private void DispatchTickToUnits() {
+            currentTick++;
+            if (currentTick > MAX_TICKS) {
+                EndExecution();
+                return;
+            }
+            foreach (var tileTickInfo in executions[currentTick]) {
+                foreach (var unit in tileTickInfo.units) {
+                    unit.MoveToNextTile(tileTickInfo.TileInfo.Tile.ProvideTilePosition(), false);
+                    dispatchedUnitList.Add(unit);
+                }
+            }
+            if (dispatchedUnitList.Count == 0) EndExecution();
+        }
+
+        public void UnitMovementCompleted(Unit unit) {
+            dispatchedUnitList.Remove(unit);
+            if (dispatchedUnitList.Count == 0) {
+                CoroutineHandler.DoOnNextFrame(DispatchTickToUnits);
+            }
         }
     }
 }

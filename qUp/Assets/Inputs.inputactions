@@ -122,6 +122,33 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "General",
+            "id": "2496e54f-d236-4ceb-9051-e309b756f5cc",
+            "actions": [
+                {
+                    "name": "Next",
+                    "type": "Button",
+                    "id": "c2b0e941-c260-4ca9-af28-8e8f5d808441",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "5adfb2b6-179f-443d-8684-6418f10425dd",
+                    "path": "<Keyboard>/space",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Next",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
