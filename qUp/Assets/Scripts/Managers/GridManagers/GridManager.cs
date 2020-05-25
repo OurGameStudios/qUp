@@ -50,7 +50,7 @@ namespace Managers.GridManagers {
         private GridCoords maxCoords;
 
         private readonly Dictionary<GridCoords, TileInfo> grid = new Dictionary<GridCoords, TileInfo>(200);
-        private Dictionary<TileInfo, GridCoords> conflictedTiles = new Dictionary<TileInfo, GridCoords>();
+        private Dictionary<TileInfo, GridCoords> conflictedTiles = new Dictionary<TileInfo, GridCoords>(200);
         private readonly Dictionary<Unit, List<TileTickInfo>> unitPath = new Dictionary<Unit, List<TileTickInfo>>(200);
         private readonly Dictionary<Unit, Player> playerUnits = new Dictionary<Unit, Player>(200);
 
@@ -80,6 +80,7 @@ namespace Managers.GridManagers {
 
         public void RegisterTile(Tile tile) {
             grid.Add(tile.Coords, new TileInfo(tile.Coords, tile, PlayerManager.GetAllPlayers()));
+            //TODO max cords shouldn't be set each time new tile is registered
             maxCoords = gridInteractor.GetMaxCoords();
         }
 

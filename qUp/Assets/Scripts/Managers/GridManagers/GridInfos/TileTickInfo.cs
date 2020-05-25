@@ -14,14 +14,14 @@ namespace Managers.GridManagers.GridInfos {
             TileInfo = tileInfo;
             Tick = tick;
             foreach (var player in players) {
-                units[player] = new List<Unit>();
+                units[player] = new List<Unit>(200);
             }
         }
 
         public bool IsOverflown => !owerflownUnits.IsEmpty();
 
         private readonly Dictionary<Player, List<Unit>> units = new Dictionary<Player, List<Unit>>(200);
-        private readonly List<Unit> owerflownUnits = new List<Unit>();
+        private readonly List<Unit> owerflownUnits = new List<Unit>(200);
         public void AddUnit(Player player, Unit unit) => units[player].Add(unit);
 
         public List<Unit> GetUnits(Player player) => units[player];
