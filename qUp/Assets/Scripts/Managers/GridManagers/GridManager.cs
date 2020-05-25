@@ -10,9 +10,11 @@ using Common;
 using Extensions;
 using Managers.ApiManagers;
 using Managers.GridManagers.GridInfos;
+using Managers.InputManagers;
 using Managers.PlayerManagers;
 using Managers.PlayManagers;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Managers.GridManagers {
     public class GridManager : BaseManager<IGridManagerState> {
@@ -44,6 +46,11 @@ namespace Managers.GridManagers {
             new Lazy<CoroutineHandler>(ApiManager.ProvideManager<CoroutineHandler>);
 
         private CoroutineHandler CoroutineHandler => coroutineHandler.Value;
+        
+        private readonly Lazy<InputManagerBehaviour> inputManager =
+            new Lazy<InputManagerBehaviour>(ApiManager.ProvideManager<InputManagerBehaviour>);
+
+        private InputManagerBehaviour InputManager => inputManager.Value;
 
         private GridInteractor gridInteractor = ApiManager.ProvideInteractor<GridInteractor>();
 
@@ -127,24 +134,35 @@ namespace Managers.GridManagers {
         }
 
         public void SelectTile(GridCoords coords) {
-            if (focusType == FocusType.InteractableUnit) {
-                if (SetPath(coords)) return;
-            } else if (focusType == FocusType.HQ) {
+            if (focusType == FocusType.HQ) {
                 HandleHq(coords);
+                return;
+            }
+
+            if (grid[coords].ticks[currentTick].GetUnitCount(PlayerManager.GetCurrentPlayer()) > 0) {
+                SelectUnit(grid[coords].ticks[currentTick].GetUnits(PlayerManager.GetCurrentPlayer())[0]);
                 return;
             }
 
             ClearFocus();
         }
 
-        private int groupRange;
+        public void SelectUnitPath(GridCoords coords) {
+            if (focusType == FocusType.InteractableUnit) {
+                SetPath(coords);
+            }
+        }
 
-        //TODO this method needs to notify UI to display selected group UI
+        private int groupRange;
+        
         //TODO if unit is not from current player, UI should be notified to display
         public void SelectUnit(Unit unit) {
             if (selectedUnits.Contains(unit) || playerUnits[unit] != PlayerManager.GetCurrentPlayer()) return;
             ClearFocus();
             selectedUnits.AddRange(unitPath[unit][currentTick].GetUnits(PlayerManager.GetCurrentPlayer()));
+            
+            //TODO this method needs to notify UI to display selected group UI
+            InputManager.OnUnitSelected();
 
             groupRange = selectedUnits.Min(x => x.data.tickPoints);
 
