@@ -48,7 +48,6 @@ namespace Managers.InputManagers {
         private Action<IEnumerator> coroutineStopHandler;
         private Action<GameObject> hoverStart;
         private Action<GameObject> hoverEnd;
-        private Action<IClickable> interact;
 
         private PointerInteractions(Inputs inputs) {
             mouse = InputSystem.GetDevice<Mouse>();
@@ -78,11 +77,6 @@ namespace Managers.InputManagers {
 
             public PointerInteractionsBuilder SetScreenEdgePercentage(float screenEdgePercentage) {
                 pointerInteractions.screenEdgePercentage = screenEdgePercentage;
-                return this;
-            }
-
-            public PointerInteractionsBuilder SetInteractionListener(Action<IClickable> interaction) {
-                pointerInteractions.interact = interaction;
                 return this;
             }
 

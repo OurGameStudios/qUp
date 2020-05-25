@@ -144,6 +144,7 @@ namespace Managers.GridManagers {
                 return;
             }
 
+            InputManager.OnUnitDeselected();
             ClearFocus();
         }
 

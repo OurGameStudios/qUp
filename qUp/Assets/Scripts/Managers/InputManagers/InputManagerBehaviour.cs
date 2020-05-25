@@ -84,5 +84,10 @@ namespace Managers.InputManagers {
             inputs.NoUnitSelected.Disable();
             inputs.UnitSelected.Enable();
         }
+
+        public void OnUnitDeselected() {
+            inputs.NoUnitSelected.Enable();
+            inputs.UnitSelected.Disable();
+        }
     }
 }
