@@ -30,6 +30,8 @@ namespace Actors.Units {
             SetState(UnitSelected.Where());
         }
 
+        public void OnSecondaryClick() { }
+
         public void SetCoords(GridCoords inCoords) {
             coords = inCoords;
             gridManager.RegisterUnit(this, inCoords);

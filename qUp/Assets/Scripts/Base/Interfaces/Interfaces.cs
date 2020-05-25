@@ -3,6 +3,8 @@ namespace Base.Interfaces {
 
     public interface IClickable {
         void OnClick();
+
+        void OnSecondaryClick();
     }
 
     public interface IHoverable {

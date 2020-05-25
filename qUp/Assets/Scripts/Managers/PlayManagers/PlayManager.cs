@@ -2,6 +2,7 @@
 using Base.Interfaces;
 using Managers.ApiManagers;
 using Managers.GridManagers;
+using Managers.InputManagers;
 using Managers.PlayerManagers;
 using UnityEngine;
 
@@ -22,6 +23,11 @@ namespace Managers.PlayManagers {
             new Lazy<PlayerManager>(ApiManager.ProvideManager<PlayerManager>);
         
         private PlayerManager PlayerManager => playerManagerLazy.Value;
+        
+        private readonly Lazy<InputManagerBehaviour> inputManagerLazy =
+            new Lazy<InputManagerBehaviour>(ApiManager.ProvideManager<InputManagerBehaviour>);
+        
+        private InputManagerBehaviour InputManager => inputManagerLazy.Value;
         
 
         //TODO this should be changed to prepping phase if starting units are to be implemented
@@ -57,17 +63,19 @@ namespace Managers.PlayManagers {
         }
 
         private void StartExecutionPhase() {
-            //TODO Change controls for input manager
             phase = Phase.ExecutionPhase;
+            InputManager.OnExecutionPhase();
             GridManager.StartExecution();
         }
 
         private void StartPlanningPhase() {
             phase = Phase.PlanningPhase;
+            InputManager.OnPlanningPhase();
         }
 
         private void StartPreppingPhase() {
             phase = Phase.PreppingPhase;
+            InputManager.OnPreppingPhase();
         }
     }
 }

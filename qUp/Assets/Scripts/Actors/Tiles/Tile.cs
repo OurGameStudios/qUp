@@ -41,6 +41,10 @@ namespace Actors.Tiles {
             gridManager.SelectTile(Coords);
         }
 
+        public void OnSecondaryClick() {
+            gridManager.SelectUnitPath(Coords);
+        }
+
         public void OnHoverStart() {
             SetState(HighlightActivated.With(currentBaseColor, hoverHighlightColor));
         }

@@ -48,7 +48,6 @@ namespace Managers.InputManagers {
         private Action<IEnumerator> coroutineStopHandler;
         private Action<GameObject> hoverStart;
         private Action<GameObject> hoverEnd;
-        private Action<IClickable> interact;
 
         private PointerInteractions(Inputs inputs) {
             mouse = InputSystem.GetDevice<Mouse>();
@@ -81,11 +80,6 @@ namespace Managers.InputManagers {
                 return this;
             }
 
-            public PointerInteractionsBuilder SetInteractionListener(Action<IClickable> interaction) {
-                pointerInteractions.interact = interaction;
-                return this;
-            }
-
             public PointerInteractions Build() {
                 return pointerInteractions;
             }
@@ -100,16 +94,15 @@ namespace Managers.InputManagers {
         public void RemoveHoverable(GameObject gameObject) => hoverables.Remove(gameObject);
 
         private void SetupInputs(Inputs inputs) {
-            inputs.NoUnitSelected.CameraRotation.started += _ => StartRotation();
-            inputs.NoUnitSelected.CameraRotation.canceled += _ => EndRotation();
+            inputs.CameraControls.CameraRotation.started += _ => StartRotation();
+            inputs.CameraControls.CameraRotation.canceled += _ => EndRotation();
+            inputs.CameraControls.CameraZoom.performed += context => OnZoom(context.ReadValue<float>());
+            inputs.CameraControls.MouseDelta.performed += context => Rotation(context.ReadValue<Vector2>());
 
-            inputs.NoUnitSelected.MouseDelta.performed += context => Rotation(context.ReadValue<Vector2>());
+            inputs.UnitSelected.SelectPath.performed += _ => SelectPath();
 
-            inputs.NoUnitSelected.SelectUnit.performed += _ => OnClick();
-
-            inputs.NoUnitSelected.CameraZoom.performed += context => OnZoom(context.ReadValue<float>());
-
-            inputs.NoUnitSelected.PointerPosition.performed += context => {
+            inputs.PlanningPhase.SelectUnit.performed += _ => SelectUnit();
+            inputs.CameraControls.PointerPosition.performed += context => {
                 pointerPosition = context.ReadValue<Vector2>();
                 Pan();
                 if (EventSystem.current.IsPointerOverGameObject()) {
@@ -190,10 +183,17 @@ namespace Managers.InputManagers {
             CameraManager.ZoomCamera(scrollDelta, GetMouseWorldPosition());
         }
 
-        private void OnClick() {
+        private void SelectUnit() {
             if (currentHitGameObject == null) return;
             if (InteractableTags.IsClickable(currentHitGameObject) && !EventSystem.current.IsPointerOverGameObject()) {
-                interact.Invoke(clickables[currentHitGameObject]);
+                clickables[currentHitGameObject].OnClick();
+            }
+        }
+
+        private void SelectPath() {
+            if (currentHitGameObject == null) return;
+            if (currentHitGameObject.CompareTag(InteractableTags.TILE_TAG) && !EventSystem.current.IsPointerOverGameObject()) {
+                clickables[currentHitGameObject].OnSecondaryClick();
             }
         }
 
@@ -237,6 +237,10 @@ namespace Managers.InputManagers {
 
         private Vector3 GetMouseWorldPosition() {
             return camera.ScreenToWorldPoint(new Vector3(pointerPosition.x, pointerPosition.y, camera.farClipPlane));
+        }
+
+        public void CleanPlanningPhase() {
+            HoverEnd();
         }
     }
 }

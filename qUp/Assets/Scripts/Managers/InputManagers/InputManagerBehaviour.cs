@@ -1,12 +1,16 @@
+using System;
 using Base.Interfaces;
 using Managers.ApiManagers;
-using Managers.PlayerManagers;
 using Managers.PlayManagers;
 using UnityEngine;
 using static Managers.InputManagers.PointerInteractions;
 
 namespace Managers.InputManagers {
     public class InputManagerBehaviour : MonoBehaviour, IManager {
+        
+        private Lazy<PlayManager> playManagerLazy = new Lazy<PlayManager>(ApiManager.ProvideManager<PlayManager>);
+        private PlayManager PlayManager => playManagerLazy.Value;
+        
         public Camera mainCamera;
 
         [Range(0, 1f)]
@@ -30,8 +34,8 @@ namespace Managers.InputManagers {
             inputs = new Inputs();
             inputs.Enable();
             inputs.NoUnitSelected.Enable();
-            inputs.General.Enable();
-            inputs.General.Next.performed += _ => ApiManager.ProvideManager<PlayManager>().NextPhase();
+            inputs.NextPlayer.Enable();
+            inputs.NextPlayer.Next.performed += _ => PlayManager.NextPhase();
             SetupPointer();
         }
 
@@ -43,12 +47,47 @@ namespace Managers.InputManagers {
                     .SetCamera(mainCamera)
                     .SetCoroutineHandlers(enumerator => StartCoroutine(enumerator), enumerator => StopCoroutine(enumerator))
                     .SetScreenEdgePercentage(cameraPanEdgePercentage)
-                    .SetInteractionListener(interacted => OnClick(interacted))
                     .Build();
         }
 
-        private void OnClick(IClickable currentHitGameObject) {
-            currentHitGameObject.OnClick();
+        private void DisablePlanningPhase() {
+            inputs.PlanningPhase.Disable();
+            inputs.NoUnitSelected.Disable();
+            inputs.UnitSelected.Disable();
+            pointerInteractions.CleanPlanningPhase();
+        }
+
+        private void DisableExecutionPhase() {
+            inputs.ExecutionInteractions.Disable();
+        }
+
+        private void DisablePreppingPhase() { }
+
+        public void OnPlanningPhase() {
+            DisablePreppingPhase();
+            inputs.NextPlayer.Enable();
+            inputs.PlanningPhase.Enable();
+            inputs.NoUnitSelected.Enable();
+        }
+
+        public void OnExecutionPhase() {
+            DisablePlanningPhase();
+            inputs.ExecutionInteractions.Enable();
+            inputs.NextPlayer.Disable();
+        }
+
+        public void OnPreppingPhase() {
+            DisableExecutionPhase();
+        }
+
+        public void OnUnitSelected() {
+            inputs.NoUnitSelected.Disable();
+            inputs.UnitSelected.Enable();
+        }
+
+        public void OnUnitDeselected() {
+            inputs.NoUnitSelected.Enable();
+            inputs.UnitSelected.Disable();
         }
     }
 }
