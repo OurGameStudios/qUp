@@ -18,7 +18,7 @@ namespace Managers.PlayerManagers {
         }
 
         private void SpawnUnit(Vector3 position, UnitData unitData, GridCoords coords) {
-            var unit = UnitBehaviour.Instantiate(unitData, position);
+            var unit = UnitBehaviour.Instantiate(unitData, position, Controller.GetCurrentPlayer());
             unit.SetCoords(coords);
         }
     }

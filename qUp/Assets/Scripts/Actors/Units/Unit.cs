@@ -39,5 +39,13 @@ namespace Actors.Units {
         public void MoveToNextTile(Vector3 position, bool combatTile) {
             SetState(UnitMovement.Where(position, combatTile));
         }
+
+        public void SetUnitColor(Color color) {
+            SetState(UnitOwnership.Where(color));
+        }
+
+        public void DeactivateHighlight() {
+            SetState(Highlight.Where(false));
+        }
     }
 }

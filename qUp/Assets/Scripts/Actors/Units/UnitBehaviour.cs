@@ -1,5 +1,6 @@
 using System.Collections;
 using Actors.Grid.Generator;
+using Actors.Players;
 using Base.MonoBehaviours;
 using Extensions;
 using Managers.ApiManagers;
@@ -20,7 +21,7 @@ namespace Actors.Units {
         private IEnumerator unitMovement;
         public float speed = 5f;
 
-        public static Unit Instantiate(UnitData data, Vector3 position) {
+        public static Unit Instantiate(UnitData data, Vector3 position, Player player) {
             return Instantiate(data.prefab, position, Quaternion.identity)
                    .GetComponent<UnitBehaviour>()
                    .Controller;
@@ -39,6 +40,14 @@ namespace Actors.Units {
             } else if (inState is UnitMovement unitMovementState) {
                 moveTo = unitMovementState.Position;
                 StartCoroutine(unitMovement);
+            } else if (inState is UnitOwnership ownershipState) {
+                unitShader.SetUnitPlayerColor(ownershipState.Color);
+            } else if (inState is Highlight highlightState) {
+                if (highlightState.IsHighlightOn) {
+                    unitShader.EnableHighlight();
+                } else {
+                    unitShader.DisableHighlight();
+                }
             }
         }
 
