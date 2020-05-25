@@ -1,7 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Actors.Grid.Generator;
+using Actors.Players;
 using Actors.Tiles;
 using Actors.Units;
 using Base.Managers;
@@ -44,30 +45,33 @@ namespace Managers.GridManagers {
 
         private CoroutineHandler CoroutineHandler => coroutineHandler.Value;
 
+        private GridInteractor gridInteractor = ApiManager.ProvideInteractor<GridInteractor>();
+
         private GridCoords maxCoords;
 
-        private readonly Dictionary<GridCoords, TileInfo> grid = new Dictionary<GridCoords, TileInfo>();
+        private readonly Dictionary<GridCoords, TileInfo> grid = new Dictionary<GridCoords, TileInfo>(200);
         private Dictionary<TileInfo, GridCoords> conflictedTiles = new Dictionary<TileInfo, GridCoords>();
-        private readonly Dictionary<Unit, List<TileTickInfo>> unitPath = new Dictionary<Unit, List<TileTickInfo>>();
+        private readonly Dictionary<Unit, List<TileTickInfo>> unitPath = new Dictionary<Unit, List<TileTickInfo>>(200);
+        private readonly Dictionary<Unit, Player> playerUnits = new Dictionary<Unit, Player>(200);
 
         private List<TileInfo> path;
 
         private GridCoords hqCoords;
-        private List<TileInfo> spawnTiles = new List<TileInfo>(2);
+        private readonly List<TileInfo> spawnTiles = new List<TileInfo>(2);
 
         private Dictionary<TileTickInfo, TileTickInfo> pathsInRange;
 
-        private Pathfinder pathfinder;
+        private readonly Pathfinder pathfinder;
 
         private bool isUnitSelected;
-        private readonly List<Unit> selectedUnits = new List<Unit>(3);
+        private readonly List<Unit> selectedUnits = new List<Unit>(MAX_NUM_OF_UNITS);
         private int currentTick;
-        private List<TileTickInfo> currentSelectedPath = new List<TileTickInfo>(5);
+        private readonly List<TileTickInfo> currentSelectedPath = new List<TileTickInfo>(MAX_TICKS);
 
         private FocusType focusType = FocusType.None;
 
         public GridManager() {
-            pathsInRange = new Dictionary<TileTickInfo, TileTickInfo>(StaticPathfinder.MAX_NUM_OF_TILES);
+            pathsInRange = new Dictionary<TileTickInfo, TileTickInfo>(MAX_NUM_OF_TILES);
             pathfinder = new Pathfinder();
             for (var i = 0; i <= MAX_TICKS; i++) {
                 executions.Add(i, new HashSet<TileTickInfo>());
@@ -75,27 +79,37 @@ namespace Managers.GridManagers {
         }
 
         public void RegisterTile(Tile tile) {
-            grid.Add(tile.Coords, new TileInfo(tile.Coords, tile));
+            grid.Add(tile.Coords, new TileInfo(tile.Coords, tile, PlayerManager.GetAllPlayers()));
+            maxCoords = gridInteractor.GetMaxCoords();
         }
 
         public void RegisterUnit(Unit unit, GridCoords coords) {
             var ticks = grid[coords].ticks;
 
             //TODO spawned unit should take 5 ticks
-            ticks[0].units.Add(unit);
+            ticks[0].AddUnit(PlayerManager.GetCurrentPlayer(), unit);
 
             unitPath.Add(unit, new List<TileTickInfo> {ticks[0]});
+            playerUnits.Add(unit, PlayerManager.GetCurrentPlayer());
+            unit.SetUnitColor(PlayerManager.GetCurrentPlayer().PlayerColor);
         }
 
         public void UnitToSpawnSelected() {
             ClearFocus();
             var currentPlayer = PlayerManager.GetCurrentPlayer();
             hqCoords = currentPlayer.GetBaseCoordinates();
+            if (hqCoords.x > maxCoords.x) {
+                hqCoords.x = maxCoords.x;
+            }
+            
+            if (hqCoords.y > maxCoords.y) {
+                hqCoords.y = maxCoords.y;
+            }
 
             focusType = FocusType.HQ;
 
             foreach (var tileInfo in grid.GetValues(GridCoords.GetNeighbourCoords(hqCoords))) {
-                if (tileInfo.ticks[0].units.Count >= MAX_NUM_OF_UNITS) continue;
+                if (tileInfo.ticks[0].GetUnitCount(PlayerManager.GetCurrentPlayer()) >= MAX_NUM_OF_UNITS) continue;
                 spawnTiles.Add(tileInfo);
                 tileInfo.Tile.ActivateHighlight(color: Color.green);
             }
@@ -124,16 +138,18 @@ namespace Managers.GridManagers {
 
         private int groupRange;
 
+        //TODO this method needs to notify UI to display selected group UI
+        //TODO if unit is not from current player, UI should be notified to display
         public void SelectUnit(Unit unit) {
-            if (selectedUnits.Contains(unit)) return;
+            if (selectedUnits.Contains(unit) || playerUnits[unit] != PlayerManager.GetCurrentPlayer()) return;
             ClearFocus();
-            selectedUnits.AddRange(unitPath[unit][currentTick].units);
+            selectedUnits.AddRange(unitPath[unit][currentTick].GetUnits(PlayerManager.GetCurrentPlayer()));
 
             groupRange = selectedUnits.Min(x => x.data.tickPoints);
 
             //TODO need to check if last is better then inverting the list in pathfinder
             pathsInRange.Clear();
-            pathfinder.FindRange(unitPath[unit].Last(), selectedUnits, groupRange, grid, ref pathsInRange);
+            pathfinder.FindRange(PlayerManager.GetCurrentPlayer(), unitPath[unit].Last(), selectedUnits, groupRange, grid, ref pathsInRange);
 
             ShowUnitRange();
             ShowGroupPaths();
@@ -187,6 +203,7 @@ namespace Managers.GridManagers {
             //because we could have added a unit to group which has less ticks and range will be less, so we can't just
             //clear those tiles.
             foreach (var unit in selectedUnits) {
+                unit.DeactivateHighlight();
                 for (var i = 0; i < unitPath[unit].Count; i++)
                     unitPath[unit][i].TileInfo.Tile.DeactivateHighlight();
             }
@@ -212,7 +229,7 @@ namespace Managers.GridManagers {
                         unitPath[unit][0].TileInfo.Tile.DeactivateHighlight();
                     }
 
-                    unitPath[unit][0].units.Remove(unit);
+                    unitPath[unit][0].RemoveUnit(PlayerManager.GetCurrentPlayer(), unit);
                     unitPath[unit].RemoveAt(0);
                 }
             }
@@ -232,8 +249,8 @@ namespace Managers.GridManagers {
             foreach (var tileTickInfo in currentSelectedPath) {
                 //Todo this needs to be changed to take overflowing of units into account
                 //TODO better logic for this, this is costly
-                foreach (var unit in selectedUnits.Where(unit => !tileTickInfo.units.Contains(unit))) {
-                    tileTickInfo.units.Add(unit);
+                foreach (var unit in selectedUnits.Where(unit => !tileTickInfo.ContainsUnit(PlayerManager.GetCurrentPlayer(), unit))) {
+                    tileTickInfo.AddUnit(PlayerManager.GetCurrentPlayer(), unit);
                 }
             }
 
@@ -260,8 +277,13 @@ namespace Managers.GridManagers {
         private readonly Dictionary<int, HashSet<TileTickInfo>> executions = new Dictionary<int, HashSet<TileTickInfo>>(200);
 
         private bool hasPaths;
+
+        public void SetupForNextPlayer() {
+            ClearFocus();
+        }
         
         public void StartExecution() {
+            ClearFocus();
             hasPaths = false;
             foreach (var unitPathPair in unitPath) {
                 foreach (var t in unitPathPair.Value) {
@@ -278,14 +300,14 @@ namespace Managers.GridManagers {
             currentTick = 0;
             for (var i = 0; i <= MAX_TICKS; i++) {
                 foreach (var tileTickInfo in executions[i]) {
-                    tileTickInfo.units.Clear();
+                    tileTickInfo.ClearUnits();
                 }
                 executions[i].Clear();
             }
 
             foreach (var unitPathPair in unitPath) {
                 unitPathPair.Value.Repopulate(unitPathPair.Value[0].TileInfo.ticks[0]);
-                unitPathPair.Value[0].TileInfo.ticks[0].AddUnit(unitPathPair.Key);
+                unitPathPair.Value[0].TileInfo.ticks[0].AddUnit(playerUnits[unitPathPair.Key], unitPathPair.Key);
             }
             PlayManager.NextPhase();
         }
@@ -297,8 +319,8 @@ namespace Managers.GridManagers {
                 return;
             }
             foreach (var tileTickInfo in executions[currentTick]) {
-                foreach (var unit in tileTickInfo.units) {
-                    unit.MoveToNextTile(tileTickInfo.TileInfo.Tile.ProvideTilePosition(), false);
+                foreach (var unit in tileTickInfo.GetUnits()) {
+                    unit.MoveToNextTile(tileTickInfo.TileInfo.Tile.ProvideTilePosition(), tileTickInfo.IsCombatTile());
                     dispatchedUnitList.Add(unit);
                 }
             }

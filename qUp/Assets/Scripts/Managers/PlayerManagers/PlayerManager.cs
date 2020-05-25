@@ -17,11 +17,25 @@ namespace Managers.PlayerManagers {
         
         private List<PlayerScript> players;
 
+        private int currentPlayer = 0;
+
         public void Init(PlayerManagerData data) {
             players = data.PlayerDatas.ConvertAll(it => new PlayerScript(it));
         }
 
-        public Player GetCurrentPlayer() => players.First().ExposeController();
+        public bool NextPlayer() {
+            if (currentPlayer + 1 >= players.Count) {
+                currentPlayer = 0;
+                return false;
+            }
+
+            currentPlayer++;
+            return true;
+        }
+
+        public Player GetCurrentPlayer() => players[currentPlayer].ExposeController();
+
+        public List<Player> GetAllPlayers() => players.ConvertAll(it => it.ExposeController());
 
         public void SpawnUnit(Vector3 tilePosition, GridCoords coords) {
             var unitData = UiManager.ProvideSelectedUnit();

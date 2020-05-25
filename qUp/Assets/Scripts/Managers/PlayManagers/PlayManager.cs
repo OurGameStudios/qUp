@@ -2,21 +2,27 @@
 using Base.Interfaces;
 using Managers.ApiManagers;
 using Managers.GridManagers;
+using Managers.PlayerManagers;
 using UnityEngine;
 
 namespace Managers.PlayManagers {
     public class PlayManager : MonoBehaviour, IManager {
-        private const int PHASE_COUNT = 3;
         private enum Phase {
-            PlanningPhase = 0,
-            ExecutionPhase = 1,
-            PreppingPhase = 2
+            PlanningPhase,
+            ExecutionPhase,
+            PreppingPhase
         }
         
         private readonly Lazy<GridManager> gridManagerLazy =
             new Lazy<GridManager>(ApiManager.ProvideManager<GridManager>);
         
         private GridManager GridManager => gridManagerLazy.Value;
+        
+        private readonly Lazy<PlayerManager> playerManagerLazy =
+            new Lazy<PlayerManager>(ApiManager.ProvideManager<PlayerManager>);
+        
+        private PlayerManager PlayerManager => playerManagerLazy.Value;
+        
 
         //TODO this should be changed to prepping phase if starting units are to be implemented
         private Phase phase = Phase.PlanningPhase;
@@ -28,25 +34,40 @@ namespace Managers.PlayManagers {
         }
 
         public void NextPhase() {
-            if ((int)phase != PHASE_COUNT - 1) {
-                phase += 1;
-            } else {
-                phase = 0;
-            }
-
             if (phase == Phase.PlanningPhase) {
                 //TODO start planning phase
+                if (PlayerManager.NextPlayer()) {
+                    SwitchPlayer();
+                } else {
+                    StartExecutionPhase();
+                }
             } else if (phase == Phase.ExecutionPhase) {
-                StartExecutionPhase();
+                StartPlanningPhase();
+                //TODO start prepping phase
+                // StartPreppingPhase();
             } else if (phase == Phase.PreppingPhase) {
                 //TODO start prepping phase
-                NextPhase(); //replace when implementing prepping phase
+                 //replace when implementing prepping phase
+                 StartPlanningPhase();
             }
+        }
+
+        private void SwitchPlayer() {
+            GridManager.SetupForNextPlayer();
         }
 
         private void StartExecutionPhase() {
             //TODO Change controls for input manager
+            phase = Phase.ExecutionPhase;
             GridManager.StartExecution();
+        }
+
+        private void StartPlanningPhase() {
+            phase = Phase.PlanningPhase;
+        }
+
+        private void StartPreppingPhase() {
+            phase = Phase.PreppingPhase;
         }
     }
 }

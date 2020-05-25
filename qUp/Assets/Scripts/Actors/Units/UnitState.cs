@@ -10,6 +10,24 @@ namespace Actors.Units {
         public static UnitSelected Where() => Cache;
     }
 
+    public class UnitOwnership : UnitState<UnitOwnership> {
+        public Color Color { get; private set; }
+
+        public static UnitOwnership Where(Color color) {
+            Cache.Color = color;
+            return Cache;
+        }
+    }
+
+    public class Highlight : UnitState<Highlight> {
+        public bool IsHighlightOn { get; private set; }
+
+        public static Highlight Where(bool isHighlightOn) {
+            Cache.IsHighlightOn = isHighlightOn;
+            return Cache;
+        } 
+    }
+
     public class UnitMovement : UnitState<UnitMovement> {
         
         public Vector3 Position { get; private set; }

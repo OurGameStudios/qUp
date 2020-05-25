@@ -54,5 +54,7 @@ namespace Actors.Grid.Generator {
                     SetState(BaseGenerated.With(offset, (x, y), baseDetails.owner));
                 });
         }
+
+        public GridCoords GetMaxGridCoords() => (data.MapWidth, data.MapHeight);
     }
 }

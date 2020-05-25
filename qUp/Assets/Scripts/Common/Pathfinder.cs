@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Actors.Players;
 using Actors.Units;
 using Extensions;
 using Managers.GridManagers;
@@ -15,6 +16,7 @@ namespace Common {
         private readonly Dictionary<TileInfo, int> costSoFar;
         private readonly List<TileInfo> neighbours;
         private TileInfo start;
+        private Player currentPlayer;
 
         private readonly FastPriorityQueue<TileInfo> forgottenTilesFast;
 
@@ -29,11 +31,13 @@ namespace Common {
         }
 
         public void FindRange(
+            Player player,
             TileTickInfo start,
             List<Unit> units,
             int movementRange,
             IReadOnlyDictionary<GridCoords, TileInfo> graph,
             ref Dictionary<TileTickInfo, TileTickInfo> pathsInRange) {
+            currentPlayer = player;
             movementRange += 1;
             this.start = start.TileInfo;
             frontier.Clear();
@@ -93,8 +97,8 @@ namespace Common {
         }
 
         private int GetNumberOfUnitsOnTileTick(List<Unit> unitsOnTile, TileTickInfo tileTickInfo) {
-            return GridManager.MAX_NUM_OF_UNITS - unitsOnTile.Aggregate(tileTickInfo.units.Count,
-                (current, t) => current - (tileTickInfo.units.Contains(t) ? 1 : 0));
+            return GridManager.MAX_NUM_OF_UNITS - unitsOnTile.Aggregate(tileTickInfo.GetUnitCount(currentPlayer),
+                (current, t) => current - (tileTickInfo.ContainsUnit(currentPlayer, t) ? 1 : 0));
         }
 
         private void AddForgottenTiles(int numOfUnits, int movementRange,
@@ -121,7 +125,7 @@ namespace Common {
                 if (bestNeighbour.IsNull()) continue;
 
                 foreach (var tick in forgottenTile.ticks) {
-                    if (GridManager.MAX_NUM_OF_UNITS - tick.units.Count >= numOfUnits && tick.Tick > costSoFar[bestNeighbour] &&
+                    if (GridManager.MAX_NUM_OF_UNITS - tick.GetUnitCount(currentPlayer) >= numOfUnits && tick.Tick > costSoFar[bestNeighbour] &&
                         tick.Tick <= movementRange) {
                         costSoFar.Add(forgottenTile, tick.Tick);
                         cameFrom.Add(forgottenTile, bestNeighbour);
