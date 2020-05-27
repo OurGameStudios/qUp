@@ -17,5 +17,7 @@ namespace Actors.Grid.Generator {
         public float? SampleTerrain(float x, float y) => generator.GetOrNull()?.SampleTerrain(x, y);
 
         public GridCoords GetMaxCoords() => generator.GetOrNull().GetMaxGridCoords();
+
+        public GameObject GetResourceDecorator() => generator.GetOrNull().GetResourceDecorator();
     }
 }

@@ -15,10 +15,6 @@ namespace Base.MonoBehaviours {
             OnAwake();
         }
 
-        protected void ManualControllerInstantiation() {
-            Controller = new TController().Also(it => it.InitBase(OnStateHandler));
-        }
-
         protected virtual void OnAwake() { }
     }
 }

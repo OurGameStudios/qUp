@@ -19,6 +19,9 @@ namespace Actors.Grid.Generator {
         }
 
         [SerializeField]
+        private List<GameObject> resourceDecorators;
+
+        [SerializeField]
         private GeneratorFunction generatorFunction;
 
         [SerializeField]
@@ -51,5 +54,7 @@ namespace Actors.Grid.Generator {
         public SymmetryFunction SymmetryFunction => symmetryFunction;
 
         public TerrainGeneratorFunction TerrainGeneratorFunction => terrainGeneratorFunction;
+
+        public List<GameObject> ResourceDecorators => resourceDecorators;
     }
 }

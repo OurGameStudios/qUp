@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a91ef63026502244fa75091598ce150a, type: 3}
   m_Name: SampleMapGeneratorData
   m_EditorClassIdentifier: 
+  resourceDecorators:
+  - {fileID: 3910070033937555488, guid: 3829af6279fb7214d9c12c661d2aeb84, type: 3}
+  - {fileID: 2761497373984230218, guid: 9f42954b46acb2c4da53c89ddc91056d, type: 3}
+  - {fileID: 1220776984122196606, guid: 0de6371dc6802de40ade0a4f95a32950, type: 3}
   generatorFunction: {fileID: 11400000, guid: 52deec8956744bd8a1b2a89b0fb4b179, type: 2}
   symmetryFunction: {fileID: 11400000, guid: 07d08f2951e84b6985936556cab8d458, type: 2}
   terrainGeneratorFunction: {fileID: 11400000, guid: 3b192c067cece5e4f8a6f104e464d813,

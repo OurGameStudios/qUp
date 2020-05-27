@@ -56,5 +56,8 @@ namespace Actors.Grid.Generator {
         }
 
         public GridCoords GetMaxGridCoords() => (data.MapWidth, data.MapHeight);
+
+        public GameObject GetResourceDecorator() =>
+            data.ResourceDecorators[Random.Range(0, data.ResourceDecorators.Count - 1)];
     }
 }
