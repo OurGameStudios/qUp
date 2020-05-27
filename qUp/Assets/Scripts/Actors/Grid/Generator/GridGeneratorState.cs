@@ -19,22 +19,6 @@ namespace Actors.Grid.Generator {
             return Cache;
         }
     }
-    
-    public class ResourceFieldGenerated : GridGeneratorState<ResourceFieldGenerated> {
-        public GameObject Prefab { get; private set; }
-        public Vector3 Offset { get; private set; }
-        public GridCoords Coords { get; private set; }
-        
-        public GameObject DecoratorPrefab { get; private set; }
-
-        public static ResourceFieldGenerated With(GameObject prefab, Vector3 offset, GridCoords coords, GameObject decorator) {
-            Cache.Prefab = prefab;
-            Cache.Offset = offset;
-            Cache.Coords = coords;
-            Cache.DecoratorPrefab = decorator;
-            return Cache;
-        }
-    }
 
     public class BaseGenerated : GridGeneratorState<BaseGenerated> {
         public Vector3 Offset { get; private set; }
