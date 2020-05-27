@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64adfa1ec453491a94335ae17aa01cd9, type: 3}
-  m_Name: TankUnit
+  m_Name: LvUnit
   m_EditorClassIdentifier: 
-  prefab: {fileID: 6847302850095094860, guid: a4cedcd78364d6b439329d44945640ad, type: 3}
+  prefab: {fileID: 6847302850095094860, guid: 92f1174ba333c4a41bf41f6950a0f510, type: 3}
   unitUiImage: {fileID: 21300000, guid: 1966f676694f2814c918c1088fe058e9, type: 3}
-  name: Tank
-  cost: 400
+  name: Light-weight Vehicle
+  cost: 300
   hp: 10
   attack: 5
-  tickPoints: 5
+  tickPoints: 4
   overpowers: 0
