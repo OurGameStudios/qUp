@@ -15,11 +15,8 @@ namespace Actors.Grid.Generator {
 
         public GridGeneratorData data;
 
-        private List<FieldGenerated> generatedFields = new List<FieldGenerated>();
-
         protected override void OnStateHandler(IGridGeneratorState inState) {
             if (inState is FieldGenerated fieldGeneratedState) {
-                // generatedFields.Add(fieldGeneratedState);
                 GenerateField(fieldGeneratedState.Prefab,
                     fieldGeneratedState.Offset,
                     fieldGeneratedState.Coords);
@@ -36,13 +33,6 @@ namespace Actors.Grid.Generator {
         protected override void OnAwake() {
             Controller.Init(data);
             Controller.GenerateGrid();
-            StartCoroutine(AsyncGridGenerator());
-        }
-
-        private IEnumerator AsyncGridGenerator() {
-            yield return generatedFields.Select(field => AsyncGenerateField(field.Prefab, field.Offset, field.Coords))
-                                        .GetEnumerator();
-            yield return null;
         }
 
         private void OnGridWorldSize(float xMinOffset, float yMinOffset, float xMaxOffset, float yMaxOffset) {
@@ -52,16 +42,6 @@ namespace Actors.Grid.Generator {
                           position.z + yMinOffset,
                           position.x + xMaxOffset,
                           position.z + yMaxOffset);
-        }
-
-        private IEnumerator AsyncGenerateField(GameObject prefab, Vector3 offset, GridCoords mapCoordinates) {
-            var thisTransform = transform;
-            TileBehaviour.Instantiate(prefab,
-                thisTransform,
-                thisTransform.position + offset,
-                mapCoordinates,
-                data.TerrainGeneratorFunction.SampleTerrain);
-            yield return null;
         }
 
         private void GenerateField(GameObject prefab, Vector3 offset, GridCoords mapCoordinates) {
