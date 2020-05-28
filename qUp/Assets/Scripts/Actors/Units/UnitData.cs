@@ -10,6 +10,7 @@ namespace Actors.Units {
         
         public string name;
         public int cost = 200;
+        public int upkeep = 150;
         public int hp = 10;
         public int attack = 5;
         public int tickPoints = 3;

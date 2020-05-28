@@ -7,6 +7,7 @@ using Actors.Tiles;
 using Base.Interfaces;
 using UI.HqUis;
 using UI.InfoUis.SpawnUis;
+using UI.ResourceUis;
 
 namespace Managers.ApiManagers {
     public class ApiManager {
@@ -21,7 +22,8 @@ namespace Managers.ApiManagers {
                                                   {typeof(GridGenerator), new GridInteractor()},
                                                   {typeof(Tile), new TileInteractor()},
                                                   {typeof(HqUi), new HqUiInteractor()}, 
-                                                  {typeof(SpawnUi), new SpawnUiInteractor()}
+                                                  {typeof(SpawnUi), new SpawnUiInteractor()},
+                                                  {typeof(ResourceUi), new ResourceUiInteractor()}
                                               };
         
         private readonly Dictionary<Type, IManager> managers = new Dictionary<Type, IManager>();
