@@ -20,7 +20,7 @@ namespace Actors.Tiles {
         private Color hoverHighlightColor = Color.white;
         private Color? highlightColor;
 
-        private Player owner = null;
+        private Player owner;
 
         public void Init(GridCoords coords, Vector3 position, GameObject gameObject) {
             Coords = coords;

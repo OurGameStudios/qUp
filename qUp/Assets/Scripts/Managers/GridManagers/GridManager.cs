@@ -13,6 +13,7 @@ using Managers.GridManagers.GridInfos;
 using Managers.InputManagers;
 using Managers.PlayerManagers;
 using Managers.PlayManagers;
+using Managers.UIManagers;
 using UnityEngine;
 
 namespace Managers.GridManagers {
@@ -50,6 +51,11 @@ namespace Managers.GridManagers {
             new Lazy<InputManagerBehaviour>(ApiManager.ProvideManager<InputManagerBehaviour>);
 
         private InputManagerBehaviour InputManager => inputManager.Value;
+        
+        private readonly Lazy<UiManager> uiManagerLazy =
+            new Lazy<UiManager>(ApiManager.ProvideManager<UiManager>);
+        
+        private UiManager UiManager => uiManagerLazy.Value;
 
         private GridInteractor gridInteractor = ApiManager.ProvideInteractor<GridInteractor>();
 
@@ -111,6 +117,8 @@ namespace Managers.GridManagers {
 
             //TODO spawned unit should take 5 ticks
             ticks[0].AddUnit(PlayerManager.GetCurrentPlayer(), unit);
+            PlayerManager.GetCurrentPlayer().RegisterUnitUpkeep(unit.data.upkeep, unit.data.cost);
+            UiManager.RegisterUnitSpawned();
 
             unitPath.Add(unit, new List<TileTickInfo> {ticks[0]});
             playerUnits.Add(unit, PlayerManager.GetCurrentPlayer());

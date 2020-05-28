@@ -4,6 +4,7 @@ using Managers.ApiManagers;
 using Managers.GridManagers;
 using Managers.InputManagers;
 using Managers.PlayerManagers;
+using Managers.UIManagers;
 using UnityEngine;
 
 namespace Managers.PlayManagers {
@@ -28,6 +29,11 @@ namespace Managers.PlayManagers {
             new Lazy<InputManagerBehaviour>(ApiManager.ProvideManager<InputManagerBehaviour>);
         
         private InputManagerBehaviour InputManager => inputManagerLazy.Value;
+        
+        private readonly Lazy<UiManager> uiManagerLazy =
+            new Lazy<UiManager>(ApiManager.ProvideManager<UiManager>);
+        
+        private UiManager UiManager => uiManagerLazy.Value;
         
 
         //TODO this should be changed to prepping phase if starting units are to be implemented
@@ -60,6 +66,9 @@ namespace Managers.PlayManagers {
 
         private void SwitchPlayer() {
             GridManager.SetupForNextPlayer();
+            //TODO code repetition from startPlanningPhase method
+            PlayerManager.GetCurrentPlayer().ResetTurnCost();
+            UiManager.PlayerSwitch();
         }
 
         private void StartExecutionPhase() {
@@ -71,6 +80,9 @@ namespace Managers.PlayManagers {
         private void StartPlanningPhase() {
             phase = Phase.PlanningPhase;
             InputManager.OnPlanningPhase();
+            //TODO code repetition from switchPlayer method
+            PlayerManager.GetCurrentPlayer().ResetTurnCost();
+            UiManager.PlayerSwitch();
         }
 
         private void StartPreppingPhase() {

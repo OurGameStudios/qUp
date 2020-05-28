@@ -29,6 +29,9 @@ namespace Actors.Players {
         [SerializeField]
         private List<UnitData> unitDatas;
 
+        [SerializeField]
+        private int baseIncome;
+
 
         public GridCoords HqCoordinates => new GridCoords(hqInfo.x, hqInfo.y);
 
@@ -39,5 +42,7 @@ namespace Actors.Players {
         public string PlayerName => playerName;
 
         public List<UnitData> UnitDatas => unitDatas;
+
+        public int BaseIncome => baseIncome;
     }
 }

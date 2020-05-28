@@ -10,8 +10,13 @@ namespace Actors.Players {
 
         private PlayerData data;
 
+        private int income;
+        private int upkeep;
+        private int turnCost;
+
         public void Init(PlayerData inData) {
             data = inData;
+            income = data.BaseIncome;
         }
 
         public (GridCoords coords, Player owner) GetHqInfo() => (data.HqCoordinates, this);
@@ -25,5 +30,26 @@ namespace Actors.Players {
         public string PlayerName => data.PlayerName;
 
         public List<UnitData> UnitDatas => data.UnitDatas;
+
+        public void RegisterUnitUpkeep(int upkeep, int cost) {
+            this.upkeep += upkeep;
+            turnCost += cost;
+        }
+
+        public void UnregisterUnitUpkeep(int upkeep) => this.upkeep -= upkeep;
+
+        public int GetUpkeep() => upkeep;
+
+        public void RegisterResourceIncome(int income) => this.income += income;
+
+        public void UnregisterResourceIncome(int income) => this.income += income;
+
+        public int GetIncome() => income;
+
+        public int GetAvailableIncome() => income - turnCost;
+
+        public int GetTurnCost() => turnCost;
+
+        public void ResetTurnCost() => turnCost = upkeep;
     }
 }

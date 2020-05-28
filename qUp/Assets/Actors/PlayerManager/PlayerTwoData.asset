@@ -23,3 +23,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}
   - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}
   - {fileID: 11400000, guid: fa05b8e59cc765949b1b6793da306888, type: 2}
+  baseIncome: 1000
