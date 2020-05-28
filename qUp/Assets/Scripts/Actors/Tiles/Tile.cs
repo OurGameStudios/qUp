@@ -1,4 +1,5 @@
 using Actors.Grid.Generator;
+using Actors.Players;
 using Base.Interfaces;
 using Base.MonoBehaviours;
 using Common;
@@ -17,9 +18,9 @@ namespace Actors.Tiles {
         private Vector3 tilePosition;
 
         private Color hoverHighlightColor = Color.white;
-        private Color baseColor;
-        private Color? highlightColor = null;
-        private Color currentBaseColor;
+        private Color? highlightColor;
+
+        private Player owner = null;
 
         public void Init(GridCoords coords, Vector3 position, GameObject gameObject) {
             Coords = coords;
@@ -32,9 +33,7 @@ namespace Actors.Tiles {
         }
 
         public void InitColors(Color color) {
-            baseColor = color;
-            highlightColor = color;
-            currentBaseColor = color;
+            
         }
 
         public void OnClick() {
@@ -46,33 +45,38 @@ namespace Actors.Tiles {
         }
 
         public void OnHoverStart() {
-            SetState(HighlightActivated.With(currentBaseColor, hoverHighlightColor));
+            SetState(HighlightActivated.With(hoverHighlightColor));
         }
 
         public void OnHoverEnd() {
             if (highlightColor != null) {
-                SetState(HighlightActivated.With(currentBaseColor, highlightColor ?? hoverHighlightColor));
+                SetState(HighlightActivated.With(highlightColor ?? hoverHighlightColor));
             } else {
-                SetState(Idle.With(currentBaseColor));
+                SetState(Idle.With());
             }
             
         }
 
-        public void ActivateHighlight(Color? baseHighlightColor = null, Color? color = null) {
-            baseHighlightColor?.Let(it => currentBaseColor = it);
+        public void ActivateHighlight(Color? color = null) {
             color?.Let(it => highlightColor = it);
-            SetState(HighlightActivated.With(baseHighlightColor ?? currentBaseColor, color ?? hoverHighlightColor));
+            SetState(HighlightActivated.With(color ?? hoverHighlightColor));
         }
 
         public void DeactivateHighlight() {
-            currentBaseColor = baseColor;
             highlightColor = null;
-            SetState(Idle.With(currentBaseColor));
+            SetState(Idle.With());
         }
 
         public Vector3 ProvideTilePosition() {
             var positionHeight = gridInteractor.SampleTerrain(new Vector2(tilePosition.x, tilePosition.z)) ?? 0f;
             return new Vector3(tilePosition.x, positionHeight, tilePosition.z);
         }
+
+        public void SetOwnership(Player owner) {
+            this.owner = owner;
+            SetState(OwnershipChanged.With(owner.PlayerColor));
+        }
+
+        public Player GetOwner() => owner;
     }
 }

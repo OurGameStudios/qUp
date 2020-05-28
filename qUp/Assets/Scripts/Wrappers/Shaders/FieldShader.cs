@@ -22,7 +22,7 @@ namespace Wrappers.Shaders {
 
         public void SetHighlightOn(bool isOn, Color highlightColor) {
             SetBool(HighlightOn, isOn);
-            SetColor(HighlightOnColor, highlightColor);
+            if (isOn) SetColor(HighlightOnColor, highlightColor);
         }
     }
 }

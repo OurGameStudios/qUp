@@ -9,20 +9,24 @@ namespace Actors.Tiles {
 
     public class HighlightActivated : TileState<HighlightActivated> {
         public Color HighlightColor { get; private set; }
-        public Color BaseColor { get; private set; }
-        
-        public static HighlightActivated With(Color BaseColor, Color highlightColor) {
-            Cache.BaseColor = BaseColor;
+
+        public static HighlightActivated With(Color highlightColor) {
             Cache.HighlightColor = highlightColor;
             return Cache;
         }
     }
 
+    public class OwnershipChanged : TileState<OwnershipChanged> {
+        public Color OwnerColor { get; private set; }
+
+        public static OwnershipChanged With(Color ownerColor) {
+            Cache.OwnerColor = ownerColor;
+            return Cache;
+        }
+    }
+
     public class Idle : TileState<Idle> {
-        public Color Color { get; private set; }
-        
-        public static Idle With(Color color) {
-            Cache.Color = color;
+        public static Idle With() {
             return Cache;
         }
     }
