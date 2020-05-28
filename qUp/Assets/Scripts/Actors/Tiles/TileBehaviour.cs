@@ -63,6 +63,8 @@ namespace Actors.Tiles {
                 fieldShader.SetHighlightOn(true, highlightActivatedState.HighlightColor);
             } else if (inState is Idle) {
                 fieldShader.SetHighlightOn(false);
+            } else if (inState is OwnershipChanged ownershipState) {
+                fieldShader.SetMarkingsColor(ownershipState.OwnerColor);
             }
         }
 

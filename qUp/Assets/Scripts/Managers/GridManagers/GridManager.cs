@@ -14,7 +14,6 @@ using Managers.InputManagers;
 using Managers.PlayerManagers;
 using Managers.PlayManagers;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Managers.GridManagers {
     public class GridManager : BaseManager<IGridManagerState> {
@@ -46,7 +45,7 @@ namespace Managers.GridManagers {
             new Lazy<CoroutineHandler>(ApiManager.ProvideManager<CoroutineHandler>);
 
         private CoroutineHandler CoroutineHandler => coroutineHandler.Value;
-        
+
         private readonly Lazy<InputManagerBehaviour> inputManager =
             new Lazy<InputManagerBehaviour>(ApiManager.ProvideManager<InputManagerBehaviour>);
 
@@ -89,6 +88,22 @@ namespace Managers.GridManagers {
             grid.Add(tile.Coords, new TileInfo(tile.Coords, tile, PlayerManager.GetAllPlayers()));
             //TODO max cords shouldn't be set each time new tile is registered
             maxCoords = gridInteractor.GetMaxCoords();
+            
+            //TODO needs improvement
+            foreach (var player in PlayerManager.GetAllPlayers()) {
+                var hqCoords = player.GetBaseCoordinates();
+                if (hqCoords.x > maxCoords.x) {
+                    hqCoords.x = maxCoords.x;
+                }
+
+                if (hqCoords.y > maxCoords.y) {
+                    hqCoords.y = maxCoords.y;
+                }
+
+                if (tile.Coords.IsNeighbourOf(hqCoords)) {
+                    tile.SetOwnership(player);
+                }
+            }
         }
 
         public void RegisterUnit(Unit unit, GridCoords coords) {
@@ -109,17 +124,18 @@ namespace Managers.GridManagers {
             if (hqCoords.x > maxCoords.x) {
                 hqCoords.x = maxCoords.x;
             }
-            
+
             if (hqCoords.y > maxCoords.y) {
                 hqCoords.y = maxCoords.y;
             }
 
             focusType = FocusType.HQ;
 
+            //TODO this is bad code adding spawn tiles each time unit to spawn is selected
             foreach (var tileInfo in grid.GetValues(GridCoords.GetNeighbourCoords(hqCoords))) {
                 if (tileInfo.ticks[0].GetUnitCount(PlayerManager.GetCurrentPlayer()) >= MAX_NUM_OF_UNITS) continue;
                 spawnTiles.Add(tileInfo);
-                tileInfo.Tile.ActivateHighlight(color: Color.green);
+                tileInfo.Tile.ActivateHighlight(Color.green);
             }
 
             if (spawnTiles.Count != 0) return;
@@ -155,13 +171,13 @@ namespace Managers.GridManagers {
         }
 
         private int groupRange;
-        
+
         //TODO if unit is not from current player, UI should be notified to display
         public void SelectUnit(Unit unit) {
             if (selectedUnits.Contains(unit) || playerUnits[unit] != PlayerManager.GetCurrentPlayer()) return;
             ClearFocus();
             selectedUnits.AddRange(unitPath[unit][currentTick].GetUnits(PlayerManager.GetCurrentPlayer()));
-            
+
             //TODO this method needs to notify UI to display selected group UI
             InputManager.OnUnitSelected();
 
@@ -169,7 +185,12 @@ namespace Managers.GridManagers {
 
             //TODO need to check if last is better then inverting the list in pathfinder
             pathsInRange.Clear();
-            pathfinder.FindRange(PlayerManager.GetCurrentPlayer(), unitPath[unit].Last(), selectedUnits, groupRange, grid, ref pathsInRange);
+            pathfinder.FindRange(PlayerManager.GetCurrentPlayer(),
+                unitPath[unit].Last(),
+                selectedUnits,
+                groupRange,
+                grid,
+                ref pathsInRange);
 
             ShowUnitRange();
             ShowGroupPaths();
@@ -185,7 +206,7 @@ namespace Managers.GridManagers {
 
         private void ShowGroupPaths() {
             foreach (var tileTickInfo in selectedUnits.SelectMany(unit => unitPath[unit])) {
-                tileTickInfo.TileInfo.Tile.ActivateHighlight(rangeHighlightColor, pathHighlightColor);
+                tileTickInfo.TileInfo.Tile.ActivateHighlight(pathHighlightColor);
             }
         }
 
@@ -269,7 +290,8 @@ namespace Managers.GridManagers {
             foreach (var tileTickInfo in currentSelectedPath) {
                 //Todo this needs to be changed to take overflowing of units into account
                 //TODO better logic for this, this is costly
-                foreach (var unit in selectedUnits.Where(unit => !tileTickInfo.ContainsUnit(PlayerManager.GetCurrentPlayer(), unit))) {
+                foreach (var unit in selectedUnits.Where(unit =>
+                    !tileTickInfo.ContainsUnit(PlayerManager.GetCurrentPlayer(), unit))) {
                     tileTickInfo.AddUnit(PlayerManager.GetCurrentPlayer(), unit);
                 }
             }
@@ -286,7 +308,7 @@ namespace Managers.GridManagers {
             var next = target;
             do {
                 currentSelectedPath.Add(next);
-                next.TileInfo.Tile.ActivateHighlight(rangeHighlightColor, pathHighlightColor);
+                next.TileInfo.Tile.ActivateHighlight(pathHighlightColor);
             } while ((next = pathsInRange[next]) != null);
 
             hasPathChanged = true;
@@ -294,14 +316,16 @@ namespace Managers.GridManagers {
         }
 
         private readonly List<Unit> dispatchedUnitList = new List<Unit>(200);
-        private readonly Dictionary<int, HashSet<TileTickInfo>> executions = new Dictionary<int, HashSet<TileTickInfo>>(200);
+
+        private readonly Dictionary<int, HashSet<TileTickInfo>> executions =
+            new Dictionary<int, HashSet<TileTickInfo>>(200);
 
         private bool hasPaths;
 
         public void SetupForNextPlayer() {
             ClearFocus();
         }
-        
+
         public void StartExecution() {
             ClearFocus();
             hasPaths = false;
@@ -311,9 +335,11 @@ namespace Managers.GridManagers {
                     hasPaths = true;
                 }
             }
-            
+
             if (!hasPaths) PlayManager.NextPhase();
-            else { DispatchTickToUnits(); }
+            else {
+                DispatchTickToUnits();
+            }
         }
 
         private void EndExecution() {
@@ -322,6 +348,7 @@ namespace Managers.GridManagers {
                 foreach (var tileTickInfo in executions[i]) {
                     tileTickInfo.ClearUnits();
                 }
+
                 executions[i].Clear();
             }
 
@@ -329,6 +356,7 @@ namespace Managers.GridManagers {
                 unitPathPair.Value.Repopulate(unitPathPair.Value[0].TileInfo.ticks[0]);
                 unitPathPair.Value[0].TileInfo.ticks[0].AddUnit(playerUnits[unitPathPair.Key], unitPathPair.Key);
             }
+
             PlayManager.NextPhase();
         }
 
@@ -338,19 +366,31 @@ namespace Managers.GridManagers {
                 EndExecution();
                 return;
             }
+
             foreach (var tileTickInfo in executions[currentTick]) {
                 foreach (var unit in tileTickInfo.GetUnits()) {
                     unit.MoveToNextTile(tileTickInfo.TileInfo.Tile.ProvideTilePosition(), tileTickInfo.IsCombatTile());
                     dispatchedUnitList.Add(unit);
                 }
             }
+
             if (dispatchedUnitList.Count == 0) EndExecution();
         }
 
         public void UnitMovementCompleted(Unit unit) {
             dispatchedUnitList.Remove(unit);
+            ChangeTileOwnership(unit);
             if (dispatchedUnitList.Count == 0) {
                 CoroutineHandler.DoOnNextFrame(DispatchTickToUnits);
+            }
+        }
+
+        private void ChangeTileOwnership(Unit unit) {
+            var tile = unitPath[unit][unitPath[unit].Count - 1 - currentTick].TileInfo.Tile;
+            if (tile.GetOwner() == null) {
+                tile.SetOwnership(playerUnits[unit]);
+            } else if (tile.GetOwner() != playerUnits[unit] && currentTick >= unitPath[unit].Count - 1) {
+                tile.SetOwnership(playerUnits[unit]);
             }
         }
     }
