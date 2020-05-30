@@ -14,6 +14,7 @@ namespace Managers.GridManagers.GridInfos {
         public List<Player> players;
         public List<TileTickInfo> ticks;
         public List<TileTickInfo> conflictedTicks;
+        public Player owner;
 
         public TileInfo(GridCoords coords, Tile tile, List<Player> players) {
             Coords = coords;
