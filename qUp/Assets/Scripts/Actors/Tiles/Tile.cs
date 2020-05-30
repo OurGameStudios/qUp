@@ -21,8 +21,9 @@ namespace Actors.Tiles {
         private Color? highlightColor;
 
         private Player owner;
+        public bool IsResourceTile { get; private set; }
 
-        public void Init(GridCoords coords, Vector3 position, GameObject gameObject) {
+        public void Init(GridCoords coords, Vector3 position, GameObject gameObject, bool isResourceTile) {
             Coords = coords;
             tilePosition = position;
             gridManager.RegisterTile(this);
@@ -30,6 +31,7 @@ namespace Actors.Tiles {
                     it.RegisterClickable(this, gameObject);
                     it.RegisterHoverable(this, gameObject);
                 });
+            IsResourceTile = isResourceTile;
         }
 
         public void InitColors(Color color) {

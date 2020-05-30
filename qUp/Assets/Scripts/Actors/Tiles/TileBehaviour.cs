@@ -27,7 +27,7 @@ namespace Actors.Tiles {
         }
 
         private void Init(GridCoords coords, Func<Vector2, float> sampleHeight) {
-            Controller.Init(coords, transform.position, gameObject);
+            Controller.Init(coords, transform.position, gameObject, isResourceField);
             DisplaceVertices(sampleHeight);
             if (isResourceField) {
                 InstantiateResourceDecorator(sampleHeight);

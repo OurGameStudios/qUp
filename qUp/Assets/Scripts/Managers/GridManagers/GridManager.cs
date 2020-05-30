@@ -51,20 +51,28 @@ namespace Managers.GridManagers {
             new Lazy<InputManagerBehaviour>(ApiManager.ProvideManager<InputManagerBehaviour>);
 
         private InputManagerBehaviour InputManager => inputManager.Value;
-        
+
         private readonly Lazy<UiManager> uiManagerLazy =
             new Lazy<UiManager>(ApiManager.ProvideManager<UiManager>);
-        
+
         private UiManager UiManager => uiManagerLazy.Value;
 
         private GridInteractor gridInteractor = ApiManager.ProvideInteractor<GridInteractor>();
 
         private GridCoords maxCoords;
 
-        private readonly Dictionary<GridCoords, TileInfo> grid = new Dictionary<GridCoords, TileInfo>(200);
-        private Dictionary<TileInfo, GridCoords> conflictedTiles = new Dictionary<TileInfo, GridCoords>(200);
-        private readonly Dictionary<Unit, List<TileTickInfo>> unitPath = new Dictionary<Unit, List<TileTickInfo>>(200);
-        private readonly Dictionary<Unit, Player> playerUnits = new Dictionary<Unit, Player>(200);
+        private readonly Dictionary<GridCoords, TileInfo> grid = new Dictionary<GridCoords, TileInfo>(MAX_NUM_OF_TILES);
+
+        private Dictionary<TileInfo, GridCoords> conflictedTiles =
+            new Dictionary<TileInfo, GridCoords>(MAX_NUM_OF_TILES);
+
+        private readonly Dictionary<Unit, List<TileTickInfo>> unitPath =
+            new Dictionary<Unit, List<TileTickInfo>>(MAX_NUM_OF_TILES);
+
+        private readonly Dictionary<Unit, Player> playerUnits = new Dictionary<Unit, Player>(MAX_NUM_OF_TILES);
+
+        private readonly Dictionary<Player, List<TileInfo>> playersResourceTiles =
+            new Dictionary<Player, List<TileInfo>>(MAX_NUM_OF_TILES);
 
         private List<TileInfo> path;
 
@@ -94,7 +102,7 @@ namespace Managers.GridManagers {
             grid.Add(tile.Coords, new TileInfo(tile.Coords, tile, PlayerManager.GetAllPlayers()));
             //TODO max cords shouldn't be set each time new tile is registered
             maxCoords = gridInteractor.GetMaxCoords();
-            
+
             //TODO needs improvement
             foreach (var player in PlayerManager.GetAllPlayers()) {
                 var hqCoords = player.GetBaseCoordinates();
@@ -394,12 +402,26 @@ namespace Managers.GridManagers {
         }
 
         private void ChangeTileOwnership(Unit unit) {
-            var tile = unitPath[unit][unitPath[unit].Count - 1 - currentTick].TileInfo.Tile;
-            if (tile.GetOwner() == null) {
-                tile.SetOwnership(playerUnits[unit]);
-            } else if (tile.GetOwner() != playerUnits[unit] && currentTick >= unitPath[unit].Count - 1) {
-                tile.SetOwnership(playerUnits[unit]);
+            var tileInfo = unitPath[unit][unitPath[unit].Count - 1 - currentTick].TileInfo;
+            var owner = playerUnits[unit];
+            if (tileInfo.Tile.GetOwner() == null) {
+                RegisterTileOwnership(tileInfo, owner);
+            } else if (tileInfo.Tile.GetOwner() != owner && currentTick >= unitPath[unit].Count - 1) {
+                RegisterTileOwnership(tileInfo, owner);
             }
+        }
+
+        private void RegisterTileOwnership(TileInfo tileInfo, Player owner) {
+            if (tileInfo.Tile.IsResourceTile) {
+                if (!playersResourceTiles.ContainsKey(owner))
+                    playersResourceTiles.Add(owner, new List<TileInfo>());
+                if (tileInfo.owner != null)
+                    playersResourceTiles[tileInfo.owner].Remove(tileInfo);
+
+                playersResourceTiles[owner].Add(tileInfo);
+            }
+            tileInfo.Tile.SetOwnership(owner);
+            tileInfo.owner = owner;
         }
     }
 }
