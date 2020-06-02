@@ -140,6 +140,9 @@ if %1==-rc (goto rcloneCmd)
     if "%~3"=="-all" (
         goto backupclearall
     )
+    if not "%~3"=="" (
+        goto commanderror
+    )
     call :confirm "This will remove all but latest backup. Are you sure you want to proceed?",confirmed
     if "%confirmed%"=="0" (
         goto eof
