@@ -44,6 +44,29 @@ Commands:
 						____________________________________________________________________
 		-im				List remote directory including .meta files.
 	____________________________________________________________________________________________________________
+	backup					Create a backup of current working directory.
+						____________________________________________________________________
+		-apply [backup name]		Applies backup to the current working directory.
+						____________________________________________________________________
+		-list				Prints available backups.
+						____________________________________________________________________
+		-clear				Deletes all but last backup.
+						____________________________________________________________________
+		-clear -all			Deletes all backups.
+	____________________________________________________________________________________________________________
+	stash					Create a stash of current working directory excluding *.meta files.
+						____________________________________________________________________
+		-m				Create a stash of current working directory.
+						____________________________________________________________________
+		-apply				Applies backup to the current working directory excluding 
+						*.meta files.
+						____________________________________________________________________
+		-apply -m			Applies backup to the current working directory.
+						____________________________________________________________________
+		-clear				Removes the stash.
+						____________________________________________________________________
+		-status				Prints current stash status
+	____________________________________________________________________________________________________________
 	quota					Lists remote storage quota.
 	____________________________________________________________________________________________________________
 	-rc					Directly access rclone commands.
