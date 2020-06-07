@@ -2,14 +2,13 @@ using System.Collections;
 using Actors.Grid.Generator;
 using Actors.Players;
 using Base.MonoBehaviours;
-using Extensions;
 using Managers.ApiManagers;
 using Managers.GridManagers;
 using UnityEngine;
 using Wrappers.Shaders;
 
-namespace Actors.Units {
-    public class UnitBehaviour : BaseMonoBehaviour<Unit, IUnitState> {
+namespace Actors.Units.CombatUnits {
+    public class CombatUnitBehaviour : BaseMonoBehaviour<CombatUnit, ICombatUnitState> {
         private GridManager gridManager = ApiManager.ProvideManager<GridManager>();
         private GridInteractor gridInteractor = ApiManager.ProvideInteractor<GridInteractor>();
 
@@ -21,9 +20,9 @@ namespace Actors.Units {
         private IEnumerator unitMovement;
         public float speed = 5f;
 
-        public static Unit Instantiate(UnitData data, Vector3 position, Player player) {
+        public static CombatUnit Instantiate(UnitData data, Vector3 position, Player player) {
             return Instantiate(data.prefab, position, Quaternion.identity)
-                   .GetComponent<UnitBehaviour>()
+                   .GetComponent<CombatUnitBehaviour>()
                    .Controller;
         }
 
@@ -34,13 +33,13 @@ namespace Actors.Units {
             position = transform.position;
         }
 
-        protected override void OnStateHandler(IUnitState inState) {
-            if (inState is UnitSelected) {
+        protected override void OnStateHandler(ICombatUnitState inState) {
+            if (inState is CombatUnitSelected) {
                 OnSelected();
-            } else if (inState is UnitMovement unitMovementState) {
+            } else if (inState is CombatUnitMovement unitMovementState) {
                 moveTo = unitMovementState.Position;
                 StartCoroutine(unitMovement);
-            } else if (inState is UnitOwnership ownershipState) {
+            } else if (inState is CombatUnitOwnership ownershipState) {
                 unitShader.SetUnitPlayerColor(ownershipState.Color);
             } else if (inState is Highlight highlightState) {
                 if (highlightState.IsHighlightOn) {

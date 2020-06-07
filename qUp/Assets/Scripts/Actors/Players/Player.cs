@@ -51,5 +51,7 @@ namespace Actors.Players {
         public int GetTurnCost() => turnCost;
 
         public void ResetTurnCost() => turnCost = upkeep;
+
+        public UnitData GetResourceUnitData() => data.ResourceUnitData;
     }
 }

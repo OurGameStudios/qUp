@@ -32,6 +32,8 @@ namespace Actors.Players {
         [SerializeField]
         private int baseIncome;
 
+        [SerializeField]
+        private UnitData resourceUnitData;
 
         public GridCoords HqCoordinates => new GridCoords(hqInfo.x, hqInfo.y);
 
@@ -44,5 +46,7 @@ namespace Actors.Players {
         public List<UnitData> UnitDatas => unitDatas;
 
         public int BaseIncome => baseIncome;
+
+        public UnitData ResourceUnitData => resourceUnitData;
     }
 }

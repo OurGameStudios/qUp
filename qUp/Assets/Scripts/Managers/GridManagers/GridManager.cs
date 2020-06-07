@@ -4,7 +4,7 @@ using System.Linq;
 using Actors.Grid.Generator;
 using Actors.Players;
 using Actors.Tiles;
-using Actors.Units;
+using Actors.Units.Interface;
 using Base.Managers;
 using Common;
 using Extensions;
@@ -15,6 +15,7 @@ using Managers.PlayerManagers;
 using Managers.PlayManagers;
 using Managers.UIManagers;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Managers.GridManagers {
     public class GridManager : BaseManager<IGridManagerState> {
@@ -66,13 +67,16 @@ namespace Managers.GridManagers {
         private Dictionary<TileInfo, GridCoords> conflictedTiles =
             new Dictionary<TileInfo, GridCoords>(MAX_NUM_OF_TILES);
 
-        private readonly Dictionary<Unit, List<TileTickInfo>> unitPath =
-            new Dictionary<Unit, List<TileTickInfo>>(MAX_NUM_OF_TILES);
+        private readonly Dictionary<IUnit, List<TileTickInfo>> unitPath =
+            new Dictionary<IUnit, List<TileTickInfo>>(MAX_NUM_OF_TILES);
 
-        private readonly Dictionary<Unit, Player> playerUnits = new Dictionary<Unit, Player>(MAX_NUM_OF_TILES);
+        private readonly Dictionary<IUnit, Player> playerUnits = new Dictionary<IUnit, Player>(MAX_NUM_OF_TILES);
 
         private readonly Dictionary<Player, List<TileInfo>> playersResourceTiles =
             new Dictionary<Player, List<TileInfo>>(MAX_NUM_OF_TILES);
+
+        private readonly Dictionary<IUnit, ResourceUnitInfo> resourceUnits =
+            new Dictionary<IUnit, ResourceUnitInfo>(MAX_NUM_OF_TILES);
 
         private List<TileInfo> path;
 
@@ -84,7 +88,7 @@ namespace Managers.GridManagers {
         private readonly Pathfinder pathfinder;
 
         private bool isUnitSelected;
-        private readonly List<Unit> selectedUnits = new List<Unit>(MAX_NUM_OF_UNITS);
+        private readonly List<IUnit> selectedUnits = new List<IUnit>(MAX_NUM_OF_UNITS);
         private int currentTick;
         private readonly List<TileTickInfo> currentSelectedPath = new List<TileTickInfo>(MAX_TICKS);
 
@@ -120,16 +124,29 @@ namespace Managers.GridManagers {
             }
         }
 
-        public void RegisterUnit(Unit unit, GridCoords coords) {
+        public void RegisterUnit(IUnit unit, GridCoords coords) {
             var ticks = grid[coords].ticks;
 
             //TODO spawned unit should take 5 ticks
+            //TODO wrong units should spawn on prepping phase
             ticks[0].AddUnit(PlayerManager.GetCurrentPlayer(), unit);
-            PlayerManager.GetCurrentPlayer().RegisterUnitUpkeep(unit.data.upkeep, unit.data.cost);
+            PlayerManager.GetCurrentPlayer().RegisterUnitUpkeep(unit.GetUpkeep(), unit.GetCost());
             UiManager.RegisterUnitSpawned();
 
             unitPath.Add(unit, new List<TileTickInfo> {ticks[0]});
             playerUnits.Add(unit, PlayerManager.GetCurrentPlayer());
+            unit.SetUnitColor(PlayerManager.GetCurrentPlayer().PlayerColor);
+        }
+
+        public void RegisterResourceUnit(IUnit unit, GridCoords coords) {
+            var resourceUnitInfo = new ResourceUnitInfo(coords);
+            resourceUnits[unit] = resourceUnitInfo;
+
+            var ticks = grid[coords].ticks;
+            foreach (var tick in ticks) {
+                tick.AddResourceUnit(resourceUnitInfo);
+            }
+            
             unit.SetUnitColor(PlayerManager.GetCurrentPlayer().PlayerColor);
         }
 
@@ -189,7 +206,7 @@ namespace Managers.GridManagers {
         private int groupRange;
 
         //TODO if unit is not from current player, UI should be notified to display
-        public void SelectUnit(Unit unit) {
+        public void SelectUnit(IUnit unit) {
             if (selectedUnits.Contains(unit) || playerUnits[unit] != PlayerManager.GetCurrentPlayer()) return;
             ClearFocus();
             selectedUnits.AddRange(unitPath[unit][currentTick].GetUnits(PlayerManager.GetCurrentPlayer()));
@@ -197,7 +214,7 @@ namespace Managers.GridManagers {
             //TODO this method needs to notify UI to display selected group UI
             InputManager.OnUnitSelected();
 
-            groupRange = selectedUnits.Min(x => x.data.tickPoints);
+            groupRange = selectedUnits.Min(x => x.GetTickPoints());
 
             //TODO need to check if last is better then inverting the list in pathfinder
             pathsInRange.Clear();
@@ -331,7 +348,7 @@ namespace Managers.GridManagers {
             return true;
         }
 
-        private readonly List<Unit> dispatchedUnitList = new List<Unit>(200);
+        private readonly List<IUnit> dispatchedUnitList = new List<IUnit>(200);
 
         private readonly Dictionary<int, HashSet<TileTickInfo>> executions =
             new Dictionary<int, HashSet<TileTickInfo>>(200);
@@ -393,7 +410,7 @@ namespace Managers.GridManagers {
             if (dispatchedUnitList.Count == 0) EndExecution();
         }
 
-        public void UnitMovementCompleted(Unit unit) {
+        public void UnitMovementCompleted(IUnit unit) {
             dispatchedUnitList.Remove(unit);
             ChangeTileOwnership(unit);
             if (dispatchedUnitList.Count == 0) {
@@ -401,7 +418,7 @@ namespace Managers.GridManagers {
             }
         }
 
-        private void ChangeTileOwnership(Unit unit) {
+        private void ChangeTileOwnership(IUnit unit) {
             var tileInfo = unitPath[unit][unitPath[unit].Count - 1 - currentTick].TileInfo;
             var owner = playerUnits[unit];
             if (tileInfo.Tile.GetOwner() == null) {
@@ -420,8 +437,24 @@ namespace Managers.GridManagers {
 
                 playersResourceTiles[owner].Add(tileInfo);
             }
+
             tileInfo.Tile.SetOwnership(owner);
             tileInfo.owner = owner;
+        }
+
+        public void StartPrepping() {
+            foreach (var player in PlayerManager.GetAllPlayers()) {
+                if (playersResourceTiles.ContainsKey(player)) {
+                    foreach (var resourceTile in playersResourceTiles[player]) {
+                        if (!resourceTile.ticks.Any(it => it.ContaisOriginatedResourceUnit(resourceTile.Coords))) {
+                            PlayerManager.SpawnResourceUnit(resourceTile.Tile.ProvideTilePosition(),
+                                resourceTile.Coords);
+                        }
+                    }
+                }
+            }
+
+            PlayManager.NextPhase();
         }
     }
 }

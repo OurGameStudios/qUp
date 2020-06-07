@@ -1,4 +1,4 @@
-using Base.Interfaces;
+using Actors.Units.Interface;
 using Base.MonoBehaviours;
 using Common;
 using Managers.ApiManagers;
@@ -6,8 +6,8 @@ using Managers.GridManagers;
 using Managers.InputManagers;
 using UnityEngine;
 
-namespace Actors.Units {
-    public class Unit : BaseController<IUnitState>, IClickable {
+namespace Actors.Units.CombatUnits {
+    public class CombatUnit : BaseController<ICombatUnitState>, IUnit {
         private readonly InputManagerBehaviour inputManager = ApiManager.ProvideManager<InputManagerBehaviour>();
         private readonly GridManager gridManager = ApiManager.ProvideManager<GridManager>();
 
@@ -27,7 +27,7 @@ namespace Actors.Units {
 
         public void OnClick() {
             gridManager.SelectUnit(this);
-            SetState(UnitSelected.Where());
+            SetState(CombatUnitSelected.Where());
         }
 
         public void OnSecondaryClick() { }
@@ -39,15 +39,21 @@ namespace Actors.Units {
 
         //TODO decide if vector3 is best way to dictate move position
         public void MoveToNextTile(Vector3 position, bool combatTile) {
-            SetState(UnitMovement.Where(position, combatTile));
+            SetState(CombatUnitMovement.Where(position, combatTile));
         }
 
         public void SetUnitColor(Color color) {
-            SetState(UnitOwnership.Where(color));
+            SetState(CombatUnitOwnership.Where(color));
         }
 
         public void DeactivateHighlight() {
             SetState(Highlight.Where(false));
         }
+
+        public int GetUpkeep() => data.upkeep;
+
+        public int GetCost() => data.cost;
+
+        public int GetTickPoints() => data.tickPoints;
     }
 }
