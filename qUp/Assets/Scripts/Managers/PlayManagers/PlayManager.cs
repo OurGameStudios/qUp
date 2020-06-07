@@ -54,9 +54,9 @@ namespace Managers.PlayManagers {
                     StartExecutionPhase();
                 }
             } else if (phase == Phase.ExecutionPhase) {
-                StartPlanningPhase();
+                // StartPlanningPhase();
                 //TODO start prepping phase
-                // StartPreppingPhase();
+                StartPreppingPhase();
             } else if (phase == Phase.PreppingPhase) {
                 //TODO start prepping phase
                  //replace when implementing prepping phase
@@ -88,6 +88,7 @@ namespace Managers.PlayManagers {
         private void StartPreppingPhase() {
             phase = Phase.PreppingPhase;
             InputManager.OnPreppingPhase();
+            GridManager.StartPrepping();
         }
     }
 }

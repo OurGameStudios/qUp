@@ -2,6 +2,7 @@
 using System.Linq;
 using Actors.Players;
 using Actors.Units;
+using Actors.Units.Interface;
 using Extensions;
 using Managers.GridManagers;
 using Managers.GridManagers.GridInfos;
@@ -33,7 +34,7 @@ namespace Common {
         public void FindRange(
             Player player,
             TileTickInfo start,
-            List<Unit> units,
+            List<IUnit> units,
             int movementRange,
             IReadOnlyDictionary<GridCoords, TileInfo> graph,
             ref Dictionary<TileTickInfo, TileTickInfo> pathsInRange) {
@@ -76,7 +77,7 @@ namespace Common {
             }
         }
 
-        private void GetNeighbours(TileInfo currentTileInfo, List<Unit> units,
+        private void GetNeighbours(TileInfo currentTileInfo, List<IUnit> units,
                                    IReadOnlyDictionary<GridCoords, TileInfo> graph,
                                    int currentTick, int movementRange) {
             var tileCords = currentTileInfo.Tile.Coords;
@@ -96,7 +97,7 @@ namespace Common {
             }
         }
 
-        private int GetNumberOfUnitsOnTileTick(List<Unit> unitsOnTile, TileTickInfo tileTickInfo) {
+        private int GetNumberOfUnitsOnTileTick(List<IUnit> unitsOnTile, TileTickInfo tileTickInfo) {
             return GridManager.MAX_NUM_OF_UNITS - unitsOnTile.Aggregate(tileTickInfo.GetUnitCount(currentPlayer),
                 (current, t) => current - (tileTickInfo.ContainsUnit(currentPlayer, t) ? 1 : 0));
         }

@@ -20,4 +20,17 @@ namespace Managers.PlayerManagers {
             return Cache;
         }
     }
+    
+    public class ResourceUnitSpawn : PlayerManagerState<ResourceUnitSpawn> {
+        public Vector3 SpawnPosition { get; private set; }
+        public UnitData UnitData { get; private set; }
+
+        public GridCoords Coords { get; private set; }
+        public static ResourceUnitSpawn Where(Vector3 spawnPosition, UnitData unitData, GridCoords coords) {
+            Cache.SpawnPosition = spawnPosition;
+            Cache.UnitData = unitData;
+            Cache.Coords = coords;
+            return Cache;
+        }
+    }
 }
