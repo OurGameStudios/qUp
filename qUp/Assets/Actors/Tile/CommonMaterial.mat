@@ -60,6 +60,30 @@ Material:
         m_Texture: {fileID: 2800000, guid: 067eb909daa2b664f8367c69b4cb2335, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_23AC04F5_Out_0:
+        m_Texture: {fileID: 2800000, guid: e75edd7a97d3b75479878f0b716bbbf8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_5055B49_Out_0:
+        m_Texture: {fileID: 2800000, guid: bb1c2bc387c311f49a37aa94dfdfac5d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_6A86A469_Out_0:
+        m_Texture: {fileID: 2800000, guid: 74f08bccdd8e2bd48b7ca6f1c291455b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_94FB7B1_Out_0:
+        m_Texture: {fileID: 2800000, guid: 8f241f262cf2ec449959d094b5379f3f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_E0CB5795_Out_0:
+        m_Texture: {fileID: 2800000, guid: ddff77bb8543fe64a8f7f0035f5a19ec, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_E6FD43E3_Out_0:
+        m_Texture: {fileID: 2800000, guid: 48349190983be1247a5069adb4af2d34, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - HighlightColorPct: 0.5
     - HighlightHighlightPct: 1
@@ -101,6 +125,7 @@ Material:
     - HighlightOnColor: {r: 1, g: 1, b: 1, a: 1}
     - MarkingsColor: {r: 0, g: 0, b: 0, a: 1}
     - TextureColor: {r: 0.735849, g: 0.4681058, b: 0.2742079, a: 1}
+    - Vector2_ECD0E103: {r: -5, g: 5, b: 0, a: 0}
     - Vector3_DF2C8660: {r: 1, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
