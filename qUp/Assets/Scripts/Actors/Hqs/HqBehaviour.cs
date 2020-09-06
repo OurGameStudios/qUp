@@ -18,8 +18,8 @@ namespace Actors.Hqs {
 
         private void InitBase(Player owner, GridCoords coords, Func<Vector2, float> sampleHeight) {
             Controller.Init(coords, owner);
-            playerBaseShader = new PlayerBaseShader(transform.GetChild(0).GetComponent<MeshRenderer>().material);
-            playerBaseShader.SetColor(owner.PlayerColor);
+            playerBaseShader = new PlayerBaseShader(transform.GetChild(1).GetComponent<MeshRenderer>().materials[1]);
+            playerBaseShader.SetPlayerColor(owner.PlayerColor);
             name = owner.PlayerName + " Base";
             DisplaceVertices(sampleHeight);
         }

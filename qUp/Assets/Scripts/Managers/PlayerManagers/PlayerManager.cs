@@ -44,10 +44,10 @@ namespace Managers.PlayerManagers {
             SetState(UnitSpawn.Where(spawnPosition, unitData, coords));
         }
 
-        public void SpawnResourceUnit(Vector3 tilePosition, GridCoords coords) {
+        public void SpawnResourceUnit(Vector3 tilePosition, GridCoords coords, Player player) {
             var unitData = GetCurrentPlayer().GetResourceUnitData();
             var spawnPosition = tilePosition.AddY(unitData.prefab.transform.localScale.y / 2);
-            SetState(ResourceUnitSpawn.Where(spawnPosition, unitData, coords));
+            SetState(ResourceUnitSpawn.Where(spawnPosition, unitData, coords, player));
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using Actors.Grid.Generator;
 using Actors.Players;
 using Base.MonoBehaviours;
+using Extensions;
 using Managers.ApiManagers;
 using Managers.GridManagers;
 using UnityEngine;
@@ -14,21 +15,25 @@ namespace Actors.Units.CombatUnits {
 
         public UnitData data;
         public UnitShader unitShader;
+        public PuckShader puckShader;
 
         public Vector3 moveTo;
 
         private IEnumerator unitMovement;
         public float speed = 5f;
 
+        //TODO remove also!
         public static CombatUnit Instantiate(UnitData data, Vector3 position, Player player) {
             return Instantiate(data.prefab, position, Quaternion.identity)
                    .GetComponent<CombatUnitBehaviour>()
+                   .Also(it => it.puckShader.SetPlayerColor(player.PlayerColor))
                    .Controller;
         }
 
         protected override void OnAwake() {
             Controller.Init(data, gameObject);
             unitShader = new UnitShader(transform.GetComponent<MeshRenderer>().material);
+            puckShader = new PuckShader(transform.GetChild(1).GetComponent<MeshRenderer>().materials[1]);
             unitMovement = UnitMovement();
             position = transform.position;
         }
@@ -64,6 +69,7 @@ namespace Actors.Units.CombatUnits {
                     yield return this;
                 }
                 TransformLerp(moveTo, Time.deltaTime * speed);
+                RotateLerp(moveTo, Time.deltaTime * speed);
                 yield return this;
             }
         }
@@ -72,6 +78,13 @@ namespace Actors.Units.CombatUnits {
             t = Mathf.Clamp01(t);
             position.Set(position.x + (b.x - position.x) * t, gridInteractor.SampleTerrain(b.x, b.z) ?? b.y, position.z + (b.z - position.z) * t);
             transform.position = position;
+        }
+
+        private void RotateLerp(Vector3 b, float t) {
+            t = Mathf.Clamp01(t);
+            b.y = transform.position.y;
+            var toRotation = Quaternion.LookRotation(b - transform.position);
+            transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, t);
         }
     }
 }

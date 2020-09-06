@@ -1,4 +1,5 @@
-﻿using Base.Interfaces;
+﻿using Actors.Players;
+using Base.Interfaces;
 using UnityEngine;
 
 namespace Actors.Units.Interface {
@@ -8,6 +9,8 @@ namespace Actors.Units.Interface {
         void SetUnitColor(Color color);
 
         void DeactivateHighlight();
+
+        Player GetOwner();
 
         int GetUpkeep();
 

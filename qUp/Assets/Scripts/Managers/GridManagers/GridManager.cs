@@ -146,7 +146,7 @@ namespace Managers.GridManagers {
             var isPlayerBaseAtMaxY = PlayerManager.GetCurrentPlayer().GetBaseCoordinates().y == maxCoords.y;
 
             var resourceUnitPathCoords =
-                coords.PathTo(PlayerManager.GetCurrentPlayer().GetBaseCoordinates(), isPlayerBaseAtMaxY).Also(it => it.RemoveLast());
+                coords.PathTo(unit.GetOwner().GetBaseCoordinates() > maxCoords ? maxCoords : unit.GetOwner().GetBaseCoordinates(), isPlayerBaseAtMaxY).Also(it => it.RemoveLast());
 
             var resourceUnitPath = new List<TileInfo>();//resourceUnitPathCoords.Select(pathCoord => grid[pathCoord]).ToList();
 
@@ -486,7 +486,7 @@ namespace Managers.GridManagers {
                         // }
                         
                         PlayerManager.SpawnResourceUnit(resourceTile.Tile.ProvideTilePosition(),
-                            resourceTile.Coords);
+                            resourceTile.Coords, player);
                     }
                 }
             }

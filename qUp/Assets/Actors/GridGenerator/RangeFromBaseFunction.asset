@@ -19,7 +19,7 @@ MonoBehaviour:
     rangeSegmentLength: 1
     fieldTypes:
     - name: Common
-      chance: 6
+      chance: 7
       prefabs:
       - {fileID: 4902512073435256882, guid: f8e008e3168094b82aed4bb88717f239, type: 3}
     - name: Resource
@@ -30,7 +30,7 @@ MonoBehaviour:
     rangeSegmentLength: 1
     fieldTypes:
     - name: Common
-      chance: 5
+      chance: 6
       prefabs:
       - {fileID: 4902512073435256882, guid: f8e008e3168094b82aed4bb88717f239, type: 3}
     - name: Resource
@@ -41,7 +41,7 @@ MonoBehaviour:
     rangeSegmentLength: 3
     fieldTypes:
     - name: Common
-      chance: 4
+      chance: 5
       prefabs:
       - {fileID: 4902512073435256882, guid: f8e008e3168094b82aed4bb88717f239, type: 3}
     - name: Resource
@@ -52,7 +52,7 @@ MonoBehaviour:
     rangeSegmentLength: 2
     fieldTypes:
     - name: Common
-      chance: 1
+      chance: 5
       prefabs:
       - {fileID: 4902512073435256882, guid: f8e008e3168094b82aed4bb88717f239, type: 3}
     - name: Resource
@@ -63,7 +63,7 @@ MonoBehaviour:
     rangeSegmentLength: 2
     fieldTypes:
     - name: Common
-      chance: 3
+      chance: 4
       prefabs:
       - {fileID: 4902512073435256882, guid: f8e008e3168094b82aed4bb88717f239, type: 3}
     - name: Resource

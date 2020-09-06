@@ -1,3 +1,4 @@
+using Actors.Players;
 using Actors.Units.Interface;
 using Base.MonoBehaviours;
 using Common;
@@ -49,6 +50,8 @@ namespace Actors.Units.CombatUnits {
         public void DeactivateHighlight() {
             SetState(Highlight.Where(false));
         }
+
+        public Player GetOwner() => null;
 
         public int GetUpkeep() => data.upkeep;
 

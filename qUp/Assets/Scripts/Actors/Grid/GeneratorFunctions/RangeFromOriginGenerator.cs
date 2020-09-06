@@ -52,6 +52,10 @@ namespace Actors.Grid.GeneratorFunctions {
         public List<RangeSegment> rangeSegments;
 
         public override GameObject GeneratePrefab(GridCoords coords, GridCoords maxCoords) {
+            //TODO this is hardcoded here since we don't currently have the edge of the map, so this way res decoration won't show below
+            if (coords.x == maxCoords.x || coords.y == maxCoords.y || coords.x == 0 || coords.y == 0 || coords.IsNeighbourOf((0,0)) || coords.IsNeighbourOf(maxCoords)) {
+                return rangeSegments[0].fieldTypes[0].prefabs[0];
+            }
             var rangeFromBase = coords.DistanceTo(GridCoords.Origin);
             var rangeSegment = GetRangeSegmentFor(rangeFromBase, maxCoords);
             InitRandom();
