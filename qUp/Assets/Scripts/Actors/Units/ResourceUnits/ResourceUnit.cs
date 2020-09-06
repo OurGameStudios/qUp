@@ -55,5 +55,8 @@ namespace Actors.Units.ResourceUnits {
         public int GetCost() => data.cost;
 
         public int GetTickPoints() => data.tickPoints;
+        public void Destroy() {
+            SetState(DestroyUnit.Where());
+        }
     }
 }

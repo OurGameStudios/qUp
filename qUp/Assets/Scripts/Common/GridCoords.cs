@@ -332,6 +332,11 @@ namespace Common {
             return coords;
         }
 
+        //TODO rework clone function
+        public GridCoords Clone() {
+            return this + (0, 0);
+        }
+
         // Addition
         public static GridCoords operator +(GridCoords a, GridCoords b) => new GridCoords(a.x + b.x, a.y + b.y);
 

@@ -55,5 +55,8 @@ namespace Actors.Units.CombatUnits {
         public int GetCost() => data.cost;
 
         public int GetTickPoints() => data.tickPoints;
+        public void Destroy() {
+            
+        }
     }
 }

@@ -14,5 +14,7 @@ namespace Actors.Units.Interface {
         int GetCost();
 
         int GetTickPoints();
+
+        void Destroy();
     }
 }

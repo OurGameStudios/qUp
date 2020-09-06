@@ -47,6 +47,8 @@ namespace Actors.Units.ResourceUnits {
                 } else {
                     unitShader.DisableHighlight();
                 }
+            } else if (inState is DestroyUnit) {
+                Destroy(gameObject);
             }
         }
 
