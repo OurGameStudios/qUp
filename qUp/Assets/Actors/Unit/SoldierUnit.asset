@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: SoldierUnit
   m_EditorClassIdentifier: 
   prefab: {fileID: 6847302850095094860, guid: 3ea8fbde32f42b54fb94cabb9c66611d, type: 3}
-  unitUiImage: {fileID: 21300000, guid: 1966f676694f2814c918c1088fe058e9, type: 3}
+  unitUiImage: {fileID: 21300000, guid: d88b5634ca11389438bbad6f905d7602, type: 3}
   name: Soldier
   cost: 200
+  upkeep: 150
   hp: 10
   attack: 5
   tickPoints: 3
