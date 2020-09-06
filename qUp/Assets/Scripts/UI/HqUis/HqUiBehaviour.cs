@@ -12,15 +12,15 @@ namespace UI.HqUis {
 
         protected override void OnStateHandler(IHqUiState inState) {
             if (inState is UnitInfo unitInfoState) {
-                BindButton(unitInfoState.MenuPosition, unitInfoState.UnitName, unitInfoState.UnitCost);
+                BindButton(unitInfoState.MenuPosition, unitInfoState.UnitCost, unitInfoState.UiImage);
             }
         }
 
-        private void BindButton(int menuPosition, string unitName, string unitCost) {
+        private void BindButton(int menuPosition, string unitCost, Sprite uiImage) {
             if (menuPosition >= buttons.Count) {
                 buttons.Add(HqUnitButton.InstantiateButton(hqUnitButtonPrefab, transform));
             }
-            buttons[menuPosition].Bind(() => { Controller.OnClick(menuPosition); }, unitName, unitCost);
+            buttons[menuPosition].Bind(() => { Controller.OnClick(menuPosition); }, unitCost, uiImage);
             buttons[menuPosition].gameObject.SetActive(true);
         }
     }
