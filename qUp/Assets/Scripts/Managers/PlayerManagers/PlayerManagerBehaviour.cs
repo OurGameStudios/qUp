@@ -1,3 +1,4 @@
+using Actors.Players;
 using Actors.Units;
 using Actors.Units.CombatUnits;
 using Actors.Units.ResourceUnits;
@@ -13,7 +14,7 @@ namespace Managers.PlayerManagers {
             if (inState is UnitSpawn spawnUnitState) {
                 SpawnUnit(spawnUnitState.SpawnPosition, spawnUnitState.UnitData, spawnUnitState.Coords);
             } else if (inState is ResourceUnitSpawn spawnResourceUnitState) {
-                SpawnResourceUnit(spawnResourceUnitState.SpawnPosition, spawnResourceUnitState.UnitData, spawnResourceUnitState.Coords);
+                SpawnResourceUnit(spawnResourceUnitState.SpawnPosition, spawnResourceUnitState.UnitData, spawnResourceUnitState.Coords, spawnResourceUnitState.Player);
             }
         }
 
@@ -26,8 +27,8 @@ namespace Managers.PlayerManagers {
             unit.SetCoords(coords);
         }
         
-        private void SpawnResourceUnit(Vector3 position, UnitData unitData, GridCoords coords) {
-            var unit = ResourceUnitBehaviour.Instantiate(unitData, position, Controller.GetCurrentPlayer());
+        private void SpawnResourceUnit(Vector3 position, UnitData unitData, GridCoords coords, Player player) {
+            var unit = ResourceUnitBehaviour.Instantiate(unitData, position, player);
             unit.SetCoords(coords);
         }
     }

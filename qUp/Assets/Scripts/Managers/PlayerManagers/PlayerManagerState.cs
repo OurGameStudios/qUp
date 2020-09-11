@@ -1,3 +1,4 @@
+using Actors.Players;
 using Actors.Units;
 using Base.Interfaces;
 using Common;
@@ -26,10 +27,15 @@ namespace Managers.PlayerManagers {
         public UnitData UnitData { get; private set; }
 
         public GridCoords Coords { get; private set; }
-        public static ResourceUnitSpawn Where(Vector3 spawnPosition, UnitData unitData, GridCoords coords) {
+        
+        public Player Player { get; private set; }
+        
+        public static ResourceUnitSpawn Where(Vector3 spawnPosition, UnitData unitData, GridCoords coords,
+                                              Player player) {
             Cache.SpawnPosition = spawnPosition;
             Cache.UnitData = unitData;
             Cache.Coords = coords;
+            Cache.Player = player;
             return Cache;
         }
     }

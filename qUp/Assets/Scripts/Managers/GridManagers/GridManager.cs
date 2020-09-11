@@ -15,7 +15,6 @@ using Managers.PlayerManagers;
 using Managers.PlayManagers;
 using Managers.UIManagers;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Managers.GridManagers {
     public class GridManager : BaseManager<IGridManagerState> {
@@ -60,7 +59,7 @@ namespace Managers.GridManagers {
 
         private GridInteractor gridInteractor = ApiManager.ProvideInteractor<GridInteractor>();
 
-        private GridCoords maxCoords;
+        private GridCoords maxCoords = (-1, -1);
 
         private readonly Dictionary<GridCoords, TileInfo> grid = new Dictionary<GridCoords, TileInfo>(MAX_NUM_OF_TILES);
 
@@ -105,8 +104,10 @@ namespace Managers.GridManagers {
         public void RegisterTile(Tile tile) {
             grid.Add(tile.Coords, new TileInfo(tile.Coords, tile, PlayerManager.GetAllPlayers()));
             //TODO max cords shouldn't be set each time new tile is registered
-            maxCoords = gridInteractor.GetMaxCoords();
-
+            if (maxCoords == (-1, -1)) {
+                maxCoords = gridInteractor.GetMaxCoords();
+            }
+            
             //TODO needs improvement
             foreach (var player in PlayerManager.GetAllPlayers()) {
                 var hqCoords = player.GetBaseCoordinates();
@@ -139,13 +140,27 @@ namespace Managers.GridManagers {
         }
 
         public void RegisterResourceUnit(IUnit unit, GridCoords coords) {
-            var resourceUnitInfo = new ResourceUnitInfo(coords);
+            
+            //This is for presentation
+            //Resource nits have predetermined straight path
+            var isPlayerBaseAtMaxY = PlayerManager.GetCurrentPlayer().GetBaseCoordinates().y == maxCoords.y;
+
+            var resourceUnitPathCoords =
+                coords.PathTo(unit.GetOwner().GetBaseCoordinates() > maxCoords ? maxCoords : unit.GetOwner().GetBaseCoordinates(), isPlayerBaseAtMaxY).Also(it => it.RemoveLast());
+
+            var resourceUnitPath = new List<TileInfo>();//resourceUnitPathCoords.Select(pathCoord => grid[pathCoord]).ToList();
+
+            foreach (var resourceUnitPathCoord in resourceUnitPathCoords) {
+                resourceUnitPath.Add(grid[resourceUnitPathCoord]);
+            }
+
+            var resourceUnitInfo = new ResourceUnitInfo(coords, PlayerManager.GetCurrentPlayer(), resourceUnitPath);
             resourceUnits[unit] = resourceUnitInfo;
 
-            var ticks = grid[coords].ticks;
-            foreach (var tick in ticks) {
-                tick.AddResourceUnit(resourceUnitInfo);
-            }
+            // var ticks = grid[coords].ticks;
+            // foreach (var tick in ticks) {
+            //     tick.AddResourceUnit(resourceUnitInfo);
+            // }
             
             unit.SetUnitColor(PlayerManager.GetCurrentPlayer().PlayerColor);
         }
@@ -354,6 +369,8 @@ namespace Managers.GridManagers {
             new Dictionary<int, HashSet<TileTickInfo>>(200);
 
         private bool hasPaths;
+        
+        private int resourceUnitMovementPoints = 2;
 
         public void SetupForNextPlayer() {
             ClearFocus();
@@ -406,6 +423,14 @@ namespace Managers.GridManagers {
                     dispatchedUnitList.Add(unit);
                 }
             }
+            
+            if (currentTick <= resourceUnitMovementPoints) {
+                foreach (var resourceUnit in resourceUnits) {
+                    resourceUnit.Key.MoveToNextTile(resourceUnit.Value.Path[0].Tile.ProvideTilePosition(), false);
+                    resourceUnit.Value.Path.RemoveAt(0);
+                    dispatchedUnitList.Add(resourceUnit.Key);
+                }
+            }
 
             if (dispatchedUnitList.Count == 0) EndExecution();
         }
@@ -413,12 +438,21 @@ namespace Managers.GridManagers {
         public void UnitMovementCompleted(IUnit unit) {
             dispatchedUnitList.Remove(unit);
             ChangeTileOwnership(unit);
+            if (resourceUnits.ContainsKey(unit)) {
+                if (resourceUnits[unit].Path.IsEmpty()) {
+                    //TODO hardcoded value for resource income
+                    PlayerManager.GetCurrentPlayer().RegisterResourceIncome(100, resourceUnits[unit].Origin);
+                    resourceUnits.Remove(unit);
+                    unit.Destroy();
+                }
+            }
             if (dispatchedUnitList.Count == 0) {
                 CoroutineHandler.DoOnNextFrame(DispatchTickToUnits);
             }
         }
 
         private void ChangeTileOwnership(IUnit unit) {
+            if (!unitPath.ContainsKey(unit)) return;
             var tileInfo = unitPath[unit][unitPath[unit].Count - 1 - currentTick].TileInfo;
             var owner = playerUnits[unit];
             if (tileInfo.Tile.GetOwner() == null) {
@@ -446,10 +480,13 @@ namespace Managers.GridManagers {
             foreach (var player in PlayerManager.GetAllPlayers()) {
                 if (playersResourceTiles.ContainsKey(player)) {
                     foreach (var resourceTile in playersResourceTiles[player]) {
-                        if (!resourceTile.ticks.Any(it => it.ContaisOriginatedResourceUnit(resourceTile.Coords))) {
-                            PlayerManager.SpawnResourceUnit(resourceTile.Tile.ProvideTilePosition(),
-                                resourceTile.Coords);
-                        }
+                        //Currently resource units will always move so we can always spawn resource units
+                        // if (!resourceTile.ticks.Any(it => it.ContaisOriginatedResourceUnit(resourceTile.Coords))) {
+                        //     
+                        // }
+                        
+                        PlayerManager.SpawnResourceUnit(resourceTile.Tile.ProvideTilePosition(),
+                            resourceTile.Coords, player);
                     }
                 }
             }

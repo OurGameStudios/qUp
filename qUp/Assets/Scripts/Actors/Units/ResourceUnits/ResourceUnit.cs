@@ -1,3 +1,4 @@
+using Actors.Players;
 using Actors.Units.Interface;
 using Base.MonoBehaviours;
 using Common;
@@ -17,6 +18,7 @@ namespace Actors.Units.ResourceUnits {
         private int currentTicks;
 
         private GridCoords coords;
+        public Player owner;
 
         public void Init(UnitData inData, GameObject gameObject) {
             data = inData;
@@ -50,10 +52,15 @@ namespace Actors.Units.ResourceUnits {
             SetState(ResourceUnitHighlight.Where(false));
         }
 
+        public Player GetOwner() => owner;
+
         public int GetUpkeep() => data.upkeep;
 
         public int GetCost() => data.cost;
 
         public int GetTickPoints() => data.tickPoints;
+        public void Destroy() {
+            SetState(DestroyUnit.Where());
+        }
     }
 }

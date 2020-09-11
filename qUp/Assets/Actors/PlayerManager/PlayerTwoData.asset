@@ -15,7 +15,7 @@ MonoBehaviour:
   playerName: Player two
   playerColor: {r: 1, g: 0, b: 0, a: 1}
   hqInfo:
-    prefab: {fileID: 6702595339068739768, guid: 21ff650d4aaa24855bb2c02222623e0c,
+    prefab: {fileID: 6702595339068739768, guid: 6867fb5f0b365864c9065b5610cc91f0,
       type: 3}
     x: 9999
     y: 9999

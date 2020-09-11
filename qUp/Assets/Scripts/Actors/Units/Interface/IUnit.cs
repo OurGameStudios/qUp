@@ -1,4 +1,5 @@
-﻿using Base.Interfaces;
+﻿using Actors.Players;
+using Base.Interfaces;
 using UnityEngine;
 
 namespace Actors.Units.Interface {
@@ -9,10 +10,14 @@ namespace Actors.Units.Interface {
 
         void DeactivateHighlight();
 
+        Player GetOwner();
+
         int GetUpkeep();
 
         int GetCost();
 
         int GetTickPoints();
+
+        void Destroy();
     }
 }

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: SampleMapGeneratorData
   m_EditorClassIdentifier: 
   resourceDecorators:
-  - {fileID: 3910070033937555488, guid: 3829af6279fb7214d9c12c661d2aeb84, type: 3}
-  - {fileID: 2761497373984230218, guid: 9f42954b46acb2c4da53c89ddc91056d, type: 3}
-  - {fileID: 1220776984122196606, guid: 0de6371dc6802de40ade0a4f95a32950, type: 3}
+  - {fileID: 3022493299139415461, guid: 613843282435b75409da6ecf1befc687, type: 3}
+  - {fileID: 924569328377384025, guid: 1463ecaf3b87b0445a1e8c192187d028, type: 3}
+  - {fileID: 924569328377384025, guid: d715a6b33a9e4aa41b78a6cd4292d1fb, type: 3}
   generatorFunction: {fileID: 11400000, guid: 52deec8956744bd8a1b2a89b0fb4b179, type: 2}
   symmetryFunction: {fileID: 11400000, guid: 07d08f2951e84b6985936556cab8d458, type: 2}
   terrainGeneratorFunction: {fileID: 11400000, guid: 3b192c067cece5e4f8a6f104e464d813,

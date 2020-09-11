@@ -40,4 +40,11 @@ namespace Actors.Units.ResourceUnits {
             return Cache;
         }
     }
+
+    public class DestroyUnit : ResourceUnitState<DestroyUnit> {
+
+        public static DestroyUnit Where() {
+            return Cache;
+        }
+    }
 }

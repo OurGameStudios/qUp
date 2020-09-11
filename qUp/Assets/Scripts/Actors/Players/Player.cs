@@ -14,6 +14,8 @@ namespace Actors.Players {
         private int upkeep;
         private int turnCost;
 
+        private List<GridCoords> incomeSources = new List<GridCoords>();
+
         public void Init(PlayerData inData) {
             data = inData;
             income = data.BaseIncome;
@@ -40,9 +42,19 @@ namespace Actors.Players {
 
         public int GetUpkeep() => upkeep;
 
-        public void RegisterResourceIncome(int income) => this.income += income;
+        public void RegisterResourceIncome(int income, GridCoords incomeSource) {
+            if (!incomeSources.Contains(incomeSource)) {
+                incomeSources.Add(incomeSource);
+                this.income += income;
+            }
+        }
 
-        public void UnregisterResourceIncome(int income) => this.income += income;
+        public void UnregisterResourceIncome(int income, GridCoords incomeSource) {
+            if (incomeSources.Contains(incomeSource)) {
+                incomeSources.Remove(incomeSource);
+                this.income -= income;
+            }
+        }
 
         public int GetIncome() => income;
 

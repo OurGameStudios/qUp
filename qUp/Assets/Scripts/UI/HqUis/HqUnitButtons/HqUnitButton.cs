@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 namespace UI.HqUis.HqUnitButtons {
     public class HqUnitButton : Button {
-
-        public Text unitName;
+        
         public Text unitCost;
 
         private Action onButtonClick;
@@ -23,10 +22,10 @@ namespace UI.HqUis.HqUnitButtons {
             }
         }
 
-        public void Bind(Action onClick, string text, string cost) {
-            unitName.text = text;
+        public void Bind(Action onClick, string cost, Sprite image) {
             unitCost.text = cost;
             onButtonClick = onClick;
+            GetComponent<Image>().sprite = image;
         }
     }
 }

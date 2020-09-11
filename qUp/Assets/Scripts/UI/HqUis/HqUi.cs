@@ -18,7 +18,7 @@ namespace UI.HqUis {
         public void Init(List<UnitData> inUnits) {
             units = inUnits;
             for (var i = 0; i < inUnits.Count; i++) {
-                SetState(UnitInfo.Where(i, inUnits[i].prefab, inUnits[i].name, inUnits[i].cost.ToString()));
+                SetState(UnitInfo.Where(i, inUnits[i].prefab, inUnits[i].cost.ToString(), inUnits[i].unitUiImage));
             }
         }
 

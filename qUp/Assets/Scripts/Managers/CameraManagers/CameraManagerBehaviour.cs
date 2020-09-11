@@ -73,13 +73,24 @@ namespace Managers.CameraManagers {
             cameraTransform.Translate(rotY * Vector3.forward * (panDirection.y * panSpeed), Space.World);
 
 
+            //This was removed for presentation purposes
             var position = cameraTransform.position;
-            cameraTransform.position = position.ClampAxis(Vector3Axis.X,
-                                                   minWorldPosition.x + maxOffsetFromWorld.x,
-                                                   maxWorldPosition.x + maxOffsetFromWorld.x)
-                                               .ClampAxis(Vector3Axis.Z,
-                                                   minWorldPosition.y + maxOffsetFromWorld.z,
-                                                   maxWorldPosition.y + maxOffsetFromWorld.z);
+            // cameraTransform.position = position.ClampAxis(Vector3Axis.X,
+            //                                        minWorldPosition.x + maxOffsetFromWorld.x,
+            //                                        maxWorldPosition.x + maxOffsetFromWorld.x)
+            //                                    .ClampAxis(Vector3Axis.Z,
+            //                                        minWorldPosition.y + maxOffsetFromWorld.z,
+            //                                        maxWorldPosition.y + maxOffsetFromWorld.z);
+
+            if (cameraTransform.position.x < minWorldPosition.x - 250 ||
+                cameraTransform.position.x > maxWorldPosition.x + 250 ||
+                cameraTransform.position.z < minWorldPosition.y - 250 ||
+                cameraTransform.position.z > maxWorldPosition.y + 150) {
+                cameraTransform.position = new Vector3(0, cameraTransform.position.y, 0);
+            }
+            
+            // cameraTransform.position = position.ClampAxis(Vector3Axis.X, minWorldPosition.x - 500, maxWorldPosition.x + 500)
+            //                                    .ClampAxis(Vector3Axis.Z, minWorldPosition.y - 500, maxWorldPosition.y + 500);
         }
 
         private void Rotate(Vector2 direction) {

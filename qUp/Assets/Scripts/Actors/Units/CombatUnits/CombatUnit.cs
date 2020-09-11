@@ -1,3 +1,4 @@
+using Actors.Players;
 using Actors.Units.Interface;
 using Base.MonoBehaviours;
 using Common;
@@ -50,10 +51,15 @@ namespace Actors.Units.CombatUnits {
             SetState(Highlight.Where(false));
         }
 
+        public Player GetOwner() => null;
+
         public int GetUpkeep() => data.upkeep;
 
         public int GetCost() => data.cost;
 
         public int GetTickPoints() => data.tickPoints;
+        public void Destroy() {
+            
+        }
     }
 }
