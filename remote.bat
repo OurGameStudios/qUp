@@ -5,6 +5,7 @@ set rpath="%cd%%rclonePath%"
 set crpath=%cd%%rclonePath%
 set excludepath=%cd%/remote/rcloneExclude.txt
 set versionpath=%cd%/remote/version.txt
+set versionCheckPath=%cd%/remote/versionCheck.txt
 set rcloneArgs=
 
 if "%~1"=="" (goto commanderror)
@@ -585,10 +586,10 @@ goto eof
     )
     echo Remote
     type remote\version.txt
-    echo .
-    break>remote\versionCheck.txt
-    remote\rclone check %versionpath% RemoteConfig: --quiet --log-file remote\versionCheck.txt
-    for %%a in ("remote\versionCheck.txt") do if %%~za==0 (
+    echo.
+    break>%versionCheckPath%
+    remote\rclone check %versionpath% RemoteConfig: --quiet --log-file %versionCheckPath%
+    for %%a in ("%versionCheckPath%") do if %%~za==0 (
         echo You have the newest version!
     ) else (
         echo New version is available! Pull git master to update.
@@ -596,7 +597,7 @@ goto eof
     goto eof
 
 :releaseVersion
-    remote\rclone sync remote\version.txt RemoteConfig: -q
+    remote\rclone sync %versionpath% RemoteConfig: -q
     echo New version published!
 
 :eof
