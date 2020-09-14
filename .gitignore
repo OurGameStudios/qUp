@@ -12,9 +12,12 @@
 [Mm]edia/
 [Bb]ackup/
 
-#Temporary file ifnore
+#Temporary file ignore
 [Tt]emporary/
 Temporary.meta
+
+#Ignore remote version
+[Rr]emote/versionCheck.txt
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
