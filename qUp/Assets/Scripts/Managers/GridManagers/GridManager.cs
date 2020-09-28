@@ -218,6 +218,7 @@ namespace Managers.GridManagers {
             }
         }
 
+        //TODO deserves a refactor
         public void SelectUnitLockedPath(GridCoords coords) {
             if (focusType == FocusType.InteractableUnit) {
                 if (groupRange < currentSelectedPath.Count) return;

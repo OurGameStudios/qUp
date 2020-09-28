@@ -30,7 +30,6 @@ namespace Actors.Units.ResourceUnits {
 
         public void OnInteraction(ClickInteraction interaction) {
             if (interaction == ClickInteraction.Primary) {
-                // gridManager.SelectUnit(this);
                 SetState(ResourceUnitSelected.Where());
             }
         }
