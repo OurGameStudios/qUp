@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Base.Interfaces;
 using Common;
+using Common.Interaction;
 using Managers.ApiManagers;
 using Managers.CameraManagers;
 using UnityEngine;
@@ -48,6 +49,8 @@ namespace Managers.InputManagers {
         private Action<IEnumerator> coroutineStopHandler;
         private Action<GameObject> hoverStart;
         private Action<GameObject> hoverEnd;
+
+        private bool alternate;
 
         private PointerInteractions(Inputs inputs) {
             mouse = InputSystem.GetDevice<Mouse>();
@@ -100,6 +103,8 @@ namespace Managers.InputManagers {
             inputs.CameraControls.MouseDelta.performed += context => Rotation(context.ReadValue<Vector2>());
 
             inputs.UnitSelected.SelectPath.performed += _ => SelectPath();
+            inputs.UnitSelected.AlternateAction.started += _ => alternate = true;
+            inputs.UnitSelected.AlternateAction.canceled += _ => alternate = false;
 
             inputs.PlanningPhase.SelectUnit.performed += _ => SelectUnit();
             inputs.CameraControls.PointerPosition.performed += context => {
@@ -186,14 +191,19 @@ namespace Managers.InputManagers {
         private void SelectUnit() {
             if (currentHitGameObject == null) return;
             if (InteractableTags.IsClickable(currentHitGameObject) && !EventSystem.current.IsPointerOverGameObject()) {
-                clickables[currentHitGameObject].OnClick();
+                clickables[currentHitGameObject].OnInteraction(ClickInteraction.Primary);
             }
         }
 
         private void SelectPath() {
             if (currentHitGameObject == null) return;
-            if (currentHitGameObject.CompareTag(InteractableTags.TILE_TAG) && !EventSystem.current.IsPointerOverGameObject()) {
-                clickables[currentHitGameObject].OnSecondaryClick();
+            if (!currentHitGameObject.CompareTag(InteractableTags.TILE_TAG) ||
+                EventSystem.current.IsPointerOverGameObject()) return;
+            
+            if (alternate) {
+                clickables[currentHitGameObject].OnInteraction(ClickInteraction.AlternateSecondary);                    
+            } else {
+                clickables[currentHitGameObject].OnInteraction(ClickInteraction.Secondary);
             }
         }
 

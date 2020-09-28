@@ -194,6 +194,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "AlternateAction",
+                    "type": "Button",
+                    "id": "55b71711-bfb1-483f-aa01-534118d55ca7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -205,6 +213,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "SelectPath",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4ba201c1-1823-46ef-bcca-fedcb4e5c3b0",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AlternateAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
