@@ -3,6 +3,7 @@ using Actors.Players;
 using Base.Interfaces;
 using Base.MonoBehaviours;
 using Common;
+using Common.Interaction;
 using Extensions;
 using Managers.ApiManagers;
 using Managers.GridManagers;
@@ -38,12 +39,14 @@ namespace Actors.Tiles {
             
         }
 
-        public void OnClick() {
-            gridManager.SelectTile(Coords);
-        }
-
-        public void OnSecondaryClick() {
-            gridManager.SelectUnitPath(Coords);
+        public void OnInteraction(ClickInteraction interaction) {
+            if (interaction == ClickInteraction.Primary) {
+                gridManager.SelectTile(Coords);
+            } else if (interaction == ClickInteraction.Secondary) {
+                gridManager.SelectUnitPath(Coords);
+            } else if (interaction == ClickInteraction.AlternateSecondary) {
+                gridManager.SelectUnitLockedPath(Coords);
+            }
         }
 
         public void OnHoverStart() {

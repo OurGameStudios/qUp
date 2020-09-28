@@ -2,6 +2,7 @@ using Actors.Players;
 using Actors.Units.Interface;
 using Base.MonoBehaviours;
 using Common;
+using Common.Interaction;
 using Managers.ApiManagers;
 using Managers.GridManagers;
 using Managers.InputManagers;
@@ -26,12 +27,12 @@ namespace Actors.Units.CombatUnits {
             inputManager.RegisterClickable(this, gameObject);
         }
 
-        public void OnClick() {
-            gridManager.SelectUnit(this);
-            SetState(CombatUnitSelected.Where());
+        public void OnInteraction(ClickInteraction interaction) {
+            if (interaction == ClickInteraction.Primary) {
+                gridManager.SelectUnit(this);
+                SetState(CombatUnitSelected.Where());
+            }
         }
-
-        public void OnSecondaryClick() { }
 
         public void SetCoords(GridCoords inCoords) {
             coords = inCoords;

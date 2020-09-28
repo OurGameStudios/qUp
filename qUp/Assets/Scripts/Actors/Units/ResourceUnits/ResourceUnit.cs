@@ -2,6 +2,7 @@ using Actors.Players;
 using Actors.Units.Interface;
 using Base.MonoBehaviours;
 using Common;
+using Common.Interaction;
 using Managers.ApiManagers;
 using Managers.GridManagers;
 using Managers.InputManagers;
@@ -27,12 +28,12 @@ namespace Actors.Units.ResourceUnits {
             inputManager.RegisterClickable(this, gameObject);
         }
 
-        public void OnClick() {
-            // gridManager.SelectUnit(this);
-            SetState(ResourceUnitSelected.Where());
+        public void OnInteraction(ClickInteraction interaction) {
+            if (interaction == ClickInteraction.Primary) {
+                // gridManager.SelectUnit(this);
+                SetState(ResourceUnitSelected.Where());
+            }
         }
-
-        public void OnSecondaryClick() { }
 
         public void SetCoords(GridCoords inCoords) {
             coords = inCoords;
@@ -40,8 +41,8 @@ namespace Actors.Units.ResourceUnits {
         }
 
         //TODO decide if vector3 is best way to dictate move position
-        public void MoveToNextTile(Vector3 position, bool ResourceTile) {
-            SetState(ResourceUnitMovement.Where(position, ResourceTile));
+        public void MoveToNextTile(Vector3 position, bool resourceTile) {
+            SetState(ResourceUnitMovement.Where(position, resourceTile));
         }
 
         public void SetUnitColor(Color color) {

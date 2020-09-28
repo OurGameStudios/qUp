@@ -218,6 +218,28 @@ namespace Managers.GridManagers {
             }
         }
 
+        public void SelectUnitLockedPath(GridCoords coords) {
+            if (focusType == FocusType.InteractableUnit) {
+                if (groupRange < currentSelectedPath.Count) return;
+                var lockedPathStartPoint = currentSelectedPath.First();
+                var selectedPath = lockedPathStartPoint.TileInfo.Coords.PathTo(coords,
+                                                            coords.y >= maxCoords.y ||
+                                                            lockedPathStartPoint.TileInfo.Coords.y >= maxCoords.y);
+                selectedPath.RemoveAt(0);
+                var availablePath = selectedPath.Take(groupRange - currentSelectedPath.Count + 1);
+                var currentPathTick = currentSelectedPath.Count;
+
+                foreach (var coord in availablePath) {
+                    var tileTickInfo = grid[coord].ticks[currentPathTick];
+                    currentSelectedPath.Insert(0, tileTickInfo);
+                    tileTickInfo.TileInfo.Tile.ActivateHighlight(pathHighlightColor);
+                    currentPathTick++;
+                }
+
+                hasPathChanged = true;
+            }
+        }
+
         private int groupRange;
 
         //TODO if unit is not from current player, UI should be notified to display
