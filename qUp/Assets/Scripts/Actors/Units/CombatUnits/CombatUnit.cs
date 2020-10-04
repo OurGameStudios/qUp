@@ -34,9 +34,9 @@ namespace Actors.Units.CombatUnits {
             }
         }
 
-        public void SetCoords(GridCoords inCoords) {
+        public void SetCoords(GridCoords inCoords, Player owner) {
             coords = inCoords;
-            gridManager.RegisterUnit(this, inCoords);
+            gridManager.RegisterUnit(this, inCoords, owner);
         }
 
         //TODO decide if vector3 is best way to dictate move position

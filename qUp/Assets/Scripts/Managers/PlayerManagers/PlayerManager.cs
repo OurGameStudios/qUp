@@ -37,11 +37,11 @@ namespace Managers.PlayerManagers {
 
         public List<Player> GetAllPlayers() => players.ConvertAll(it => it.ExposeController());
 
-        public void SpawnUnit(Vector3 tilePosition, GridCoords coords) {
+        public void SpawnUnit(Vector3 tilePosition, GridCoords coords, Player player) {
             var unitData = UiManager.ProvideSelectedUnit();
             if (unitData.cost > GetCurrentPlayer().GetAvailableIncome()) return;
             var spawnPosition = tilePosition.AddY(unitData.prefab.transform.localScale.y / 2);
-            SetState(UnitSpawn.Where(spawnPosition, unitData, coords));
+            SetState(UnitSpawn.Where(spawnPosition, unitData, coords, player));
         }
 
         public void SpawnResourceUnit(Vector3 tilePosition, GridCoords coords, Player player) {
