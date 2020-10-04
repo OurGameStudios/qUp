@@ -12,7 +12,7 @@ namespace Managers.PlayerManagers {
 
         protected override void OnStateHandler(IPlayerManagerState inState) {
             if (inState is UnitSpawn spawnUnitState) {
-                SpawnUnit(spawnUnitState.SpawnPosition, spawnUnitState.UnitData, spawnUnitState.Coords);
+                SpawnUnit(spawnUnitState.SpawnPosition, spawnUnitState.UnitData, spawnUnitState.Coords, spawnUnitState.Player);
             } else if (inState is ResourceUnitSpawn spawnResourceUnitState) {
                 SpawnResourceUnit(spawnResourceUnitState.SpawnPosition, spawnResourceUnitState.UnitData, spawnResourceUnitState.Coords, spawnResourceUnitState.Player);
             }
@@ -22,14 +22,14 @@ namespace Managers.PlayerManagers {
             Controller.Init(data);
         }
 
-        private void SpawnUnit(Vector3 position, UnitData unitData, GridCoords coords) {
-            var unit = CombatUnitBehaviour.Instantiate(unitData, position, Controller.GetCurrentPlayer());
-            unit.SetCoords(coords);
+        private void SpawnUnit(Vector3 position, UnitData unitData, GridCoords coords, Player player) {
+            var unit = CombatUnitBehaviour.Instantiate(unitData, position, player);
+            unit.SetCoords(coords, player);
         }
         
         private void SpawnResourceUnit(Vector3 position, UnitData unitData, GridCoords coords, Player player) {
             var unit = ResourceUnitBehaviour.Instantiate(unitData, position, player);
-            unit.SetCoords(coords);
+            unit.SetCoords(coords, player);
         }
     }
 }

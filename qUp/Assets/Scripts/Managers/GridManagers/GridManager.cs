@@ -21,6 +21,8 @@ namespace Managers.GridManagers {
         public const int MAX_NUM_OF_UNITS = 3;
         public const int MAX_NUM_OF_TILES = 200;
         public const int MAX_TICKS = 5;
+        public const int NUM_OF_SPAWN_TILES = 2;
+        public const int MAX_NUM_OF_SPAWN_UNITS = NUM_OF_SPAWN_TILES * MAX_NUM_OF_UNITS;
 
         private enum FocusType {
             None,
@@ -93,11 +95,18 @@ namespace Managers.GridManagers {
 
         private FocusType focusType = FocusType.None;
 
+        private Dictionary<Player, List<UnitSpawnInfo>> unitSpawnInfos =
+            new Dictionary<Player, List<UnitSpawnInfo>>(2);
+
         public GridManager() {
             pathsInRange = new Dictionary<TileTickInfo, TileTickInfo>(MAX_NUM_OF_TILES);
             pathfinder = new Pathfinder();
             for (var i = 0; i <= MAX_TICKS; i++) {
                 executions.Add(i, new HashSet<TileTickInfo>());
+            }
+
+            foreach (var player in PlayerManager.GetAllPlayers()) {
+                unitSpawnInfos.Add(player, new List<UnitSpawnInfo>(MAX_NUM_OF_SPAWN_UNITS));
             }
         }
 
@@ -107,7 +116,7 @@ namespace Managers.GridManagers {
             if (maxCoords == (-1, -1)) {
                 maxCoords = gridInteractor.GetMaxCoords();
             }
-            
+
             //TODO needs improvement
             foreach (var player in PlayerManager.GetAllPlayers()) {
                 var hqCoords = player.GetBaseCoordinates();
@@ -125,44 +134,48 @@ namespace Managers.GridManagers {
             }
         }
 
-        public void RegisterUnit(IUnit unit, GridCoords coords) {
+        public void RegisterUnit(IUnit unit, GridCoords coords, Player owner) {
             var ticks = grid[coords].ticks;
 
             //TODO spawned unit should take 5 ticks
             //TODO wrong units should spawn on prepping phase
-            ticks[0].AddUnit(PlayerManager.GetCurrentPlayer(), unit);
-            PlayerManager.GetCurrentPlayer().RegisterUnitUpkeep(unit.GetUpkeep(), unit.GetCost());
+            ticks[0].AddUnit(owner, unit);
+            owner.RegisterUnitUpkeep(unit.GetUpkeep(), unit.GetCost());
             UiManager.RegisterUnitSpawned();
 
             unitPath.Add(unit, new List<TileTickInfo> {ticks[0]});
-            playerUnits.Add(unit, PlayerManager.GetCurrentPlayer());
-            unit.SetUnitColor(PlayerManager.GetCurrentPlayer().PlayerColor);
+            playerUnits.Add(unit, owner);
+            unit.SetUnitColor(owner.PlayerColor);
         }
 
-        public void RegisterResourceUnit(IUnit unit, GridCoords coords) {
-            
+        public void RegisterResourceUnit(IUnit unit, GridCoords coords, Player owner) {
             //This is for presentation
             //Resource nits have predetermined straight path
-            var isPlayerBaseAtMaxY = PlayerManager.GetCurrentPlayer().GetBaseCoordinates().y == maxCoords.y;
+            var isPlayerBaseAtMaxY = owner.GetBaseCoordinates().y == maxCoords.y;
 
             var resourceUnitPathCoords =
-                coords.PathTo(unit.GetOwner().GetBaseCoordinates() > maxCoords ? maxCoords : unit.GetOwner().GetBaseCoordinates(), isPlayerBaseAtMaxY).Also(it => it.RemoveLast());
+                coords.PathTo(owner.GetBaseCoordinates() > maxCoords
+                              ? maxCoords
+                              : unit.GetOwner().GetBaseCoordinates(),
+                          isPlayerBaseAtMaxY)
+                      .Also(it => it.RemoveLast());
 
-            var resourceUnitPath = new List<TileInfo>();//resourceUnitPathCoords.Select(pathCoord => grid[pathCoord]).ToList();
+            var resourceUnitPath =
+                new List<TileInfo>(); //resourceUnitPathCoords.Select(pathCoord => grid[pathCoord]).ToList();
 
             foreach (var resourceUnitPathCoord in resourceUnitPathCoords) {
                 resourceUnitPath.Add(grid[resourceUnitPathCoord]);
             }
 
-            var resourceUnitInfo = new ResourceUnitInfo(coords, PlayerManager.GetCurrentPlayer(), resourceUnitPath);
+            var resourceUnitInfo = new ResourceUnitInfo(coords, owner, resourceUnitPath);
             resourceUnits[unit] = resourceUnitInfo;
 
             // var ticks = grid[coords].ticks;
             // foreach (var tick in ticks) {
             //     tick.AddResourceUnit(resourceUnitInfo);
             // }
-            
-            unit.SetUnitColor(PlayerManager.GetCurrentPlayer().PlayerColor);
+
+            unit.SetUnitColor(owner.PlayerColor);
         }
 
         public void UnitToSpawnSelected() {
@@ -191,8 +204,11 @@ namespace Managers.GridManagers {
         }
 
         private void HandleHq(GridCoords coords) {
+            if (unitSpawnInfos[PlayerManager.GetCurrentPlayer()].Count >= MAX_NUM_OF_SPAWN_UNITS) return;
             spawnTiles.FirstOrDefault(it => it.Coords == coords)
-                      ?.Tile?.Let(it => PlayerManager.SpawnUnit(it.ProvideTilePosition(), coords));
+                      ?.Tile?.Let(it =>
+                          unitSpawnInfos[PlayerManager.GetCurrentPlayer()]
+                              .Add(new UnitSpawnInfo(it.ProvideTilePosition(), coords)));
 
             ClearFocus();
         }
@@ -224,8 +240,8 @@ namespace Managers.GridManagers {
                 if (groupRange < currentSelectedPath.Count) return;
                 var lockedPathStartPoint = currentSelectedPath.First();
                 var selectedPath = lockedPathStartPoint.TileInfo.Coords.PathTo(coords,
-                                                            coords.y >= maxCoords.y ||
-                                                            lockedPathStartPoint.TileInfo.Coords.y >= maxCoords.y);
+                    coords.y >= maxCoords.y ||
+                    lockedPathStartPoint.TileInfo.Coords.y >= maxCoords.y);
                 selectedPath.RemoveAt(0);
                 var availablePath = selectedPath.Take(groupRange - currentSelectedPath.Count + 1);
                 var currentPathTick = currentSelectedPath.Count;
@@ -392,7 +408,7 @@ namespace Managers.GridManagers {
             new Dictionary<int, HashSet<TileTickInfo>>(200);
 
         private bool hasPaths;
-        
+
         private int resourceUnitMovementPoints = 2;
 
         public void SetupForNextPlayer() {
@@ -446,7 +462,7 @@ namespace Managers.GridManagers {
                     dispatchedUnitList.Add(unit);
                 }
             }
-            
+
             if (currentTick <= resourceUnitMovementPoints) {
                 foreach (var resourceUnit in resourceUnits) {
                     resourceUnit.Key.MoveToNextTile(resourceUnit.Value.Path[0].Tile.ProvideTilePosition(), false);
@@ -469,6 +485,7 @@ namespace Managers.GridManagers {
                     unit.Destroy();
                 }
             }
+
             if (dispatchedUnitList.Count == 0) {
                 CoroutineHandler.DoOnNextFrame(DispatchTickToUnits);
             }
@@ -507,14 +524,21 @@ namespace Managers.GridManagers {
                         // if (!resourceTile.ticks.Any(it => it.ContaisOriginatedResourceUnit(resourceTile.Coords))) {
                         //     
                         // }
-                        
+
                         PlayerManager.SpawnResourceUnit(resourceTile.Tile.ProvideTilePosition(),
-                            resourceTile.Coords, player);
+                            resourceTile.Coords,
+                            player);
                     }
                 }
+
+                foreach (var unitSpawnInfo in unitSpawnInfos[player]) {
+                    PlayerManager.SpawnUnit(unitSpawnInfo.position, unitSpawnInfo.coords, player);
+                }
+                unitSpawnInfos[player].Clear();
             }
 
             PlayManager.NextPhase();
+            InputManager.OnPlanningPhase();
         }
     }
 }

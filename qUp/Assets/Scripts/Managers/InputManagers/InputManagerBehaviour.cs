@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Base.Interfaces;
 using Common.Interaction;
 using Managers.ApiManagers;
@@ -66,7 +68,12 @@ namespace Managers.InputManagers {
 
         public void OnPlanningPhase() {
             DisablePreppingPhase();
-            inputs.NextPlayer.Enable();
+            // This needs to be delayed because Disabling is sometimes run right before and racing condition affetcs enabling
+            Task.Delay(500).ContinueWith(task => {
+                inputs.NextPlayer.Enable();
+                task.Dispose();
+            });
+            
             inputs.PlanningPhase.Enable();
             inputs.NoUnitSelected.Enable();
         }

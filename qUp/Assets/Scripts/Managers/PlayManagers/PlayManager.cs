@@ -57,10 +57,12 @@ namespace Managers.PlayManagers {
                 // StartPlanningPhase();
                 //TODO start prepping phase
                 StartPreppingPhase();
+                Debug.Log("startprepping phase");
             } else if (phase == Phase.PreppingPhase) {
                 //TODO start prepping phase
                  //replace when implementing prepping phase
                  StartPlanningPhase();
+                 Debug.Log("start planing phase");
             }
         }
 
@@ -77,7 +79,7 @@ namespace Managers.PlayManagers {
             GridManager.StartExecution();
         }
 
-        private void StartPlanningPhase() {
+        public void StartPlanningPhase() {
             phase = Phase.PlanningPhase;
             InputManager.OnPlanningPhase();
             //TODO code repetition from switchPlayer method
