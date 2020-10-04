@@ -257,6 +257,28 @@ namespace Managers.GridManagers {
             }
         }
 
+        public void RemoveUnitPathPart(GridCoords coords) {
+            if (focusType == FocusType.InteractableUnit) {
+                if (currentSelectedPath.Count == 0) return;
+                var selectedIndex = currentSelectedPath.FindIndex(it => it.TileInfo.Coords == coords);
+                if (selectedIndex == currentSelectedPath.Count - 1) {
+                    for (var i = 0; i < currentSelectedPath.Count; i++) {
+                        currentSelectedPath[i].TileInfo.Tile.ActivateHighlight(rangeHighlightColor);
+                    }
+
+                    currentSelectedPath.Clear();
+                } else {
+                    for (var i = 0; i <= selectedIndex; i++) {
+                        currentSelectedPath[i].TileInfo.Tile.ActivateHighlight(rangeHighlightColor);
+                    }
+
+                    currentSelectedPath.RemoveRange(0, selectedIndex + 1);
+                }
+
+                hasPathChanged = true;
+            }
+        }
+
         private int groupRange;
 
         //TODO if unit is not from current player, UI should be notified to display
@@ -534,6 +556,7 @@ namespace Managers.GridManagers {
                 foreach (var unitSpawnInfo in unitSpawnInfos[player]) {
                     PlayerManager.SpawnUnit(unitSpawnInfo.position, unitSpawnInfo.coords, player);
                 }
+
                 unitSpawnInfos[player].Clear();
             }
 

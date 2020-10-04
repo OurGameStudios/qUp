@@ -215,6 +215,14 @@ public class @Inputs : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""DestructiveAction"",
+                    ""type"": ""Button"",
+                    ""id"": ""95b471f2-6853-4307-84e3-2dc729897701"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -237,6 +245,17 @@ public class @Inputs : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""AlternateAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bcf5891a-1be8-4a66-a8a4-957da5159d90"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DestructiveAction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -271,6 +290,7 @@ public class @Inputs : IInputActionCollection, IDisposable
         m_UnitSelected = asset.FindActionMap("UnitSelected", throwIfNotFound: true);
         m_UnitSelected_SelectPath = m_UnitSelected.FindAction("SelectPath", throwIfNotFound: true);
         m_UnitSelected_AlternateAction = m_UnitSelected.FindAction("AlternateAction", throwIfNotFound: true);
+        m_UnitSelected_DestructiveAction = m_UnitSelected.FindAction("DestructiveAction", throwIfNotFound: true);
         // ExecutionInteractions
         m_ExecutionInteractions = asset.FindActionMap("ExecutionInteractions", throwIfNotFound: true);
     }
@@ -488,12 +508,14 @@ public class @Inputs : IInputActionCollection, IDisposable
     private IUnitSelectedActions m_UnitSelectedActionsCallbackInterface;
     private readonly InputAction m_UnitSelected_SelectPath;
     private readonly InputAction m_UnitSelected_AlternateAction;
+    private readonly InputAction m_UnitSelected_DestructiveAction;
     public struct UnitSelectedActions
     {
         private @Inputs m_Wrapper;
         public UnitSelectedActions(@Inputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @SelectPath => m_Wrapper.m_UnitSelected_SelectPath;
         public InputAction @AlternateAction => m_Wrapper.m_UnitSelected_AlternateAction;
+        public InputAction @DestructiveAction => m_Wrapper.m_UnitSelected_DestructiveAction;
         public InputActionMap Get() { return m_Wrapper.m_UnitSelected; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -509,6 +531,9 @@ public class @Inputs : IInputActionCollection, IDisposable
                 @AlternateAction.started -= m_Wrapper.m_UnitSelectedActionsCallbackInterface.OnAlternateAction;
                 @AlternateAction.performed -= m_Wrapper.m_UnitSelectedActionsCallbackInterface.OnAlternateAction;
                 @AlternateAction.canceled -= m_Wrapper.m_UnitSelectedActionsCallbackInterface.OnAlternateAction;
+                @DestructiveAction.started -= m_Wrapper.m_UnitSelectedActionsCallbackInterface.OnDestructiveAction;
+                @DestructiveAction.performed -= m_Wrapper.m_UnitSelectedActionsCallbackInterface.OnDestructiveAction;
+                @DestructiveAction.canceled -= m_Wrapper.m_UnitSelectedActionsCallbackInterface.OnDestructiveAction;
             }
             m_Wrapper.m_UnitSelectedActionsCallbackInterface = instance;
             if (instance != null)
@@ -519,6 +544,9 @@ public class @Inputs : IInputActionCollection, IDisposable
                 @AlternateAction.started += instance.OnAlternateAction;
                 @AlternateAction.performed += instance.OnAlternateAction;
                 @AlternateAction.canceled += instance.OnAlternateAction;
+                @DestructiveAction.started += instance.OnDestructiveAction;
+                @DestructiveAction.performed += instance.OnDestructiveAction;
+                @DestructiveAction.canceled += instance.OnDestructiveAction;
             }
         }
     }
@@ -572,6 +600,7 @@ public class @Inputs : IInputActionCollection, IDisposable
     {
         void OnSelectPath(InputAction.CallbackContext context);
         void OnAlternateAction(InputAction.CallbackContext context);
+        void OnDestructiveAction(InputAction.CallbackContext context);
     }
     public interface IExecutionInteractionsActions
     {

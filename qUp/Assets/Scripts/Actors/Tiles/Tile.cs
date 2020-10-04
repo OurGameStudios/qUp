@@ -46,6 +46,8 @@ namespace Actors.Tiles {
                 gridManager.SelectUnitPath(Coords);
             } else if (interaction == ClickInteraction.AlternateSecondary) {
                 gridManager.SelectUnitLockedPath(Coords);
+            } else if (interaction == ClickInteraction.DestructiveSecondary) {
+                gridManager.RemoveUnitPathPart(Coords);
             }
         }
 

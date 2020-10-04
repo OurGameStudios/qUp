@@ -51,6 +51,7 @@ namespace Managers.InputManagers {
         private Action<GameObject> hoverEnd;
 
         private bool alternate;
+        private bool destructive;
 
         private PointerInteractions(Inputs inputs) {
             mouse = InputSystem.GetDevice<Mouse>();
@@ -103,8 +104,16 @@ namespace Managers.InputManagers {
             inputs.CameraControls.MouseDelta.performed += context => Rotation(context.ReadValue<Vector2>());
 
             inputs.UnitSelected.SelectPath.performed += _ => SelectPath();
-            inputs.UnitSelected.AlternateAction.started += _ => alternate = true;
+            inputs.UnitSelected.AlternateAction.started += _ => {
+                alternate = true;
+                destructive = false;
+            };
             inputs.UnitSelected.AlternateAction.canceled += _ => alternate = false;
+            inputs.UnitSelected.DestructiveAction.started += _ => {
+                destructive = true;
+                alternate = false;
+            };
+            inputs.UnitSelected.DestructiveAction.canceled += _ => destructive = false;
 
             inputs.PlanningPhase.SelectUnit.performed += _ => SelectUnit();
             inputs.CameraControls.PointerPosition.performed += context => {
@@ -199,9 +208,11 @@ namespace Managers.InputManagers {
             if (currentHitGameObject == null) return;
             if (!currentHitGameObject.CompareTag(InteractableTags.TILE_TAG) ||
                 EventSystem.current.IsPointerOverGameObject()) return;
-            
+
             if (alternate) {
-                clickables[currentHitGameObject].OnInteraction(ClickInteraction.AlternateSecondary);                    
+                clickables[currentHitGameObject].OnInteraction(ClickInteraction.AlternateSecondary);
+            } else if (destructive) {
+                clickables[currentHitGameObject].OnInteraction(ClickInteraction.DestructiveSecondary);
             } else {
                 clickables[currentHitGameObject].OnInteraction(ClickInteraction.Secondary);
             }

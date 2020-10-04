@@ -202,6 +202,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "DestructiveAction",
+                    "type": "Button",
+                    "id": "95b471f2-6853-4307-84e3-2dc729897701",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -224,6 +232,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "AlternateAction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bcf5891a-1be8-4a66-a8a4-957da5159d90",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DestructiveAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
