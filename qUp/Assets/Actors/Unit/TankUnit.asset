@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: TankUnit
   m_EditorClassIdentifier: 
   prefab: {fileID: 6847302850095094860, guid: a4cedcd78364d6b439329d44945640ad, type: 3}
+  ghostPrefab: {fileID: 2849016597839656616, guid: 6046c505f78949b47a1374a0501ea66f,
+    type: 3}
   unitUiImage: {fileID: 21300000, guid: 470eae48efc6297448cfe7b0d30f4502, type: 3}
   name: Tank
   cost: 400

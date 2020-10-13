@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Actors.Players;
+using Actors.Units;
 using Base.Managers;
 using Common;
 using Extensions;
@@ -37,8 +38,8 @@ namespace Managers.PlayerManagers {
 
         public List<Player> GetAllPlayers() => players.ConvertAll(it => it.ExposeController());
 
-        public void SpawnUnit(Vector3 tilePosition, GridCoords coords, Player player) {
-            var unitData = UiManager.ProvideSelectedUnit();
+        public void SpawnUnit(Vector3 tilePosition, GridCoords coords, Player player, UnitData data) {
+            var unitData = data;
             if (unitData.cost > GetCurrentPlayer().GetAvailableIncome()) return;
             var spawnPosition = tilePosition.AddY(unitData.prefab.transform.localScale.y / 2);
             SetState(UnitSpawn.Where(spawnPosition, unitData, coords, player));
