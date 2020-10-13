@@ -33,6 +33,10 @@ namespace Managers.PlayerManagers {
             currentPlayer++;
             return true;
         }
+        
+        public bool HasNextPlayer() => currentPlayer + 1 < players.Count;
+
+        public int NextPlayerIndex() => currentPlayer + 1;
 
         public Player GetCurrentPlayer() => players[currentPlayer].ExposeController();
 
