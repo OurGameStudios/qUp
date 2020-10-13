@@ -9,6 +9,10 @@ using UnityEngine;
 
 namespace Managers.PlayManagers {
     public class PlayManager : MonoBehaviour, IManager {
+        
+        public const string PHASE_PLAYER_TEXT = "Next is player #";
+        public const string PHASE_EXECUTION_TEXT = "Start execution!";
+        
         private enum Phase {
             PlanningPhase,
             ExecutionPhase,
@@ -41,6 +45,18 @@ namespace Managers.PlayManagers {
 
         private int currentMaxTickCount;
 
+        private bool isShowingPhaseInfo;
+
+        private bool IsShowingPhaseInfo {
+            get => isShowingPhaseInfo;
+            set {
+                if (value == false) {
+                    UiManager.HidePhaseInfo();
+                }
+                isShowingPhaseInfo = value;
+            }
+        }
+
         private void Awake() {
             ApiManager.ExposeManager(this);
         }
@@ -48,21 +64,43 @@ namespace Managers.PlayManagers {
         public void NextPhase() {
             if (phase == Phase.PlanningPhase) {
                 //TODO start planning phase
-                if (PlayerManager.NextPlayer()) {
+                if (!IsShowingPhaseInfo) {
+                    ShowPhaseInfo();
+                } else if (PlayerManager.NextPlayer()) {
+                    IsShowingPhaseInfo = false;
                     SwitchPlayer();
                 } else {
+                    IsShowingPhaseInfo = false;
                     StartExecutionPhase();
                 }
             } else if (phase == Phase.ExecutionPhase) {
                 // StartPlanningPhase();
                 //TODO start prepping phase
                 StartPreppingPhase();
-                Debug.Log("startprepping phase");
             } else if (phase == Phase.PreppingPhase) {
                 //TODO start prepping phase
                  //replace when implementing prepping phase
-                 StartPlanningPhase();
-                 Debug.Log("start planing phase");
+                 if (!IsShowingPhaseInfo) {
+                     InputManager.EnableNextPlayerInputs();
+                     ShowPhaseInfo();
+                 } else {
+                     IsShowingPhaseInfo = false;
+                     StartPlanningPhase();
+                 }
+            }
+        }
+
+        private void ShowPhaseInfo() {
+            if (phase == Phase.PlanningPhase) {
+                if (PlayerManager.HasNextPlayer()) {
+                    UiManager.ShowPhaseInfo(PHASE_PLAYER_TEXT + (PlayerManager.NextPlayerIndex() + 1) + ".");
+                } else {
+                    UiManager.ShowPhaseInfo(PHASE_EXECUTION_TEXT);
+                }
+                IsShowingPhaseInfo = true;
+            } else if (phase == Phase.PreppingPhase) {
+                UiManager.ShowPhaseInfo(PHASE_PLAYER_TEXT + "1.");
+                IsShowingPhaseInfo = true;
             }
         }
 

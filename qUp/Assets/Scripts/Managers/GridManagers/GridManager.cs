@@ -571,7 +571,6 @@ namespace Managers.GridManagers {
             }
 
             PlayManager.NextPhase();
-            InputManager.OnPlanningPhase();
         }
     }
 }

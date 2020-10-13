@@ -40,5 +40,13 @@ namespace Managers.UIManagers {
         public void PlayerSwitch() {
             ResourceUiInteractor.RefreshAll();
         }
+
+        public void ShowPhaseInfo(string phaseInfoText) {
+            SetState(PhaseShow.Where(phaseInfoText));
+        }
+
+        public void HidePhaseInfo() {
+            SetState(PhaseHide.Where());
+        }
     }
 }

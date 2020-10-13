@@ -97,5 +97,12 @@ namespace Managers.InputManagers {
             inputs.NoUnitSelected.Enable();
             inputs.UnitSelected.Disable();
         }
+
+        public void EnableNextPlayerInputs() {
+            Task.Delay(500).ContinueWith(task => {
+                inputs.NextPlayer.Enable();
+                task.Dispose();
+            });
+        }
     }
 }
