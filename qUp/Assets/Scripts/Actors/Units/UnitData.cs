@@ -5,6 +5,7 @@ namespace Actors.Units {
     [CreateAssetMenu(fileName = "StandardUnit", menuName = "Units/StandardUnit")]
     public class UnitData : BaseData {
         public GameObject prefab;
+        public GameObject ghostPrefab;
 
         public Sprite unitUiImage;
         

@@ -206,11 +206,17 @@ namespace Managers.GridManagers {
         private void HandleHq(GridCoords coords) {
             if (unitSpawnInfos[PlayerManager.GetCurrentPlayer()].Count >= MAX_NUM_OF_SPAWN_UNITS) return;
             spawnTiles.FirstOrDefault(it => it.Coords == coords)
-                      ?.Tile?.Let(it =>
-                          unitSpawnInfos[PlayerManager.GetCurrentPlayer()]
-                              .Add(new UnitSpawnInfo(it.ProvideTilePosition(), coords)));
+                      ?.Tile?.Let(it => {
+                          var unitSpawnInfo = new UnitSpawnInfo(it.ProvideTilePosition(), coords, UiManager.ProvideSelectedUnit());
+                          SetState(UnitSpawn.Where(it.ProvideTilePosition(), unitSpawnInfo));
+                      });
 
             ClearFocus();
+        }
+
+        public void StoreUnitSpawn(UnitSpawnInfo unitSpawnInfo) {
+            unitSpawnInfos[PlayerManager.GetCurrentPlayer()]
+                .Add(unitSpawnInfo);
         }
 
         public void SelectTile(GridCoords coords) {
@@ -554,7 +560,11 @@ namespace Managers.GridManagers {
                 }
 
                 foreach (var unitSpawnInfo in unitSpawnInfos[player]) {
-                    PlayerManager.SpawnUnit(unitSpawnInfo.position, unitSpawnInfo.coords, player);
+                    SetState(UnitSpawned.Where(unitSpawnInfo.ghost));
+                    PlayerManager.SpawnUnit(unitSpawnInfo.position,
+                        unitSpawnInfo.coords,
+                        player,
+                        unitSpawnInfo.unitData);
                 }
 
                 unitSpawnInfos[player].Clear();

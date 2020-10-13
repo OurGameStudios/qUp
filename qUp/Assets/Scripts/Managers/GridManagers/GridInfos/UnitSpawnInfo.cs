@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using Actors.Units;
+using Common;
 using UnityEngine;
 
 namespace Managers.GridManagers.GridInfos {
@@ -7,9 +8,14 @@ namespace Managers.GridManagers.GridInfos {
         public Vector3 position { get; }
         public GridCoords coords { get;}
         
-        public UnitSpawnInfo(Vector3 position, GridCoords coords) {
+        public UnitData unitData { get; }
+
+        public GameObject ghost;
+        
+        public UnitSpawnInfo(Vector3 position, GridCoords coords, UnitData unitData) {
             this.position = position;
             this.coords = coords;
+            this.unitData = unitData;
         }
     }
 }
