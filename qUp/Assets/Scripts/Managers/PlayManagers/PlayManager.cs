@@ -24,20 +24,20 @@ namespace Managers.PlayManagers {
         
         private GridManager GridManager => gridManagerLazy.Value;
         
-        private readonly Lazy<PlayerManager> playerManagerLazy =
-            new Lazy<PlayerManager>(ApiManager.ProvideManager<PlayerManager>);
+        // private readonly Lazy<PlayerManager> playerManagerLazy =
+        //     new Lazy<PlayerManager>(ApiManager.ProvideManager<PlayerManager>);
         
-        private PlayerManager PlayerManager => playerManagerLazy.Value;
+        private PlayerManager PlayerManager => LazyStaticGet<PlayerManager>.Get(ApiManager.ProvideManager<PlayerManager>);
         
-        private readonly Lazy<InputManagerBehaviour> inputManagerLazy =
-            new Lazy<InputManagerBehaviour>(ApiManager.ProvideManager<InputManagerBehaviour>);
+        // private readonly Lazy<InputManagerBehaviour> inputManagerLazy =
+        //     new Lazy<InputManagerBehaviour>(ApiManager.ProvideManager<InputManagerBehaviour>);
         
-        private InputManagerBehaviour InputManager => inputManagerLazy.Value;
+        private InputManagerBehaviour InputManager => LazyStaticGet<InputManagerBehaviour>.Get(ApiManager.ProvideManager<InputManagerBehaviour>);
         
-        private readonly Lazy<UiManager> uiManagerLazy =
-            new Lazy<UiManager>(ApiManager.ProvideManager<UiManager>);
+        // private readonly Lazy<UiManager> uiManagerLazy =
+        //     new Lazy<UiManager>(ApiManager.ProvideManager<UiManager>);
         
-        private UiManager UiManager => uiManagerLazy.Value;
+        private UiManager UiManager => LazyStaticGet<UiManager>.Get(ApiManager.ProvideManager<UiManager>);
         
 
         //TODO this should be changed to prepping phase if starting units are to be implemented

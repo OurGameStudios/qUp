@@ -48,5 +48,9 @@ namespace Managers.UIManagers {
         public void HidePhaseInfo() {
             SetState(PhaseHide.Where());
         }
+
+        public void UpdateResourceUi() {
+            ResourceUiInteractor.RefreshUpkeep();
+        }
     }
 }

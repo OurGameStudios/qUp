@@ -204,13 +204,15 @@ namespace Managers.GridManagers {
         }
 
         private void HandleHq(GridCoords coords) {
-            if (unitSpawnInfos[PlayerManager.GetCurrentPlayer()].Count >= MAX_NUM_OF_SPAWN_UNITS) return;
-            spawnTiles.FirstOrDefault(it => it.Coords == coords)
-                      ?.Tile?.Let(it => {
-                          var unitSpawnInfo = new UnitSpawnInfo(it.ProvideTilePosition(), coords, UiManager.ProvideSelectedUnit());
-                          SetState(UnitSpawn.Where(it.ProvideTilePosition(), unitSpawnInfo));
-                      });
-
+            if (unitSpawnInfos[PlayerManager.GetCurrentPlayer()].Count < MAX_NUM_OF_SPAWN_UNITS &&
+                PlayerManager.GetCurrentPlayer().GetAvailableIncome() >= UiManager.ProvideSelectedUnit().cost) {
+                spawnTiles.FirstOrDefault(it => it.Coords == coords)
+                          ?.Tile?.Let(it => {
+                              var unitSpawnInfo = new UnitSpawnInfo(it.ProvideTilePosition(), coords, UiManager.ProvideSelectedUnit());
+                              SetState(UnitSpawn.Where(it.ProvideTilePosition(), unitSpawnInfo));
+                              PlayerManager.GetCurrentPlayer().RegisterUnitSpawnCost(unitSpawnInfo);
+                          });
+            }
             ClearFocus();
         }
 
@@ -565,6 +567,7 @@ namespace Managers.GridManagers {
                         unitSpawnInfo.coords,
                         player,
                         unitSpawnInfo.unitData);
+                    player.UnregisterUnitSpawnCost(unitSpawnInfo);
                 }
 
                 unitSpawnInfos[player].Clear();

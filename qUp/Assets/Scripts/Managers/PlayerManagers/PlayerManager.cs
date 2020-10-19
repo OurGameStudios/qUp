@@ -54,5 +54,7 @@ namespace Managers.PlayerManagers {
             var spawnPosition = tilePosition.AddY(unitData.prefab.transform.localScale.y / 2);
             SetState(ResourceUnitSpawn.Where(spawnPosition, unitData, coords, player));
         }
+
+        public bool Test() => true;
     }
 }

@@ -1,11 +1,18 @@
+using System;
 using System.Collections.Generic;
 using Actors.Units;
 using Base.MonoBehaviours;
 using Common;
+using Managers.ApiManagers;
+using Managers.GridManagers.GridInfos;
+using Managers.UIManagers;
 using UnityEngine;
 
 namespace Actors.Players {
     public class Player : BaseController<IPlayerState> {
+        
+        private readonly Lazy<UiManager> uiManagerLazy = new Lazy<UiManager>(ApiManager.ProvideManager<UiManager>);
+        private UiManager UiManager => uiManagerLazy.Value;
         protected override bool Expose => true;
 
         private PlayerData data;
@@ -14,7 +21,9 @@ namespace Actors.Players {
         private int upkeep;
         private int turnCost;
 
-        private List<GridCoords> incomeSources = new List<GridCoords>();
+        private List<GridCoords> incomeSources = new List<GridCoords>(200);
+        
+        private List<UnitSpawnInfo> spawnCostSources = new List<UnitSpawnInfo>(6); 
 
         public void Init(PlayerData inData) {
             data = inData;
@@ -61,6 +70,18 @@ namespace Actors.Players {
         public int GetAvailableIncome() => income - turnCost;
 
         public int GetTurnCost() => turnCost;
+
+        public void RegisterUnitSpawnCost(UnitSpawnInfo unitSpawnInfo) {
+            turnCost += unitSpawnInfo.unitData.cost;
+            spawnCostSources.Add(unitSpawnInfo);
+            UiManager.UpdateResourceUi();
+        }
+        
+        public void UnregisterUnitSpawnCost(UnitSpawnInfo unitSpawnInfo) {
+            turnCost -= unitSpawnInfo.unitData.cost;
+            spawnCostSources.Remove(unitSpawnInfo);
+            UiManager.UpdateResourceUi();
+        }
 
         public void ResetTurnCost() => turnCost = upkeep;
 
