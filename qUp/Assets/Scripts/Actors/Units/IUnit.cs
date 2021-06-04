@@ -12,6 +12,7 @@ namespace Actors.Units {
         IPlayer Owner { get; }
         List<ITile> Path { get; }
         void SetActive(bool isActive);
+        bool IsActive();
         void SetPosition(Vector3 position);
         void SetTile(ITile tile);
         void SetOwner(IPlayer owner);

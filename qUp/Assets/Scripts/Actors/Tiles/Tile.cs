@@ -268,6 +268,11 @@ namespace Actors.Tiles {
 
             // Precaution for resetting the tile on prepping phase. 
             foreach (var playerUnitList in playerUnitsPerTick) {
+                if (playerUnitList[0] != null) {
+                    if (!playerUnitList[0].IsActive()) {
+                        playerUnitList[0] = null;
+                    }
+                }
                 for (var i = 1; i < playerUnitList.Count; i++) {
                     playerUnitList[i] = null;
                 }
@@ -411,11 +416,11 @@ namespace Actors.Tiles {
             }
         }
 
-        public void CombatResolved(IUnit winner, IUnit loser) {
+        public void CombatResolved(IPlayer winner) {
             WorldUi.ShowMessageForPlayer(
-                winner != null ? Localization.COMBAT_PLAYER_WON.Format(winner.Owner) : Localization.COMBAT_DRAW,
+                winner != null ? Localization.COMBAT_PLAYER_WON.Format(winner) : Localization.COMBAT_DRAW,
                 GetMessagePosition(),
-                winner?.Owner);
+                winner);
         }
 
         public Vector3 GetTileCenter() {

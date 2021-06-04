@@ -34,9 +34,9 @@ namespace Actors.Units {
 
         private int Cost => data.cost;
 
-        private bool hasLostCombat;
+        public bool hasLostCombat;
 
-        private bool reachedLastPathTile;
+        public bool reachedLastPathTile;
 
         private Vector3 position;
 
@@ -65,6 +65,8 @@ namespace Actors.Units {
                 ResourceUnitsHandler.RemoveFromActiveUnits(this);
             }
         }
+
+        public bool IsActive() => gameObject.activeSelf;
 
         public void SetPosition(Vector3 position) {
             gameObject.transform.position = position;
@@ -99,13 +101,16 @@ namespace Actors.Units {
         public bool HasMoreWork() => path.Count > 1 && !hasLostCombat && !reachedLastPathTile;
 
         private void OnTickDispatched(int tick) {
-            if (!HasMoreWork()) return;
+            if (!HasMoreWork()) {
+                ExecutionHandler.TickWorkerDequeued(this);
+                return;
+            }
 
+            TickCombat(tick);
             path[0].RemoveResourceUnitForTick(this, tick - 1);
             path.RemoveFirst();
             var tileCenter = path[0].GetTileCenter();
             moveTo.Set(tileCenter.x, tileCenter.y, tileCenter.z);
-            TickCombat(tick);
             if (path[0] != currentTile) {
                 StartCoroutine(UnitMovement(tick));
                 ExecutionHandler.TickWorkerStarted(this);

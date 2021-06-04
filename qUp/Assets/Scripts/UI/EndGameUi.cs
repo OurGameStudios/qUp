@@ -19,7 +19,7 @@ namespace UI {
 
         public static void ShowEndGameUi(IPlayer winner) {
             Instance.endGameUi.gameObject.SetActive(true);
-            Instance.endGameDescription.text = Localization.END_GAME_DESCRIPTION.Format(winner);
+            Instance.endGameDescription.text = Localization.END_GAME_DESCRIPTION.Format(winner.GetPlayerName());
             Instance.isListening = true;
         }
 

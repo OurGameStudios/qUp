@@ -44,7 +44,7 @@ namespace Actors.Units {
 
         private int UpKeep => data.upkeep;
 
-        private IUnit combatWinner;
+        private IPlayer combatWinner;
 
         private Vector3 position;
         private float Speed => 5f;
@@ -53,7 +53,6 @@ namespace Actors.Units {
 
         private void Awake() {
             puckShader = new PuckShader(puckRenderer.materials[1]);
-            combatWinner = this;
         }
 
         public void OnPointerClick(PointerEventData eventData) {
@@ -72,6 +71,8 @@ namespace Actors.Units {
             }
         }
 
+        public bool IsActive() => gameObject.activeSelf;
+
         public void SetPosition(Vector3 position) {
             gameObject.transform.position = position;
             this.position = position;
@@ -81,6 +82,7 @@ namespace Actors.Units {
 
         public void SetOwner(IPlayer owner) {
             Owner = owner;
+            combatWinner = Owner;
             puckShader.SetPlayerColor(owner.GetPlayerColor());
         }
 
@@ -130,10 +132,15 @@ namespace Actors.Units {
             TickCombat(tick);
             if (!HasMoreWork()) {
                 if (HasLostCombat()) {
-                    OnCombatLost(tick);
-                    combatWinner = this;
-                    UnitPool.ReturnUnit(this);
-                    ExecutionHandler.TickWorkerDequeued(this);
+                    IEnumerator Delay() {
+                        yield return new WaitForEndOfFrame();
+                        OnCombatLost(tick);
+                        combatWinner = Owner;
+                        UnitPool.ReturnUnit(this);
+                        ExecutionHandler.TickWorkerDequeued(this);
+                    }
+
+                    StartCoroutine(Delay());
                 }
                 return;
             }
@@ -160,15 +167,12 @@ namespace Actors.Units {
             var combatTile = path[path.Count > 1 ? 1 : 0];
             var combatants = combatTile.GetCombatantUnitsFor(tick);
             if (combatants.Count > 1) {
-                // CombatHandler.HandleCombat(combatants);
-                if (CombatHandler.GetCombatWinner(combatants) != Owner) {
-                    combatWinner = null;
-                }
+                combatWinner = CombatHandler.GetCombatWinner(combatants);
                 combatTile.CombatOnTile(true);
             }
         }
 
-        private bool HasLostCombat() => (Unit) combatWinner !=  this;
+        private bool HasLostCombat() => combatWinner != Owner;
 
         /// <summary>
         /// Notifies execution handler that tick worker is finished. Sets position to tiles center.
@@ -190,7 +194,7 @@ namespace Actors.Units {
             }
 
             if (HasLostCombat()) {
-                combatWinner = this;
+                combatWinner = Owner;
                 UnitPool.ReturnUnit(this);
             }
 
@@ -202,6 +206,7 @@ namespace Actors.Units {
         // Should be split in pickup -> move -> put down
         // pickup and put down could be done via animations
         private IEnumerator UnitMovement(int tick) {
+            yield return this; // delay movement for a turn
             while (Vector3.Distance(transform.position, moveTo) > 1f) {
                 TransformLerp(moveTo, Time.deltaTime * Speed);
                 RotateLerp(moveTo, Time.deltaTime * Speed);
@@ -229,9 +234,9 @@ namespace Actors.Units {
         }
 
         private void OnCombatLost(int tick) {
-            path[0].CombatResolved(combatWinner, this);
+            path[0].CombatResolved(combatWinner);
             for (var i = 0; i < path.Count; i++) {
-                path[i].RemoveUnitFromTick(Owner, i + tick, i + tick == path.Count - 1);
+                path[i].RemoveUnitFromTick(Owner, i + tick, false);
             }
             
             path.Clear();

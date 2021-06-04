@@ -26,7 +26,7 @@ namespace Actors.Tiles {
         void OnMovedOver(IPlayer player, int tick, IUnit unit);
         List<IUnit> GetCombatantUnitsFor(int tick);
         void CombatOnTile(bool isActive);
-        void CombatResolved(IUnit winner, IUnit loser);
+        void CombatResolved(IPlayer winner);
         void AddResourceUnit(IUnit resourceUnit, int tick);
         bool IsSpawnTile();
         List<IUnit> GetResourceUnitsForTick(int tick);
