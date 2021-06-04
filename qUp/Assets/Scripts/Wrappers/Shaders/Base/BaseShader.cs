@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Wrappers.Shaders.Base {
     public abstract class BaseShader {
-        protected Material material;
+        private Material material;
 
-        public BaseShader([NotNull] Material material) {
+        protected BaseShader([NotNull] Material material) {
             this.material = material;
         }
 

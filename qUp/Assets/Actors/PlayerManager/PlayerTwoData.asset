@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61dc60e63324e4ec9912c9c1ff411483, type: 3}
   m_Name: PlayerTwoData
   m_EditorClassIdentifier: 
-  playerName: Player two
+  playerName: Player2
   playerColor: {r: 1, g: 0, b: 0, a: 1}
   hqInfo:
-    prefab: {fileID: 6702595339068739768, guid: 6867fb5f0b365864c9065b5610cc91f0,
+    prefab: {fileID: 8684659909184114856, guid: 6025455210f4e814dafd2746a11b403a,
       type: 3}
     x: 9999
     y: 9999
   unitDatas:
   - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}
-  - {fileID: 11400000, guid: 7bcb1ec9076e345808a041608dfbe1e1, type: 2}
   - {fileID: 11400000, guid: fa05b8e59cc765949b1b6793da306888, type: 2}
-  baseIncome: 1000
+  - {fileID: 11400000, guid: 2349728b978dc7f48803b83fec3ae69f, type: 2}
+  baseIncome: 600
   resourceUnitData: {fileID: 11400000, guid: 913002f49008d9f41b26cbc6b1ed0201, type: 2}

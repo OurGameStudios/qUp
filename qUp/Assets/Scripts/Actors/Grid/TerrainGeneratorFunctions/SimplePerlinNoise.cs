@@ -1,8 +1,6 @@
 ﻿using System;
 using Actors.Grid.TerrainGeneratorFunctions.Base;
-using Extensions;
 using UnityEngine;
-using UnityEngine.AI;
 using Random = System.Random;
 
 namespace Actors.Grid.TerrainGeneratorFunctions {

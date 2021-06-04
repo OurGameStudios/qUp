@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Extensions {
-    static class Vector3Extensions {
+    internal static class Vector3Extensions {
         public enum Vector3Axis {
             X, Y, Z
         }
@@ -34,10 +34,6 @@ namespace Extensions {
 
         public static Vector3 AddVector2(this Vector3 vector3, Vector2 vector2) {
             return vector3 + new Vector3(vector2.x, 0, vector2.y);
-        }
-
-        public static Vector3 Clone(this Vector3 vector3) {
-            return new Vector3(vector3.x, vector3.y, vector3.z);
         }
     }
 }

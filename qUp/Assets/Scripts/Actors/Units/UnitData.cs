@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using Base.Common;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Actors.Units {
     [CreateAssetMenu(fileName = "StandardUnit", menuName = "Units/StandardUnit")]
@@ -9,12 +12,19 @@ namespace Actors.Units {
 
         public Sprite unitUiImage;
         
-        public string name;
-        public int cost = 200;
-        public int upkeep = 150;
+        [FormerlySerializedAs("name")]
+        public string unitName;
+        public int cost = 100;
+        public int upkeep = 50;
         public int hp = 10;
-        public int attack = 5;
         public int tickPoints = 3;
-        public int overpowers;
+
+        [Serializable]
+        public class Damage {
+            public UnitData unitDatas;
+            public int damage;
+        }
+
+        public List<Damage> damages;
     }
 }

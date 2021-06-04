@@ -17,9 +17,9 @@ MonoBehaviour:
     type: 3}
   unitUiImage: {fileID: 21300000, guid: 1966f676694f2814c918c1088fe058e9, type: 3}
   name: ResourceUnit
-  cost: 0
+  cost: 400
   upkeep: 0
   hp: 1
   attack: 0
   tickPoints: 2
-  overpowers: 0
+  damages: []

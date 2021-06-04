@@ -12,35 +12,40 @@ Material:
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 2
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _SampleTexture2D_30A17521_Texture_1:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_A9E30C36_Texture_1:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2DAsset_16EE320A_Out_0:
-        m_Texture: {fileID: 2800000, guid: 3855edeb2ee35a747bc79d929d092032, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2DAsset_A22089F2_Out_0:
+    - _Texture2DAsset_131f5947e9cc3e8286f3dc41191e33d2_Out_0:
         m_Texture: {fileID: 2800000, guid: 26f6737d35daef44eadae789787ef998, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_e7d6aa5eef2bc082a60acf2674bc3b76_Out_0:
+        m_Texture: {fileID: 2800000, guid: 3855edeb2ee35a747bc79d929d092032, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
-    - Boolean_596180BB: 1
+    - Boolean_596180BB: 0
     - Boolean_C697B7BD: 1
     m_Colors:
-    - playerColor: {r: 0, g: 0.1411765, b: 4, a: 0}
+    - playerColor: {r: 12.70829, g: 12.70829, b: 12.70829, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &1248672953174329304
 MonoBehaviour:

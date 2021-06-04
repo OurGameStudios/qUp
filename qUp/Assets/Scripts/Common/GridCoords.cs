@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+// ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace Common {
     [Serializable]
@@ -101,7 +102,7 @@ namespace Common {
             AreValidGridCoords(coordinates.x, coordinates.y);
 
         /// <summary>
-        ///  Checks if two are next to eachother on grid.
+        ///  Checks if two are next to each-other on grid.
         /// </summary>
         /// <returns>Are neighbours</returns>
         public static bool AreNeighbours(GridCoords a, GridCoords b) => NeighbourTransforms.Contains(a - b);
@@ -124,6 +125,7 @@ namespace Common {
         /// Returns all neighbours of coords in current grid.
         /// Doesn't take holes into account.
         /// </summary>
+        /// <param name="coords"></param>
         /// <param name="maxGridCoords">Maximum coordinates in grid.</param>
         /// <returns>Neighbour coordinates</returns>
         public static List<GridCoords> GetNeighbourCoordsOfGrid(GridCoords coords, GridCoords maxGridCoords) {
@@ -289,7 +291,7 @@ namespace Common {
         public static GridCoords SwapXY(GridCoords coords) => new GridCoords(coords.y, coords.x);
 
         /// <summary>
-        /// Lerps between two coords and rounds its x and y to nearest int.
+        /// Uses lerp between two coords and rounds its x and y to nearest int.
         /// If x or y are 0.5 then it rounds it to even int.
         /// Doesnt return GridCoords because return value could be invalid grid coordinate.
         /// Should be used with Push to get valid coords.
@@ -377,7 +379,7 @@ namespace Common {
 
         public static bool operator >(GridCoords a, GridCoords b) => a.x > b.x || a.y > b.y;
 
-        // Implicit asignment
+        // Implicit assignment
 
         public static implicit operator GridCoords((int x, int y) gridCoordinates) {
             return new GridCoords(gridCoordinates.x, gridCoordinates.y);

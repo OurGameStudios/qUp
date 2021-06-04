@@ -1,4 +1,4 @@
-﻿namespace Priority_Queue
+﻿namespace Common.PriorityQueues
 {
     public interface IFastPriorityQueueNode
     {
