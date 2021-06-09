@@ -269,8 +269,8 @@ namespace Common {
         public static List<GridCoords> RangeOf(GridCoords coords, int range) {
             var coordsInRange = new List<GridCoords>();
             for (var rx = coords.x - range; rx <= coords.x + range; rx++) {
-                for (var ry = coords.x - 2 * range + Math.Abs(coords.x - rx);
-                     ry <= coords.x + 2 * range - Math.Abs(coords.x - rx);
+                for (var ry = coords.y - 2 * range + Math.Abs(coords.x - rx);
+                     ry <= coords.y + 2 * range - Math.Abs(coords.x - rx);
                      ry += 2) {
                     coordsInRange.Add(new GridCoords(rx, ry));
                 }
